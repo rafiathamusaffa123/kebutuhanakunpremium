@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>ATHA STORE | Cloud Sync</title>
+  <title>ATHA STORE | Complete System</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
       background: radial-gradient(circle at 10% 20%, #f5f9ff, #eef2fa);
@@ -29,79 +30,440 @@
       z-index: 100;
       border-bottom: 1px solid rgba(255,255,240,0.2);
     }
-    .logo { font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, #FFF, #9ad7f5); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .nav-links { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
-    .nav-links a, .nav-links button { background: transparent; border: none; color: #eef5ff; font-weight: 500; cursor: pointer; font-size: 0.9rem; padding: 8px 16px; border-radius: 40px; transition: 0.2s; }
-    .nav-links a:hover, .nav-links button:hover { background: rgba(255,255,255,0.15); }
-    .user-badge { background: #2c6e8f; padding: 6px 14px; border-radius: 40px; font-size: 0.8rem; }
-    .hero { text-align: center; padding: 50px 20px 30px; }
-    .hero h1 { font-size: 3rem; font-weight: 800; background: linear-gradient(145deg, #1c5d7a, #0f3e53); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .container { max-width: 1300px; margin: 0 auto; padding: 0 24px; }
-    .section-title { font-size: 1.5rem; font-weight: 700; margin: 30px 0 20px; padding-left: 16px; border-left: 5px solid #1d6f8f; }
-    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 28px; margin: 20px 0 40px; }
-    .product-card {
-      background: white; border-radius: 32px; padding: 24px; transition: all 0.3s;
-      box-shadow: 0 12px 28px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.03);
-      position: relative; overflow: hidden;
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #FFF, #9ad7f5);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
-    .product-card.bestseller-animate { animation: pulse 2s infinite; }
-    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(231, 76, 60, 0); } 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); } }
-    .product-card.populer-animate { animation: glow 1.5s ease-in-out infinite alternate; }
-    @keyframes glow { from { box-shadow: 0 0 5px #ff9800, 0 0 10px #ff9800; } to { box-shadow: 0 0 20px #ff9800, 0 0 30px #ff9800; } }
-    .product-card:hover { transform: translateY(-6px); box-shadow: 0 28px 38px -18px rgba(0, 50, 70, 0.2); }
-    .product-badge { position: absolute; top: 16px; right: 16px; padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 700; z-index: 2; }
-    .badge-populer { background: #ff9800; color: white; animation: badgePulse 1s ease-in-out infinite alternate; }
-    .badge-bestseller { background: #e74c3c; color: white; animation: badgeShake 0.5s ease-in-out infinite alternate; }
-    @keyframes badgePulse { from { transform: scale(1); } to { transform: scale(1.05); } }
-    @keyframes badgeShake { from { transform: rotate(0deg); } to { transform: rotate(3deg); } }
-    .product-icon { font-size: 2.2rem; width: 56px; height: 56px; background: #eef5fc; border-radius: 24px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
-    .product-name { font-size: 1.2rem; font-weight: 700; margin: 12px 0 8px; padding-right: 60px; }
-    .price-stock { display: flex; justify-content: space-between; align-items: center; margin: 16px 0; font-weight: 600; flex-wrap: wrap; gap: 8px; }
-    .price { background: #e2f3ec; padding: 4px 12px; border-radius: 40px; color: #1e6a50; }
-    .price.original { background: #f0f0f0; text-decoration: line-through; color: #999; font-size: 0.8rem; }
-    .price.discounted { background: #ff9800; color: white; }
-    .stock { background: #ecf3f8; padding: 4px 12px; border-radius: 40px; font-size: 0.8rem; }
-    .stock.low { background: #ffedd5; color: #b45309; }
-    .order-btn { background: #25D366; width: 100%; border: none; padding: 12px; border-radius: 50px; font-weight: 700; color: white; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .order-btn:disabled { background: #b9dac9; cursor: not-allowed; }
-    .panel { background: white; border-radius: 32px; padding: 28px; margin: 30px 0; box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
-    .tab-bar { display: flex; gap: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 24px; flex-wrap: wrap; }
-    .tab { background: none; border: none; padding: 8px 20px; border-radius: 40px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-    .tab.active { background: #1d6f8f; color: white; }
-    .product-mgmt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; margin-top: 20px; }
-    .product-mgmt-card { background: #f8fafc; border-radius: 24px; padding: 20px; border: 1px solid #e2e8f0; transition: 0.2s; position: relative; }
-    .product-mgmt-card:hover { border-color: #cbd5e1; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-    .delete-product { position: absolute; top: 12px; right: 12px; background: #fee2e2; color: #e74c3c; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
-    .delete-product:hover { background: #e74c3c; color: white; transform: scale(1.05); }
-    .product-mgmt-name { font-weight: 700; font-size: 1rem; margin-bottom: 16px; word-break: break-word; padding-bottom: 8px; border-bottom: 1px dashed #cbd5e1; padding-right: 35px; }
-    .product-mgmt-field { margin: 12px 0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-    .product-mgmt-field label { font-weight: 500; font-size: 0.85rem; color: #4a6f7e; }
-    .product-mgmt-field input, .product-mgmt-field select { width: 120px; padding: 8px 12px; border-radius: 40px; border: 1px solid #ccc; text-align: center; }
-    .btn-update-all { background: #25D366; padding: 12px 28px; font-size: 1rem; margin-top: 24px; display: inline-block; border-radius: 60px; font-weight: 600; cursor: pointer; border: none; }
-    .btn-add-product { background: #1d6f8f; padding: 10px 24px; font-size: 0.9rem; margin-bottom: 20px; display: inline-block; border-radius: 60px; font-weight: 600; cursor: pointer; }
-    .table-responsive { overflow-x: auto; margin-top: 16px; border-radius: 20px; border: 1px solid #e2e8f0; background: white; }
-    .data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    .data-table th { background: #f1f5f9; padding: 14px 12px; text-align: left; font-weight: 600; color: #1e5f7a; }
-    .data-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
-    .search-box { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
-    .search-box input, .search-box select { padding: 10px 16px; border-radius: 40px; border: 1px solid #ccc; }
-    .search-box input { flex: 1; max-width: 300px; }
-    .password-wrapper { position: relative; width: 100%; margin-bottom: 16px; }
-    .password-wrapper input { width: 100%; padding-right: 45px; margin-bottom: 0; }
-    .toggle-password { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888; background: transparent; padding: 0; }
-    .toggle-password:hover { color: #1d6f8f; background: transparent; }
-    .status-badge { display: inline-block; padding: 4px 12px; border-radius: 40px; font-size: 0.75rem; font-weight: 600; }
-    .status-proses { background: #fff3e0; color: #e67e22; }
-    .status-berhasil { background: #e0f7e8; color: #27ae60; }
-    .status-gagal { background: #fee2e2; color: #e74c3c; }
-    .loading { text-align: center; padding: 50px; color: #1d6f8f; }
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 1000; }
-    .modal-card { background: white; max-width: 500px; width: 90%; border-radius: 40px; padding: 28px; }
-    .modal-card input, .modal-card select { width: 100%; margin-bottom: 16px; }
-    footer { text-align: center; padding: 40px 20px; color: #517f94; }
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .nav-links a, .nav-links button {
+      background: transparent;
+      border: none;
+      color: #eef5ff;
+      font-weight: 500;
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 8px 16px;
+      border-radius: 40px;
+      transition: 0.2s;
+    }
+    .nav-links a:hover, .nav-links button:hover {
+      background: rgba(255,255,255,0.15);
+    }
+    .user-badge {
+      background: #2c6e8f;
+      padding: 6px 14px;
+      border-radius: 40px;
+      font-size: 0.8rem;
+    }
+    .hero {
+      text-align: center;
+      padding: 50px 20px 30px;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(145deg, #1c5d7a, #0f3e53);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 30px 0 20px;
+      padding-left: 16px;
+      border-left: 5px solid #1d6f8f;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 28px;
+      margin: 20px 0 40px;
+    }
+    .product-card {
+      background: white;
+      border-radius: 32px;
+      padding: 24px;
+      transition: all 0.3s;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.05);
+      border: 1px solid rgba(0,0,0,0.03);
+      position: relative;
+      overflow: hidden;
+    }
+    .product-card.bestseller-animate {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
+      70% { box-shadow: 0 0 0 15px rgba(231, 76, 60, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+    }
+    .product-card.populer-animate {
+      animation: glow 1.5s ease-in-out infinite alternate;
+    }
+    @keyframes glow {
+      from { box-shadow: 0 0 5px #ff9800, 0 0 10px #ff9800; }
+      to { box-shadow: 0 0 20px #ff9800, 0 0 30px #ff9800; }
+    }
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 28px 38px -18px rgba(0, 50, 70, 0.2);
+    }
+    .product-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      padding: 4px 12px;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      z-index: 2;
+    }
+    .badge-populer {
+      background: #ff9800;
+      color: white;
+      animation: badgePulse 1s ease-in-out infinite alternate;
+    }
+    .badge-bestseller {
+      background: #e74c3c;
+      color: white;
+      animation: badgeShake 0.5s ease-in-out infinite alternate;
+    }
+    @keyframes badgePulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.05); }
+    }
+    @keyframes badgeShake {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(3deg); }
+    }
+    .product-icon {
+      font-size: 2.2rem;
+      width: 56px;
+      height: 56px;
+      background: #eef5fc;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+    }
+    .product-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin: 12px 0 8px;
+      padding-right: 60px;
+    }
+    .price-stock {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 16px 0;
+      font-weight: 600;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .price {
+      background: #e2f3ec;
+      padding: 4px 12px;
+      border-radius: 40px;
+      color: #1e6a50;
+    }
+    .price.original {
+      background: #f0f0f0;
+      text-decoration: line-through;
+      color: #999;
+      font-size: 0.8rem;
+    }
+    .price.discounted {
+      background: #ff9800;
+      color: white;
+    }
+    .stock {
+      background: #ecf3f8;
+      padding: 4px 12px;
+      border-radius: 40px;
+      font-size: 0.8rem;
+    }
+    .stock.low {
+      background: #ffedd5;
+      color: #b45309;
+    }
+    .order-btn {
+      background: #25D366;
+      width: 100%;
+      border: none;
+      padding: 12px;
+      border-radius: 50px;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .order-btn:disabled {
+      background: #b9dac9;
+      cursor: not-allowed;
+    }
+    .panel {
+      background: white;
+      border-radius: 32px;
+      padding: 28px;
+      margin: 30px 0;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+    }
+    .tab-bar {
+      display: flex;
+      gap: 12px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .tab {
+      background: none;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+    .tab.active {
+      background: #1d6f8f;
+      color: white;
+    }
+    .product-mgmt-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .product-mgmt-card {
+      background: #f8fafc;
+      border-radius: 24px;
+      padding: 20px;
+      border: 1px solid #e2e8f0;
+      transition: 0.2s;
+      position: relative;
+    }
+    .product-mgmt-card:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .delete-product {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: #fee2e2;
+      color: #e74c3c;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: 0.2s;
+    }
+    .delete-product:hover {
+      background: #e74c3c;
+      color: white;
+      transform: scale(1.05);
+    }
+    .product-mgmt-name {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 16px;
+      word-break: break-word;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed #cbd5e1;
+      padding-right: 35px;
+    }
+    .product-mgmt-field {
+      margin: 12px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .product-mgmt-field label {
+      font-weight: 500;
+      font-size: 0.85rem;
+      color: #4a6f7e;
+    }
+    .product-mgmt-field input, .product-mgmt-field select {
+      width: 120px;
+      padding: 8px 12px;
+      border-radius: 40px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+    .product-mgmt-field select {
+      width: auto;
+      min-width: 100px;
+    }
+    .product-mgmt-card button {
+      width: 100%;
+      margin-top: 8px;
+      background: #1d6f8f;
+    }
+    .btn-update-all {
+      background: #25D366;
+      padding: 12px 28px;
+      font-size: 1rem;
+      margin-top: 24px;
+      display: inline-block;
+      border-radius: 60px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-add-product {
+      background: #1d6f8f;
+      padding: 10px 24px;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      display: inline-block;
+      border-radius: 60px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .table-responsive {
+      overflow-x: auto;
+      margin-top: 16px;
+      border-radius: 20px;
+      border: 1px solid #e2e8f0;
+      background: white;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .data-table th {
+      background: #f1f5f9;
+      padding: 14px 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #1e5f7a;
+    }
+    .data-table td {
+      padding: 12px;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: middle;
+    }
+    .search-box {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .search-box input, .search-box select {
+      padding: 10px 16px;
+      border-radius: 40px;
+      border: 1px solid #ccc;
+    }
+    .search-box input {
+      flex: 1;
+      max-width: 300px;
+    }
+    input, select {
+      padding: 8px 12px;
+      border-radius: 40px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #1d6f8f;
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 40px;
+      cursor: pointer;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-card {
+      background: white;
+      max-width: 500px;
+      width: 90%;
+      border-radius: 40px;
+      padding: 28px;
+    }
+    .modal-card input, .modal-card select {
+      width: 100%;
+      margin-bottom: 16px;
+    }
+    .password-wrapper {
+      position: relative;
+      width: 100%;
+      margin-bottom: 16px;
+    }
+    .password-wrapper input {
+      width: 100%;
+      padding-right: 45px;
+      margin-bottom: 0;
+    }
+    .toggle-password {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #888;
+      background: transparent;
+      padding: 0;
+      font-size: 1rem;
+    }
+    .toggle-password:hover {
+      color: #1d6f8f;
+      background: transparent;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: #517f94;
+    }
     @media (max-width: 680px) {
       .navbar { flex-direction: column; gap: 12px; }
       .hero h1 { font-size: 2rem; }
+      .data-table th, .data-table td { padding: 10px 8px; }
       .product-mgmt-field { flex-direction: column; align-items: stretch; }
       .product-mgmt-field input, .product-mgmt-field select { width: 100%; }
     }
@@ -115,41 +477,16 @@
 <div class="hero">
   <div class="container">
     <h1>Akun Premium <span style="color:#2c7a9e;">✦</span> Legal Bergaransi</h1>
-    <p>Editing, Streaming, Music — harga ramah kantong, stok selalu diperbarui • <span style="color:#25D366;">🌐 Cloud Sync</span></p>
+    <p>Editing, Streaming, Music — harga ramah kantong, stok selalu diperbarui</p>
   </div>
 </div>
-<div class="container" id="appContent"><div class="loading"><i class="fas fa-spinner fa-pulse"></i> Memuat data...</div></div>
-<footer>© ATHA STORE • Data tersimpan di Cloud • Sinkron semua perangkat</footer>
+<div class="container" id="appContent"></div>
+<footer>© ATHA STORE • Owner dapat mengelola semua produk & transaksi</footer>
 
 <div id="globalModal" class="modal"><div class="modal-card" id="modalInner"></div></div>
 
 <script>
-  // ======================== KONFIGURASI FIREBASE ========================
-  // GANTI DENGAN KONFIGURASI FIREBASE ANDA SENDIRI!
-  const firebaseConfig = {
-    apiKey: "AIzaSyB0v7P5GqZqZqZqZqZqZqZqZqZqZqZqZqZqZq",   // GANTI
-    authDomain: "atha-store.firebaseapp.com",               // GANTI
-    databaseURL: "https://atha-store-default-rtdb.asia-southeast1.firebasedatabase.app/", // GANTI
-    projectId: "atha-store",                                // GANTI
-    storageBucket: "atha-store.firebasestorage.app",        // GANTI
-    messagingSenderId: "123456789012",                      // GANTI
-    appId: "1:123456789012:web:abcdef123456"                // GANTI
-  };
-
-  let db = null;
-  let isFirebaseReady = false;
-  let users = [], products = [], orders = [];
-  let currentUser = null;
-  let currentView = "home";
-  let currentTab = "tabUsers";
-  let adminCurrentTab = "tabProducts";
-  const ADMIN_WA = "6281910545769";
-
-  const OWNER_ACCOUNTS = [
-    { id: 1001, name: "rafi", email: "rapiatha5@gmail.com", phone: "081910545769", password: "rafiganteng", role: "owner" },
-    { id: 1002, name: "Rafi Atha", email: "rafiathamusyaffa@gmail.com", phone: "087730365877", password: "rafiatha", role: "owner" }
-  ];
-
+  // ======================== DATA INISIAL ========================
   const DEFAULT_PRODUCTS = [
     { id: 1, name: "Alight Motion Private (1 Tahun)", category: "Editing Tools", price: 4000, stock: 10, badge: "", discount: 0 },
     { id: 2, name: "Canva 1 Bulan", category: "Editing Tools", price: 2000, stock: 10, badge: "populer", discount: 10 },
@@ -178,802 +515,349 @@
     { id: 25, name: "YouTube Head Plan 1 Bulan", category: "Music & Social", price: 9000, stock: 10, badge: "", discount: 0 }
   ];
 
-  // Helper
-  function getDiscountedPrice(price, discount) { return discount > 0 ? Math.floor(price * (100 - discount) / 100) : price; }
+  const OWNER_ACCOUNTS = [
+    { id: 1001, name: "rafi", email: "rapiatha5@gmail.com", phone: "081910545769", password: "rafiganteng", role: "owner" },
+    { id: 1002, name: "Rafi Atha", email: "rafiathamusyaffa@gmail.com", phone: "087730365877", password: "rafiatha", role: "owner" }
+  ];
 
-  async function saveToFirebase() {
-    if (!db) return;
-    try {
-      await db.ref('users').set(users);
-      await db.ref('products').set(products);
-      await db.ref('orders').set(orders);
-      localStorage.setItem("athastore_users", JSON.stringify(users));
-      localStorage.setItem("athastore_products", JSON.stringify(products));
-      localStorage.setItem("athastore_orders", JSON.stringify(orders));
-    } catch(e) { console.error(e); }
-  }
-
-  async function loadFromFirebase() {
-    if (!db) return false;
-    try {
-      const uSnap = await db.ref('users').once('value');
-      const pSnap = await db.ref('products').once('value');
-      const oSnap = await db.ref('orders').once('value');
-      if (uSnap.exists()) users = uSnap.val();
-      if (pSnap.exists()) products = pSnap.val();
-      if (oSnap.exists()) orders = oSnap.val();
-      if (!users.length) users = [];
-      if (!products.length) products = [...DEFAULT_PRODUCTS];
-      if (!orders.length) orders = [];
-      // Pastikan owner ada
-      for (let owner of OWNER_ACCOUNTS) if (!users.some(u => u.email === owner.email)) users.push(owner);
-      // Simpan ke localStorage sebagai backup
-      localStorage.setItem("athastore_users", JSON.stringify(users));
-      localStorage.setItem("athastore_products", JSON.stringify(products));
-      localStorage.setItem("athastore_orders", JSON.stringify(orders));
-      return true;
-    } catch(e) { console.error(e); return false; }
-  }
-
-  function loadFromLocalStorage() {
-    const u = localStorage.getItem("athastore_users");
-    const p = localStorage.getItem("athastore_products");
-    const o = localStorage.getItem("athastore_orders");
-    users = u ? JSON.parse(u) : [];
-    products = p ? JSON.parse(p) : [...DEFAULT_PRODUCTS];
-    orders = o ? JSON.parse(o) : [];
-    for (let owner of OWNER_ACCOUNTS) if (!users.some(u => u.email === owner.email)) users.push(owner);
-  }
-
-  async function init() {
-    try {
-      firebase.initializeApp(firebaseConfig);
-      db = firebase.database();
-      isFirebaseReady = true;
-      const ok = await loadFromFirebase();
-      if (!ok) loadFromLocalStorage();
-    } catch(e) {
-      console.warn("Firebase gagal, menggunakan localStorage", e);
-      loadFromLocalStorage();
-    }
-    const savedUser = localStorage.getItem("athastore_current_user");
-    if (savedUser) {
-      const parsed = JSON.parse(savedUser);
-      if (users.find(u => u.id === parsed.id && u.email === parsed.email)) currentUser = parsed;
-    }
-    renderApp();
-  }
-
-  async function addProduct(name, cat, price, stock, badge, discount) {
-    if (!name || !cat) { alert("Nama dan kategori wajib"); return false; }
-    const newId = (products.length ? Math.max(...products.map(p=>p.id)) : 0) + 1;
-    products.push({ id: newId, name, category: cat, price: parseInt(price)||0, stock: parseInt(stock)||0, badge: badge||"", discount: parseInt(discount)||0 });
-    await saveToFirebase();
-    alert(`Produk ${name} ditambahkan`);
-    renderApp(true);
-    return true;
-  }
-
-  async function deleteProduct(pid) {
-    const p = products.find(p=>p.id===pid);
-    if (!p) return;
-    if (confirm(`Hapus ${p.name}?`)) {
-      products = products.filter(p=>p.id!==pid);
-      await saveToFirebase();
-      alert(`Produk ${p.name} dihapus`);
-      renderApp(true);
-    }
-  }
-
-  async function updateProduct(pid, stock, price, badge, discount) {
-    const p = products.find(p=>p.id===pid);
-    if (p) {
-      p.stock = parseInt(stock);
-      p.price = parseInt(price);
-      if (badge !== undefined) p.badge = badge;
-      if (discount !== undefined) p.discount = parseInt(discount);
-      await saveToFirebase();
-      alert(`Produk ${p.name} diperbarui`);
-      renderApp(true);
-    }
-  }
-
-  async function updateAllProducts() {
-    let updated = 0;
-    for (let p of products) {
-      const priceInp = document.getElementById(`price-${p.id}`);
-      const stockInp = document.getElementById(`stock-${p.id}`);
-      const badgeSel = document.getElementById(`badge-${p.id}`);
-      const discInp = document.getElementById(`discount-${p.id}`);
-      if (priceInp && stockInp) {
-        p.price = parseInt(priceInp.value);
-        p.stock = parseInt(stockInp.value);
-        if (badgeSel) p.badge = badgeSel.value;
-        if (discInp) p.discount = parseInt(discInp.value) || 0;
-        updated++;
-      }
-    }
-    if (updated) { await saveToFirebase(); alert(`✅ ${updated} produk diperbarui`); renderApp(true); }
-    else alert("Tidak ada perubahan");
-  }
-
-  async function placeOrder(pid, qty, name, email, role) {
-    const prod = products.find(p=>p.id===pid);
-    if (!prod) { alert("Produk tidak ada"); return false; }
-    if (prod.stock < qty) { alert(`Stok hanya ${prod.stock}`); return false; }
-    const unitPrice = getDiscountedPrice(prod.price, prod.discount);
-    const finalPrice = role === "reseller" ? Math.max(0, unitPrice - 1000) : unitPrice;
-    const total = finalPrice * qty;
-    const newOrder = {
-      id: Date.now(),
-      productId: prod.id,
-      productName: prod.name,
-      quantity: qty,
-      unitPrice: finalPrice,
-      totalPrice: total,
-      status: "proses",
-      customerName: name,
-      customerEmail: email,
-      customerRole: role,
-      stockDeducted: false,
-      createdAt: new Date().toISOString()
-    };
-    orders.unshift(newOrder);
-    await saveToFirebase();
-    const msg = `*ORDER BARU*\n\nNama: ${name}\nEmail: ${email}\nProduk: ${prod.name}\nJumlah: ${qty}\nTotal: Rp ${total.toLocaleString()}`;
-    window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`, "_blank");
-    alert(`✅ Pesanan ${prod.name} x${qty} berhasil! Admin akan hubungi via WA.`);
-    renderApp();
-    return true;
-  }
-
-  async function updateOrderStatus(oid, newStatus) {
-    const order = orders.find(o=>o.id===oid);
-    if (!order) return;
-    if (newStatus === "berhasil" && !order.stockDeducted) {
-      const prod = products.find(p=>p.id===order.productId);
-      if (prod && prod.stock >= order.quantity) {
-        prod.stock -= order.quantity;
-        order.stockDeducted = true;
-        alert(`✅ Stok ${prod.name} berkurang ${order.quantity}`);
-      } else if (prod) { alert(`Stok tidak cukup`); return; }
-    }
-    order.status = newStatus;
-    await saveToFirebase();
-    renderApp();
-  }
-
-  async function createUser(name, email, phone, pass, role) {
-    if (!["admin","seller","reseller"].includes(role)) { alert("Role tidak valid"); return false; }
-    if (users.find(u=>u.email===email)) { alert("Email sudah ada"); return false; }
-    if (users.find(u=>u.phone===phone)) { alert("Nomor sudah ada"); return false; }
-    const newId = users.length + 1;
-    users.push({ id: newId, name, email, phone, password: pass, role });
-    await saveToFirebase();
-    alert(`Akun ${role} ${name} dibuat`);
-    renderApp(true);
-    return true;
-  }
-
-  async function deleteUser(uid) {
-    if (uid === currentUser?.id) { alert("Tidak bisa hapus sendiri"); return; }
-    const u = users.find(u=>u.id===uid);
-    if (u && u.role === "owner") { alert("Tidak bisa hapus owner lain"); return; }
-    users = users.filter(u=>u.id!==uid);
-    await saveToFirebase();
-    renderApp(true);
-  }
-
-  async function changePassword(uid, newPass) {
-    const u = users.find(u=>u.id===uid);
-    if (u) { u.password = newPass; await saveToFirebase(); alert(`Password ${u.name} diubah`); renderApp(true); }
-    else alert("User tidak ditemukan");
-  }
-
-  function backupWA() {
-    let prodTxt = "📦 PRODUK:\n" + products.map(p=>`${p.name} | Rp${p.price} | stok ${p.stock} | ${p.badge==='populer'?'🔥':p.badge==='bestseller'?'⭐':''}`).join("\n");
-    let orderTxt = "\n📋 ORDER:\n" + orders.map(o=>`${o.productName} x${o.quantity} | ${o.status} | ${o.customerName}`).join("\n");
-    window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(prodTxt+"\n"+orderTxt)}`, "_blank");
-  }
-
-  // Modal login/register
-  function showLoginModal() {
-    const modal = document.getElementById("globalModal");
-    const inner = document.getElementById("modalInner");
-    inner.innerHTML = `<h3>Masuk</h3><input type="email" id="loginEmail" placeholder="Email"><div class="password-wrapper"><input type="password" id="loginPassword" placeholder="Password"><i class="fas fa-eye toggle-password" data-target="loginPassword"></i></div><button id="loginBtn">Login</button><div class="switch-link" id="toRegister">Belum punya akun? Daftar</div><div class="switch-link" id="toForgot">Lupa password?</div>`;
-    modal.style.display = "flex";
-    document.querySelectorAll(".toggle-password").forEach(icon => icon.onclick = () => { const t=document.getElementById(icon.dataset.target); if(t.type==="password"){ t.type="text"; icon.classList.replace("fa-eye","fa-eye-slash"); } else { t.type="password"; icon.classList.replace("fa-eye-slash","fa-eye"); } });
-    document.getElementById("loginBtn").onclick = () => { const email=document.getElementById("loginEmail").value, pwd=document.getElementById("loginPassword").value; const u=users.find(u=>u.email===email && u.password===pwd); if(u){ currentUser={id:u.id,name:u.name,email:u.email,role:u.role}; localStorage.setItem("athastore_current_user",JSON.stringify(currentUser)); closeModal(); renderApp(); } else alert("Email/password salah"); };
-    document.getElementById("toRegister").onclick = () => { closeModal(); showRegisterModal(); };
-    document.getElementById("toForgot").onclick = () => { closeModal(); showForgotModal(); };
-  }
-
-  function showRegisterModal() {
-    const modal = document.getElementById("globalModal");
-    const inner = document.getElementById("modalInner");
-    inner.innerHTML = `<h3>Daftar Member</h3><input type="text" id="regName" placeholder="Nama"><input type="email" id="regEmail" placeholder="Email"><input type="tel" id="regPhone" placeholder="Nomor"><div class="password-wrapper"><input type="password" id="regPassword" placeholder="Password"><i class="fas fa-eye toggle-password" data-target="regPassword"></i></div><button id="registerBtn">Daftar</button><div class="switch-link" id="toLogin">Sudah punya akun? Login</div>`;
-    modal.style.display = "flex";
-    document.querySelectorAll(".toggle-password").forEach(icon => icon.onclick = () => { const t=document.getElementById(icon.dataset.target); if(t.type==="password"){ t.type="text"; icon.classList.replace("fa-eye","fa-eye-slash"); } else { t.type="password"; icon.classList.replace("fa-eye-slash","fa-eye"); } });
-    document.getElementById("registerBtn").onclick = async () => { const name=document.getElementById("regName").value.trim(), email=document.getElementById("regEmail").value.trim(), phone=document.getElementById("regPhone").value.trim(), pwd=document.getElementById("regPassword").value; if(!name||!email||!phone||!pwd) alert("Lengkapi semua"); else if(users.find(u=>u.email===email)) alert("Email sudah ada"); else if(users.find(u=>u.phone===phone)) alert("Nomor sudah ada"); else { const newId=users.length+1; users.push({id:newId,name,email,phone,password:pwd,role:"member"}); await saveToFirebase(); alert("Pendaftaran berhasil! Silakan login."); closeModal(); showLoginModal(); } };
-    document.getElementById("toLogin").onclick = () => { closeModal(); showLoginModal(); };
-  }
-
-  function showForgotModal() {
-    const modal = document.getElementById("globalModal");
-    const inner = document.getElementById("modalInner");
-    inner.innerHTML = `<h3>Reset Password</h3><input type="text" id="resetId" placeholder="Email atau Nomor"><button id="resetBtn">Reset</button><div class="switch-link" id="backLogin">Kembali Login</div>`;
-    modal.style.display = "flex";
-    document.getElementById("resetBtn").onclick = async () => { const id=document.getElementById("resetId").value; const u=users.find(u=>u.email===id||u.phone===id); if(!u) alert("Data tidak ditemukan"); else { const newPass=prompt("Password baru (min 4 karakter):"); if(newPass && newPass.length>=4) { u.password=newPass; await saveToFirebase(); alert("Password diubah! Silakan login."); closeModal(); showLoginModal(); } else alert("Password minimal 4 karakter"); } };
-    document.getElementById("backLogin").onclick = () => { closeModal(); showLoginModal(); };
-  }
-
-  function closeModal() { document.getElementById("globalModal").style.display = "none"; }
-
-  function showOrderModal(pid, pname, stock, price, discount) {
-    const isLogged = currentUser !== null;
-    const name = isLogged ? currentUser.name : "";
-    const email = isLogged ? currentUser.email : "";
-    const role = isLogged ? currentUser.role : "guest";
-    const finalPrice = role === "reseller" ? Math.max(0, getDiscountedPrice(price, discount) - 1000) : getDiscountedPrice(price, discount);
-    const modal = document.getElementById("globalModal");
-    const inner = document.getElementById("modalInner");
-    inner.innerHTML = `<h3>Pesan ${pname}</h3><p>Harga: Rp ${price.toLocaleString()}${discount?`<br>Diskon ${discount}%: Rp ${getDiscountedPrice(price,discount).toLocaleString()}`:''}${role==='reseller'?`<br>Harga Reseller: Rp ${finalPrice.toLocaleString()}`:''}</p><input type="number" id="orderQty" min="1" max="${stock}" value="1"><input type="text" id="orderName" value="${escapeHtml(name)}" ${isLogged?'readonly':''}><input type="email" id="orderEmail" value="${escapeHtml(email)}" ${isLogged?'readonly':''}><button id="confirmOrder">Konfirmasi & Kirim ke WA</button><div class="switch-link" id="cancelOrder">Batal</div>`;
-    modal.style.display = "flex";
-    document.getElementById("confirmOrder").onclick = () => { const qty=parseInt(document.getElementById("orderQty").value), nm=document.getElementById("orderName").value.trim(), em=document.getElementById("orderEmail").value.trim(); if(qty>0 && nm && em) { if(qty>stock) alert(`Stok hanya ${stock}`); else placeOrder(pid,qty,nm,em,role).then(()=>modal.style.display="none"); } else alert("Lengkapi data"); };
-    document.getElementById("cancelOrder").onclick = () => modal.style.display="none";
-  }
-
-  function getIcon(name) { const n=name.toLowerCase(); if(n.includes("alight")) return "fa-film"; if(n.includes("canva")) return "fa-palette"; if(n.includes("capcut")) return "fa-video"; if(n.includes("netflix")) return "fa-tv"; if(n.includes("spotify")) return "fa-music"; if(n.includes("youtube")) return "fa-youtube"; return "fa-crown"; }
-  function escapeHtml(str) { return String(str).replace(/[&<>]/g, m=>m==='&'?'&amp;':m==='<'?'&lt;':m==='>'?'&gt;':m); }
-
-  // RENDER
-  function renderApp(stay=false) {
-    const container = document.getElementById("appContent");
-    const navDiv = document.getElementById("navLinks");
-    if (!container) return;
-
-    let navHtml = `<a href="#" id="navHome">🏠 Beranda</a>`;
-    if (currentUser) {
-      const roleName = {owner:"Owner",admin:"Admin",seller:"Seller",reseller:"Reseller",member:"Member"}[currentUser.role];
-      navHtml += `<span class="user-badge"><i class="fas fa-user-circle"></i> ${currentUser.name} (${roleName})</span>`;
-      if (currentUser.role === "owner") navHtml += `<a href="#" id="navOwnerPanel">👑 Owner Panel</a>`;
-      if (currentUser.role === "admin") navHtml += `<a href="#" id="navAdminPanel">📊 Dashboard Admin</a>`;
-      if (currentUser.role === "seller") navHtml += `<a href="#" id="navSellerPanel">🛍️ Panel Seller</a>`;
-      if (currentUser.role === "member" || currentUser.role === "reseller") navHtml += `<a href="#" id="navMyOrders">📋 Pesanan Saya</a>`;
-      navHtml += `<button id="logoutBtn">Keluar</button>`;
-    } else navHtml += `<button id="loginBtn">Masuk / Daftar</button>`;
-    navDiv.innerHTML = navHtml;
-
-    document.getElementById("navHome")?.addEventListener("click", (e) => { e.preventDefault(); currentView="home"; renderApp(); });
-    document.getElementById("navOwnerPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role==="owner") { currentView="owner"; renderApp(); } });
-    document.getElementById("navAdminPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role==="admin") { currentView="admin"; renderApp(); } });
-    document.getElementById("navSellerPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role==="seller") { currentView="seller"; renderApp(); } });
-    document.getElementById("navMyOrders")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role==="member"||currentUser?.role==="reseller") { currentView="myorders"; renderApp(); } });
-    document.getElementById("logoutBtn")?.addEventListener("click", () => { currentUser=null; localStorage.removeItem("athastore_current_user"); currentView="home"; renderApp(); });
-    document.getElementById("loginBtn")?.addEventListener("click", () => showLoginModal());
-
-    if (!stay) {
-      if (currentView === "home") showHome();
-      else if (currentView === "owner" && currentUser?.role==="owner") showOwnerPanel();
-      else if (currentView === "admin" && currentUser?.role==="admin") showAdminPanel();
-      else if (currentView === "seller" && currentUser?.role==="seller") showSellerPanel();
-      else if (currentView === "myorders" && (currentUser?.role==="member"||currentUser?.role==="reseller")) showMemberOrders();
-      else showHome();
-    } else {
-      if (currentView === "home") showHome();
-      else if (currentView === "owner" && currentUser?.role==="owner") showOwnerPanel();
-      else if (currentView === "admin" && currentUser?.role==="admin") showAdminPanel();
-      else if (currentView === "seller" && currentUser?.role==="seller") showSellerPanel();
-      else if (currentView === "myorders" && (currentUser?.role==="member"||currentUser?.role==="reseller")) showMemberOrders();
-      else showHome();
-    }
-
-    function showHome() {
-      const best = products.filter(p=>p.badge==="bestseller");
-      const pop = products.filter(p=>p.badge==="populer");
-      const normal = products.filter(p=>p.badge!=="bestseller" && p.badge!=="populer");
-      let html = "";
-      if (best.length) html += `<h2 class="section-title"><i class="fas fa-star"></i> ⭐ Best Seller</h2><div class="product-grid">${best.map(p=>productCard(p,"bestseller-animate")).join('')}</div>`;
-      if (pop.length) html += `<h2 class="section-title"><i class="fas fa-fire"></i> 🔥 Populer</h2><div class="product-grid">${pop.map(p=>productCard(p,"populer-animate")).join('')}</div>`;
-      if (normal.length) html += `<h2 class="section-title"><i class="fas fa-box"></i> Produk Lainnya</h2><div class="product-grid">${normal.map(p=>productCard(p,"")).join('')}</div>`;
-      container.innerHTML = html;
-      document.querySelectorAll(".order-btn").forEach(btn => btn.onclick = () => showOrderModal(parseInt(btn.dataset.id), btn.dataset.name, parseInt(btn.dataset.stock), parseInt(btn.dataset.price), parseInt(btn.dataset.discount)));
-    }
-
-    function productCard(p, anim) {
-      const hasDisc = p.discount > 0;
-      const discPrice = hasDisc ? getDiscountedPrice(p.price, p.discount) : p.price;
-      const badgeHtml = p.badge === "populer" ? '<span class="product-badge badge-populer">🔥 Populer</span>' : (p.badge === "bestseller" ? '<span class="product-badge badge-bestseller">⭐ Best Seller</span>' : '');
-      const priceHtml = hasDisc ? `<div style="display:flex;gap:8px;flex-wrap:wrap;"><span class="price original">Rp ${p.price.toLocaleString()}</span><span class="price discounted">Rp ${discPrice.toLocaleString()}</span><span class="stock" style="background:#ff9800;">-${p.discount}%</span></div>` : `<span class="price">Rp ${p.price.toLocaleString()}</span>`;
-      return `<div class="product-card ${anim}">${badgeHtml}<div class="product-icon"><i class="fas ${getIcon(p.name)}"></i></div><div class="product-name">${escapeHtml(p.name)}</div><div class="price-stock">${priceHtml}<span class="stock ${p.stock<3?'low':''}"><i class="fas fa-boxes"></i> Stok: ${p.stock}</span></div><button class="order-btn" data-id="${p.id}" data-name="${escapeHtml(p.name)}" data-stock="${p.stock}" data-price="${p.price}" data-discount="${p.discount}" ${p.stock<=0?'disabled':''}><i class="fab fa-whatsapp"></i> Pesan</button></div>`;
-    }
-
-    function showOwnerPanel() {
-      container.innerHTML = `<div class="panel"><h2><i class="fas fa-crown"></i> Owner Panel</h2><div class="tab-bar"><button class="tab ${currentTab==='tabUsers'?'active':''}" id="tabUsers">👥 Kelola User</button><button class="tab ${currentTab==='tabProducts'?'active':''}" id="tabProducts">📦 Kelola Produk</button><button class="tab ${currentTab==='tabOrders'?'active':''}" id="tabOrders">🎫 Ticket Pembelian</button><button class="tab ${currentTab==='tabTicket'?'active':''}" id="tabTicket">👥 Ticket Akun</button></div><div id="ownerContent"></div></div>`;
-      const div = document.getElementById("ownerContent");
-
-      const renderUsers = () => {
-        div.innerHTML = `<div class="search-box"><input id="searchUser" placeholder="Cari nama/email/nomor"><button id="searchUserBtn">Cari</button></div><div class="table-responsive"><table class="data-table"><thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Password</th><th>Aksi</th></tr></thead><tbody id="userTableBody"></tbody></table></div><hr><h3>Buat Akun Baru</h3><div style="display:flex;flex-wrap:wrap;gap:12px;"><input id="newName" placeholder="Nama"><input id="newEmail" placeholder="Email"><input id="newPhone" placeholder="Nomor"><input id="newPass" placeholder="Password"><select id="newRole"><option value="admin">Admin</option><option value="seller">Seller</option><option value="reseller">Reseller</option></select><button id="createUserBtn">Buat</button></div>`;
-        const renderList = (filter="") => {
-          const filtered = users.filter(u => u.name.toLowerCase().includes(filter) || u.email.toLowerCase().includes(filter) || u.phone.includes(filter));
-          const tbody = document.getElementById("userTableBody");
-          tbody.innerHTML = filtered.map(u => `<tr><td>${u.id}</td><td>${escapeHtml(u.name)}</td><td>${escapeHtml(u.email)}</td><td>${escapeHtml(u.phone)}</td><td>${u.role}</td><td><code>${escapeHtml(u.password)}</code> <button class="changePass" data-id="${u.id}">Ganti</button></td><td>${u.id !== currentUser.id ? `<button class="delUser" data-id="${u.id}">Hapus</button>` : '-'}</td></tr>`).join('');
-          document.querySelectorAll(".delUser").forEach(btn => btn.onclick = () => deleteUser(parseInt(btn.dataset.id)));
-          document.querySelectorAll(".changePass").forEach(btn => btn.onclick = () => { const newPass=prompt("Password baru:"); if(newPass && newPass.length>=4) changePassword(parseInt(btn.dataset.id), newPass); else alert("Min 4 karakter"); });
-        };
-        renderList();
-        document.getElementById("searchUserBtn").onclick = () => renderList(document.getElementById("searchUser").value.toLowerCase());
-        document.getElementById("createUserBtn").onclick = async () => { const name=document.getElementById("newName").value.trim(), email=document.getElementById("newEmail").value.trim(), phone=document.getElementById("newPhone").value.trim(), pass=document.getElementById("newPass").value, role=document.getElementById("newRole").value; if(name&&email&&phone&&pass) await createUser(name,email,phone,pass,role); else alert("Isi semua field"); };
-      };
-
-      const renderProductsMgmt = () => {
-        div.innerHTML = `<div style="text-align:right;"><button id="addProductBtn" class="btn-add-product"><i class="fas fa-plus"></i> Tambah Produk</button></div><div class="product-mgmt-grid" id="prodMgmtGrid"></div><div style="text-align:center;"><button id="updateAllBtn" class="btn-update-all"><i class="fas fa-save"></i> Update Semua Produk</button></div>`;
-        const grid = document.getElementById("prodMgmtGrid");
-        grid.innerHTML = products.map(p => `<div class="product-mgmt-card"><button class="delete-product" data-id="${p.id}"><i class="fas fa-trash"></i></button><div class="product-mgmt-name">${escapeHtml(p.name)}</div><div class="product-mgmt-field"><label>Harga</label><input type="number" id="price-${p.id}" value="${p.price}"></div><div class="product-mgmt-field"><label>Stok</label><input type="number" id="stock-${p.id}" value="${p.stock}" min="0"></div><div class="product-mgmt-field"><label>Diskon %</label><input type="number" id="discount-${p.id}" value="${p.discount}" min="0" max="100"></div><div class="product-mgmt-field"><label>Badge</label><select id="badge-${p.id}"><option value="">Tanpa</option><option ${p.badge==='populer'?'selected':''} value="populer">🔥 Populer</option><option ${p.badge==='bestseller'?'selected':''} value="bestseller">⭐ Best Seller</option></select></div><button class="updateProd" data-id="${p.id}">Update</button></div>`).join('');
-        document.querySelectorAll(".delete-product").forEach(btn => btn.onclick = () => deleteProduct(parseInt(btn.dataset.id)));
-        document.querySelectorAll(".updateProd").forEach(btn => btn.onclick = () => { const id=parseInt(btn.dataset.id); updateProduct(id, document.getElementById(`stock-${id}`).value, document.getElementById(`price-${id}`).value, document.getElementById(`badge-${id}`).value, document.getElementById(`discount-${id}`).value); });
-        document.getElementById("updateAllBtn").onclick = updateAllProducts;
-        document.getElementById("addProductBtn").onclick = () => { const modalDiv = document.getElementById("globalModal"), inner = document.getElementById("modalInner"); inner.innerHTML = `<h3>Tambah Produk Baru</h3><input id="newProdName" placeholder="Nama"><input id="newProdCat" placeholder="Kategori"><div style="display:flex;gap:12px;"><input id="newProdPrice" type="number" placeholder="Harga"><input id="newProdStock" type="number" placeholder="Stok"></div><div style="display:flex;gap:12px;"><select id="newProdBadge"><option value="">Tanpa</option><option value="populer">Populer</option><option value="bestseller">Best Seller</option></select><input id="newProdDiscount" type="number" placeholder="Diskon %"></div><button id="confirmAdd">Tambah</button><div class="switch-link" id="cancelAdd">Batal</div>`; modalDiv.style.display="flex"; document.getElementById("confirmAdd").onclick = () => { addProduct(document.getElementById("newProdName").value, document.getElementById("newProdCat").value, document.getElementById("newProdPrice").value, document.getElementById("newProdStock").value, document.getElementById("newProdBadge").value, document.getElementById("newProdDiscount").value).then(()=>modalDiv.style.display="none"); }; document.getElementById("cancelAdd").onclick = () => modalDiv.style.display="none"; };
-      };
-
-      const renderOrdersTicket = () => {
-        div.innerHTML = `<div class="search-box"><input id="orderSearch" placeholder="Cari pembeli atau produk"><select id="statusFilter"><option value="all">Semua Status</option><option value="proses">Proses</option><option value="berhasil">Berhasil</option><option value="gagal">Gagal</option></select><button id="filterBtn">Filter</button><button id="resetBtn">Reset</button></div><div id="orderResult"></div>`;
-        const render = (search="", status="all") => {
-          let filtered = orders.filter(o => (search==="" || o.customerName.toLowerCase().includes(search) || o.productName.toLowerCase().includes(search)) && (status==="all" || o.status===status));
-          if(filtered.length===0) { document.getElementById("orderResult").innerHTML="<p>Belum ada transaksi</p>"; return; }
-          document.getElementById("orderResult").innerHTML = `<div class="table-responsive"><table class="data-table"><thead><tr><th>Tanggal</th><th>Pembeli</th><th>Produk</th><th>Jumlah</th><th>Total</th><th>Status</th><th>Stok Dipotong</th></tr></thead><tbody>${filtered.map(o => `<tr><td>${new Date(o.createdAt).toLocaleDateString()}</td><td>${escapeHtml(o.customerName)}</td><td>${escapeHtml(o.productName)}</td><td>${o.quantity}</td><td>Rp ${o.totalPrice.toLocaleString()}</td><td><span class="status-badge ${o.status==='proses'?'status-proses':o.status==='berhasil'?'status-berhasil':'status-gagal'}">${o.status==='proses'?'⏳ Proses':o.status==='berhasil'?'✅ Berhasil':'❌ Gagal'}</span></td><td>${o.stockDeducted ? '✅ Sudah' : '❌ Belum'}</td></tr>`).join('')}</tbody></table></div>`;
-        };
-        render();
-        document.getElementById("filterBtn").onclick = () => render(document.getElementById("orderSearch").value.toLowerCase(), document.getElementById("statusFilter").value);
-        document.getElementById("resetBtn").onclick = () => { document.getElementById("orderSearch").value=""; document.getElementById("statusFilter").value="all"; render(); };
-      };
-
-      const renderTicketAkun = () => {
-        div.innerHTML = `<div class="search-box"><input id="ticketSearch" placeholder="Cari member/reseller"><button id="searchTicketBtn">Cari</button></div><div id="ticketResult"></div>`;
-        const members = users.filter(u=>u.role==="member"||u.role==="reseller");
-        const show = (filter="") => {
-          const filtered = members.filter(m => m.name.toLowerCase().includes(filter) || m.email.toLowerCase().includes(filter) || m.phone.includes(filter));
-          document.getElementById("ticketResult").innerHTML = `<div class="table-responsive"><table class="data-table"><thead><tr><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th></tr></thead><tbody>${filtered.map(m => `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td>${escapeHtml(m.phone)}</td><td>${m.role==='reseller'?'Reseller':'Member'}</td><td>${orders.filter(o=>o.customerEmail===m.email).length}</td></tr>`).join('')}</tbody></table></div>`;
-        };
-        show();
-        document.getElementById("searchTicketBtn").onclick = () => show(document.getElementById("ticketSearch").value.toLowerCase());
-      };
-
-      document.getElementById("tabUsers").onclick = () => { setActive("tabUsers"); currentTab="tabUsers"; renderUsers(); };
-      document.getElementById("tabProducts").onclick = () => { setActive("tabProducts"); currentTab="tabProducts"; renderProductsMgmt(); };
-      document.getElementById("tabOrders").onclick = () => { setActive("tabOrders"); currentTab="tabOrders"; renderOrdersTicket(); };
-      document.getElementById("tabTicket").onclick = () => { setActive("tabTicket"); currentTab="tabTicket"; renderTicketAkun(); };
-      function setActive(id) { document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active")); document.getElementById(id).classList.add("active"); }
-      if (currentTab==="tabUsers") renderUsers();
-      else if (currentTab==="tabProducts") renderProductsMgmt();
-      else if (currentTab==="tabOrders") renderOrdersTicket();
-      else renderTicketAkun();
-    }
-
-    function showAdminPanel() {
-      container.innerHTML = `<div class="panel"><h2><i class="fas fa-shield-alt"></i> Dashboard Admin</h2><div class="tab-bar"><button class="tab ${adminCurrentTab==='tabProducts'?'active':''}" id="tabProducts">📦 Produk</button><button class="tab ${adminCurrentTab==='tabOrders'?'active':''}" id="tabOrders">📑 Order</button><button class="tab ${adminCurrentTab==='tabBackup'?'active':''}" id="tabBackup">💾 Backup WA</button></div><div id="adminContent"></div></div>`;
-      const div = document.getElementById("adminContent");
-
-      const renderProducts = () => {
-        div.innerHTML = `<div class="product-mgmt-grid" id="adminProdGrid"></div><div style="text-align:center;"><button id="updateAllBtn" class="btn-update-all">Update Semua Produk</button></div>`;
-        const grid = document.getElementById("adminProdGrid");
-        grid.innerHTML = products.map(p => `<div class="product-mgmt-card"><div class="product-mgmt-name">${escapeHtml(p.name)}</div><div class="product-mgmt-field"><label>Harga</label><input type="number" id="price-${p.id}" value="${p.price}"></div><div class="product-mgmt-field"><label>Stok</label><input type="number" id="stock-${p.id}" value="${p.stock}" min="0"></div><div class="product-mgmt-field"><label>Diskon %</label><input type="number" id="discount-${p.id}" value="${p.discount}" min="0" max="100"></div><button class="updateProd" data-id="${p.id}">Update</button></div>`).join('');
-        document.querySelectorAll(".updateProd").forEach(btn => btn.onclick = () => { const id=parseInt(btn.dataset.id); updateProduct(id, document.getElementById(`stock-${id}`).value, document.getElementById(`price-${id}`).value, undefined, document.getElementById(`discount-${id}`).value); });
-        document.getElementById("updateAllBtn").onclick = updateAllProducts;
-      };
-      const renderOrders = () => {
-        if(orders.length===0){ div.innerHTML="<p>Belum ada order</p>"; return; }
-        div.innerHTML = `<div class="table-responsive"><table class="data-table"><thead><tr><th>Produk</th><th>Pembeli</th><th>Role</th><th>Jumlah</th><th>Total</th><th>Status</th><th>Stok Dipotong</th><th>Aksi</th></tr></thead><tbody>${orders.map(o => `<tr><td>${escapeHtml(o.productName)}</td><td>${escapeHtml(o.customerName)}</td><td>${o.customerRole}</td><td>${o.quantity}</td><td>Rp ${o.totalPrice.toLocaleString()}</td><td><select class="statusSelect" data-id="${o.id}"><option ${o.status==='proses'?'selected':''} value="proses">Proses</option><option ${o.status==='berhasil'?'selected':''} value="berhasil">Berhasil</option><option ${o.status==='gagal'?'selected':''} value="gagal">Gagal</option></select></td><td>${o.stockDeducted ? '✅ Sudah' : '❌ Belum'}</td><td><button class="updateOrder" data-id="${o.id}">Update</button></td></tr>`).join('')}</tbody></table></div>`;
-        document.querySelectorAll(".updateOrder").forEach(btn => btn.onclick = () => { const oid=parseInt(btn.dataset.id); const select=document.querySelector(`.statusSelect[data-id="${oid}"]`); updateOrderStatus(oid, select.value); });
-      };
-      const renderBackup = () => { div.innerHTML = `<button id="backupBtn" style="background:#25D366;padding:12px 24px;">📲 Backup ke WhatsApp Admin</button>`; document.getElementById("backupBtn").onclick = backupWA; };
-      document.getElementById("tabProducts").onclick = () => { setActive("tabProducts"); adminCurrentTab="tabProducts"; renderProducts(); };
-      document.getElementById("tabOrders").onclick = () => { setActive("tabOrders"); adminCurrentTab="tabOrders"; renderOrders(); };
-      document.getElementById("tabBackup").onclick = () => { setActive("tabBackup"); adminCurrentTab="tabBackup"; renderBackup(); };
-      function setActive(id) { document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active")); document.getElementById(id).classList.add("active"); }
-      if (adminCurrentTab==="tabProducts") renderProducts();
-      else if (adminCurrentTab==="tabOrders") renderOrders();
-      else renderBackup();
-    }
-
-    function showSellerPanel() { showAdminPanel(); }
-
-    function showMemberOrders() {
-      const myOrders = orders.filter(o => o.customerEmail === currentUser.email);
-      if(myOrders.length===0) { container.innerHTML = `<div class="panel"><h2>Pesanan Saya</h2><p>Belum ada pesanan.</p></div>`; return; }
-      container.innerHTML = `<div class="panel"><h2>📋 Pesanan Saya</h2><div class="table-responsive"><table class="data-table"><thead><tr><th>Produk</th><th>Jumlah</th><th>Total</th><th>Status</th><th>Tanggal</th></tr></thead><tbody>${myOrders.map(o => `<tr><td>${escapeHtml(o.productName)}</td><td>${o.quantity}</td><td>Rp ${o.totalPrice.toLocaleString()}</td><td>${o.status==='berhasil'?'✅ Berhasil':o.status==='gagal'?'❌ Gagal':'⏳ Proses'}</td><td>${new Date(o.createdAt).toLocaleDateString()}</td></tr>`).join('')}</tbody></table></div></div>`;
-    }
-  }
-
-  init();
-</script>
-</body>
-</html><!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>ATHA STORE | Cloud Sync</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background: radial-gradient(circle at 10% 20%, #f5f9ff, #eef2fa);
-      color: #1a2c3e;
-    }
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      padding: 16px 32px;
-      background: rgba(18, 52, 77, 0.92);
-      backdrop-filter: blur(12px);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      border-bottom: 1px solid rgba(255,255,240,0.2);
-    }
-    .logo { font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, #FFF, #9ad7f5); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .nav-links { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
-    .nav-links a, .nav-links button { background: transparent; border: none; color: #eef5ff; font-weight: 500; cursor: pointer; font-size: 0.9rem; padding: 8px 16px; border-radius: 40px; transition: 0.2s; }
-    .nav-links a:hover, .nav-links button:hover { background: rgba(255,255,255,0.15); }
-    .user-badge { background: #2c6e8f; padding: 6px 14px; border-radius: 40px; font-size: 0.8rem; }
-    .hero { text-align: center; padding: 50px 20px 30px; }
-    .hero h1 { font-size: 3rem; font-weight: 800; background: linear-gradient(145deg, #1c5d7a, #0f3e53); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .container { max-width: 1300px; margin: 0 auto; padding: 0 24px; }
-    .section-title { font-size: 1.5rem; font-weight: 700; margin: 30px 0 20px; padding-left: 16px; border-left: 5px solid #1d6f8f; }
-    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 28px; margin: 20px 0 40px; }
-    .product-card {
-      background: white; border-radius: 32px; padding: 24px; transition: all 0.3s;
-      box-shadow: 0 12px 28px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.03);
-      position: relative; overflow: hidden;
-    }
-    .product-card.bestseller-animate { animation: pulse 2s infinite; }
-    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(231, 76, 60, 0); } 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); } }
-    .product-card.populer-animate { animation: glow 1.5s ease-in-out infinite alternate; }
-    @keyframes glow { from { box-shadow: 0 0 5px #ff9800, 0 0 10px #ff9800; } to { box-shadow: 0 0 20px #ff9800, 0 0 30px #ff9800; } }
-    .product-card:hover { transform: translateY(-6px); box-shadow: 0 28px 38px -18px rgba(0, 50, 70, 0.2); }
-    .product-badge { position: absolute; top: 16px; right: 16px; padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 700; z-index: 2; }
-    .badge-populer { background: #ff9800; color: white; animation: badgePulse 1s ease-in-out infinite alternate; }
-    .badge-bestseller { background: #e74c3c; color: white; animation: badgeShake 0.5s ease-in-out infinite alternate; }
-    @keyframes badgePulse { from { transform: scale(1); } to { transform: scale(1.05); } }
-    @keyframes badgeShake { from { transform: rotate(0deg); } to { transform: rotate(3deg); } }
-    .product-icon { font-size: 2.2rem; width: 56px; height: 56px; background: #eef5fc; border-radius: 24px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
-    .product-name { font-size: 1.2rem; font-weight: 700; margin: 12px 0 8px; padding-right: 60px; }
-    .price-stock { display: flex; justify-content: space-between; align-items: center; margin: 16px 0; font-weight: 600; flex-wrap: wrap; gap: 8px; }
-    .price { background: #e2f3ec; padding: 4px 12px; border-radius: 40px; color: #1e6a50; }
-    .price.original { background: #f0f0f0; text-decoration: line-through; color: #999; font-size: 0.8rem; }
-    .price.discounted { background: #ff9800; color: white; }
-    .stock { background: #ecf3f8; padding: 4px 12px; border-radius: 40px; font-size: 0.8rem; }
-    .stock.low { background: #ffedd5; color: #b45309; }
-    .order-btn { background: #25D366; width: 100%; border: none; padding: 12px; border-radius: 50px; font-weight: 700; color: white; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .order-btn:disabled { background: #b9dac9; cursor: not-allowed; }
-    .panel { background: white; border-radius: 32px; padding: 28px; margin: 30px 0; box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
-    .tab-bar { display: flex; gap: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 24px; flex-wrap: wrap; }
-    .tab { background: none; border: none; padding: 8px 20px; border-radius: 40px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-    .tab.active { background: #1d6f8f; color: white; }
-    .product-mgmt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; margin-top: 20px; }
-    .product-mgmt-card { background: #f8fafc; border-radius: 24px; padding: 20px; border: 1px solid #e2e8f0; transition: 0.2s; position: relative; }
-    .product-mgmt-card:hover { border-color: #cbd5e1; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-    .delete-product { position: absolute; top: 12px; right: 12px; background: #fee2e2; color: #e74c3c; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
-    .delete-product:hover { background: #e74c3c; color: white; transform: scale(1.05); }
-    .product-mgmt-name { font-weight: 700; font-size: 1rem; margin-bottom: 16px; word-break: break-word; padding-bottom: 8px; border-bottom: 1px dashed #cbd5e1; padding-right: 35px; }
-    .product-mgmt-field { margin: 12px 0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-    .product-mgmt-field label { font-weight: 500; font-size: 0.85rem; color: #4a6f7e; }
-    .product-mgmt-field input, .product-mgmt-field select { width: 120px; padding: 8px 12px; border-radius: 40px; border: 1px solid #ccc; text-align: center; }
-    .btn-update-all { background: #25D366; padding: 12px 28px; font-size: 1rem; margin-top: 24px; display: inline-block; border-radius: 60px; font-weight: 600; cursor: pointer; border: none; }
-    .btn-add-product { background: #1d6f8f; padding: 10px 24px; font-size: 0.9rem; margin-bottom: 20px; display: inline-block; border-radius: 60px; font-weight: 600; cursor: pointer; }
-    .table-responsive { overflow-x: auto; margin-top: 16px; border-radius: 20px; border: 1px solid #e2e8f0; background: white; }
-    .data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    .data-table th { background: #f1f5f9; padding: 14px 12px; text-align: left; font-weight: 600; color: #1e5f7a; }
-    .data-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
-    .search-box { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
-    .search-box input, .search-box select { padding: 10px 16px; border-radius: 40px; border: 1px solid #ccc; }
-    .search-box input { flex: 1; max-width: 300px; }
-    .password-wrapper { position: relative; width: 100%; margin-bottom: 16px; }
-    .password-wrapper input { width: 100%; padding-right: 45px; margin-bottom: 0; }
-    .toggle-password { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888; background: transparent; padding: 0; }
-    .toggle-password:hover { color: #1d6f8f; background: transparent; }
-    .status-badge { display: inline-block; padding: 4px 12px; border-radius: 40px; font-size: 0.75rem; font-weight: 600; }
-    .status-proses { background: #fff3e0; color: #e67e22; }
-    .status-berhasil { background: #e0f7e8; color: #27ae60; }
-    .status-gagal { background: #fee2e2; color: #e74c3c; }
-    .loading { text-align: center; padding: 50px; color: #1d6f8f; }
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 1000; }
-    .modal-card { background: white; max-width: 500px; width: 90%; border-radius: 40px; padding: 28px; }
-    .modal-card input, .modal-card select { width: 100%; margin-bottom: 16px; }
-    footer { text-align: center; padding: 40px 20px; color: #517f94; }
-    @media (max-width: 680px) {
-      .navbar { flex-direction: column; gap: 12px; }
-      .hero h1 { font-size: 2rem; }
-      .product-mgmt-field { flex-direction: column; align-items: stretch; }
-      .product-mgmt-field input, .product-mgmt-field select { width: 100%; }
-    }
-  </style>
-</head>
-<body>
-<div class="navbar">
-  <div class="logo">✦ ATHA STORE</div>
-  <div class="nav-links" id="navLinks"></div>
-</div>
-<div class="hero">
-  <div class="container">
-    <h1>Akun Premium <span style="color:#2c7a9e;">✦</span> Legal Bergaransi</h1>
-    <p>Editing, Streaming, Music — harga ramah kantong, stok selalu diperbarui • <span style="color:#25D366;">🌐 Cloud Sync</span></p>
-  </div>
-</div>
-<div class="container" id="appContent"><div class="loading"><i class="fas fa-spinner fa-pulse"></i> Memuat data...</div></div>
-<footer>© ATHA STORE • Data tersimpan di Cloud • Sinkron semua perangkat</footer>
-
-<div id="globalModal" class="modal"><div class="modal-card" id="modalInner"></div></div>
-
-<script>
-  // ======================== KONFIGURASI FIREBASE ========================
-  // GANTI DENGAN KONFIGURASI FIREBASE ANDA SENDIRI!
-  const firebaseConfig = {
-    apiKey: "AIzaSyB0v7P5GqZqZqZqZqZqZqZqZqZqZqZqZqZqZq",   // GANTI
-    authDomain: "atha-store.firebaseapp.com",               // GANTI
-    databaseURL: "https://atha-store-default-rtdb.asia-southeast1.firebasedatabase.app/", // GANTI
-    projectId: "atha-store",                                // GANTI
-    storageBucket: "atha-store.firebasestorage.app",        // GANTI
-    messagingSenderId: "123456789012",                      // GANTI
-    appId: "1:123456789012:web:abcdef123456"                // GANTI
-  };
-
-  let db = null;
-  let isFirebaseReady = false;
-  let users = [], products = [], orders = [];
+  let users = [];
+  let products = [];
+  let orders = [];
   let currentUser = null;
   let currentView = "home";
   let currentTab = "tabUsers";
   let adminCurrentTab = "tabProducts";
   const ADMIN_WA = "6281910545769";
 
-  const OWNER_ACCOUNTS = [
-    { id: 1001, name: "rafi", email: "rapiatha5@gmail.com", phone: "081910545769", password: "rafiganteng", role: "owner" },
-    { id: 1002, name: "Rafi Atha", email: "rafiathamusyaffa@gmail.com", phone: "087730365877", password: "rafiatha", role: "owner" }
-  ];
-
-  const DEFAULT_PRODUCTS = [
-    { id: 1, name: "Alight Motion Private (1 Tahun)", category: "Editing Tools", price: 4000, stock: 10, badge: "", discount: 0 },
-    { id: 2, name: "Canva 1 Bulan", category: "Editing Tools", price: 2000, stock: 10, badge: "populer", discount: 10 },
-    { id: 3, name: "Canva 1 Tahun (Renew 1 Bulan)", category: "Editing Tools", price: 5000, stock: 10, badge: "", discount: 0 },
-    { id: 4, name: "Canva Lifetime", category: "Editing Tools", price: 6000, stock: 10, badge: "bestseller", discount: 15 },
-    { id: 5, name: "Canva Head 1 Bulan", category: "Editing Tools", price: 7000, stock: 10, badge: "", discount: 0 },
-    { id: 6, name: "CapCut Sharing 1 Bulan", category: "Editing Tools", price: 5000, stock: 10, badge: "", discount: 0 },
-    { id: 7, name: "CapCut Private 1 Bulan", category: "Editing Tools", price: 7000, stock: 10, badge: "", discount: 0 },
-    { id: 8, name: "VIU Lifetime", category: "Streaming & Movies", price: 4000, stock: 10, badge: "", discount: 0 },
-    { id: 9, name: "VIU Private Unlimited", category: "Streaming & Movies", price: 2000, stock: 10, badge: "", discount: 0 },
-    { id: 10, name: "Netflix 1 Profile 1 User 1 Bulan", category: "Streaming & Movies", price: 25000, stock: 10, badge: "bestseller", discount: 20 },
-    { id: 11, name: "Netflix 1 Profile 2 User 1 Bulan", category: "Streaming & Movies", price: 15000, stock: 10, badge: "", discount: 0 },
-    { id: 12, name: "Netflix Semi Private 1 Bulan", category: "Streaming & Movies", price: 27000, stock: 10, badge: "", discount: 0 },
-    { id: 13, name: "Netflix 1 Profile 1 User 1 Hari", category: "Streaming & Movies", price: 5000, stock: 10, badge: "", discount: 0 },
-    { id: 14, name: "Netflix 1 Profile 1 User 7 Hari", category: "Streaming & Movies", price: 10500, stock: 10, badge: "", discount: 0 },
-    { id: 15, name: "HBO MAX Sharing 8 User", category: "Streaming & Movies", price: 60000, stock: 10, badge: "", discount: 0 },
-    { id: 16, name: "HBO MAX Sharing 5 User", category: "Streaming & Movies", price: 10000, stock: 10, badge: "", discount: 0 },
-    { id: 17, name: "IQIYI Sharing 1 Bulan", category: "Streaming & Movies", price: 5000, stock: 10, badge: "", discount: 0 },
-    { id: 18, name: "Vidio Only TV 1 Tahun (Garansi 1 Bulan)", category: "Streaming & Movies", price: 5000, stock: 10, badge: "", discount: 0 },
-    { id: 19, name: "Vidio Sharing 2 User Mobile 1 Bulan", category: "Streaming & Movies", price: 17000, stock: 10, badge: "", discount: 0 },
-    { id: 20, name: "WeTV Sharing 6 User", category: "Streaming & Movies", price: 7000, stock: 10, badge: "", discount: 0 },
-    { id: 21, name: "WeTV Sharing 3 User", category: "Streaming & Movies", price: 8000, stock: 10, badge: "", discount: 0 },
-    { id: 22, name: "Spotify Individual Plan 1 Bulan", category: "Music & Social", price: 17500, stock: 10, badge: "populer", discount: 5 },
-    { id: 23, name: "YouTube Family Plan 1 Bulan", category: "Music & Social", price: 2000, stock: 10, badge: "", discount: 0 },
-    { id: 24, name: "YouTube Individual Plan 1 Bulan", category: "Music & Social", price: 8000, stock: 10, badge: "", discount: 0 },
-    { id: 25, name: "YouTube Head Plan 1 Bulan", category: "Music & Social", price: 9000, stock: 10, badge: "", discount: 0 }
-  ];
-
-  // Helper
-  function getDiscountedPrice(price, discount) { return discount > 0 ? Math.floor(price * (100 - discount) / 100) : price; }
-
-  async function saveToFirebase() {
-    if (!db) return;
-    try {
-      await db.ref('users').set(users);
-      await db.ref('products').set(products);
-      await db.ref('orders').set(orders);
-      localStorage.setItem("athastore_users", JSON.stringify(users));
-      localStorage.setItem("athastore_products", JSON.stringify(products));
-      localStorage.setItem("athastore_orders", JSON.stringify(orders));
-    } catch(e) { console.error(e); }
+  function getDiscountedPrice(price, discountPercent) {
+    if (discountPercent <= 0) return price;
+    return Math.floor(price * (100 - discountPercent) / 100);
   }
 
-  async function loadFromFirebase() {
-    if (!db) return false;
-    try {
-      const uSnap = await db.ref('users').once('value');
-      const pSnap = await db.ref('products').once('value');
-      const oSnap = await db.ref('orders').once('value');
-      if (uSnap.exists()) users = uSnap.val();
-      if (pSnap.exists()) products = pSnap.val();
-      if (oSnap.exists()) orders = oSnap.val();
-      if (!users.length) users = [];
-      if (!products.length) products = [...DEFAULT_PRODUCTS];
-      if (!orders.length) orders = [];
-      // Pastikan owner ada
-      for (let owner of OWNER_ACCOUNTS) if (!users.some(u => u.email === owner.email)) users.push(owner);
-      // Simpan ke localStorage sebagai backup
-      localStorage.setItem("athastore_users", JSON.stringify(users));
-      localStorage.setItem("athastore_products", JSON.stringify(products));
-      localStorage.setItem("athastore_orders", JSON.stringify(orders));
-      return true;
-    } catch(e) { console.error(e); return false; }
-  }
-
-  function loadFromLocalStorage() {
-    const u = localStorage.getItem("athastore_users");
-    const p = localStorage.getItem("athastore_products");
-    const o = localStorage.getItem("athastore_orders");
-    users = u ? JSON.parse(u) : [];
-    products = p ? JSON.parse(p) : [...DEFAULT_PRODUCTS];
-    orders = o ? JSON.parse(o) : [];
-    for (let owner of OWNER_ACCOUNTS) if (!users.some(u => u.email === owner.email)) users.push(owner);
-  }
-
-  async function init() {
-    try {
-      firebase.initializeApp(firebaseConfig);
-      db = firebase.database();
-      isFirebaseReady = true;
-      const ok = await loadFromFirebase();
-      if (!ok) loadFromLocalStorage();
-    } catch(e) {
-      console.warn("Firebase gagal, menggunakan localStorage", e);
-      loadFromLocalStorage();
+  function saveToLocal() {
+    localStorage.setItem("athastore_users", JSON.stringify(users));
+    localStorage.setItem("athastore_products", JSON.stringify(products));
+    localStorage.setItem("athastore_orders", JSON.stringify(orders));
+    if (currentUser) {
+      localStorage.setItem("athastore_current_user", JSON.stringify(currentUser));
+    } else {
+      localStorage.removeItem("athastore_current_user");
     }
+  }
+
+  function loadData() {
+    const storedUsers = localStorage.getItem("athastore_users");
+    if (storedUsers) {
+      users = JSON.parse(storedUsers);
+    } else {
+      users = [
+        { id: 1, name: "Admin ATHA", email: "admin@athastore.com", phone: "08123456789", password: "admin123", role: "admin" },
+        { id: 2, name: "Member Demo", email: "member@demo.com", phone: "08123456788", password: "member123", role: "member" },
+        { id: 3, name: "Reseller Demo", email: "reseller@demo.com", phone: "08123456787", password: "reseller123", role: "reseller" }
+      ];
+    }
+    for (let owner of OWNER_ACCOUNTS) {
+      const exists = users.some(u => u.email === owner.email);
+      if (!exists) {
+        const maxId = users.length > 0 ? Math.max(...users.map(u => u.id)) : 0;
+        owner.id = maxId + 1;
+        users.push(owner);
+      }
+    }
+
+    const storedProducts = localStorage.getItem("athastore_products");
+    if (storedProducts) {
+      products = JSON.parse(storedProducts);
+    } else {
+      products = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+    }
+
+    const storedOrders = localStorage.getItem("athastore_orders");
+    if (storedOrders) {
+      orders = JSON.parse(storedOrders);
+      orders.forEach(o => {
+        if (o.stockDeducted === undefined) o.stockDeducted = false;
+      });
+    } else {
+      orders = [];
+    }
+
     const savedUser = localStorage.getItem("athastore_current_user");
     if (savedUser) {
       const parsed = JSON.parse(savedUser);
-      if (users.find(u => u.id === parsed.id && u.email === parsed.email)) currentUser = parsed;
+      const exists = users.find(u => u.id === parsed.id && u.email === parsed.email);
+      if (exists) {
+        currentUser = parsed;
+      }
     }
-    renderApp();
+
+    saveToLocal();
   }
 
-  async function addProduct(name, cat, price, stock, badge, discount) {
-    if (!name || !cat) { alert("Nama dan kategori wajib"); return false; }
-    const newId = (products.length ? Math.max(...products.map(p=>p.id)) : 0) + 1;
-    products.push({ id: newId, name, category: cat, price: parseInt(price)||0, stock: parseInt(stock)||0, badge: badge||"", discount: parseInt(discount)||0 });
-    await saveToFirebase();
-    alert(`Produk ${name} ditambahkan`);
+  function getNextProductId() {
+    const maxId = products.length > 0 ? Math.max(...products.map(p => p.id)) : 0;
+    return maxId + 1;
+  }
+
+  function addProduct(name, category, price, stock, badge, discount) {
+    if (!name || !category) {
+      alert("Nama dan kategori harus diisi!");
+      return false;
+    }
+    const newId = getNextProductId();
+    const newProduct = {
+      id: newId,
+      name: name,
+      category: category,
+      price: parseInt(price) || 0,
+      stock: parseInt(stock) || 0,
+      badge: badge || "",
+      discount: parseInt(discount) || 0
+    };
+    products.push(newProduct);
+    saveToLocal();
+    alert(`✅ Produk "${name}" berhasil ditambahkan!`);
     renderApp(true);
     return true;
   }
 
-  async function deleteProduct(pid) {
-    const p = products.find(p=>p.id===pid);
-    if (!p) return;
-    if (confirm(`Hapus ${p.name}?`)) {
-      products = products.filter(p=>p.id!==pid);
-      await saveToFirebase();
-      alert(`Produk ${p.name} dihapus`);
+  function deleteProduct(productId) {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+    if (confirm(`Hapus produk "${product.name}"?`)) {
+      products = products.filter(p => p.id !== productId);
+      saveToLocal();
+      alert(`✅ Produk "${product.name}" berhasil dihapus!`);
       renderApp(true);
     }
   }
 
-  async function updateProduct(pid, stock, price, badge, discount) {
-    const p = products.find(p=>p.id===pid);
-    if (p) {
-      p.stock = parseInt(stock);
-      p.price = parseInt(price);
-      if (badge !== undefined) p.badge = badge;
-      if (discount !== undefined) p.discount = parseInt(discount);
-      await saveToFirebase();
-      alert(`Produk ${p.name} diperbarui`);
-      renderApp(true);
+  function getPriceForUser(productPrice, userRole, discount) {
+    let finalPrice = productPrice;
+    if (discount > 0) {
+      finalPrice = getDiscountedPrice(productPrice, discount);
     }
+    if (userRole === "reseller") {
+      return Math.max(0, finalPrice - 1000);
+    }
+    return finalPrice;
   }
 
-  async function updateAllProducts() {
-    let updated = 0;
-    for (let p of products) {
-      const priceInp = document.getElementById(`price-${p.id}`);
-      const stockInp = document.getElementById(`stock-${p.id}`);
-      const badgeSel = document.getElementById(`badge-${p.id}`);
-      const discInp = document.getElementById(`discount-${p.id}`);
-      if (priceInp && stockInp) {
-        p.price = parseInt(priceInp.value);
-        p.stock = parseInt(stockInp.value);
-        if (badgeSel) p.badge = badgeSel.value;
-        if (discInp) p.discount = parseInt(discInp.value) || 0;
-        updated++;
-      }
-    }
-    if (updated) { await saveToFirebase(); alert(`✅ ${updated} produk diperbarui`); renderApp(true); }
-    else alert("Tidak ada perubahan");
+  function notifyAdminOrder(order) {
+    const msg = `*ORDER BARU ATHA STORE* 🛒\n\nNama: ${order.customerName}\nEmail: ${order.customerEmail}\nRole: ${order.customerRole}\nProduk: ${order.productName}\nJumlah: ${order.quantity}\nHarga Satuan: Rp ${order.unitPrice.toLocaleString()}\nTotal: Rp ${order.totalPrice.toLocaleString()}\nStatus: ${order.status}\n\n*Stok belum dikurangi*, akan berkurang jika order berhasil.`;
+    window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`, "_blank");
   }
 
-  async function placeOrder(pid, qty, name, email, role) {
-    const prod = products.find(p=>p.id===pid);
-    if (!prod) { alert("Produk tidak ada"); return false; }
-    if (prod.stock < qty) { alert(`Stok hanya ${prod.stock}`); return false; }
-    const unitPrice = getDiscountedPrice(prod.price, prod.discount);
-    const finalPrice = role === "reseller" ? Math.max(0, unitPrice - 1000) : unitPrice;
-    const total = finalPrice * qty;
+  function placeOrder(productId, quantity, customerName, customerEmail, customerRole = "guest") {
+    const product = products.find(p => p.id === productId);
+    if (!product) {
+      alert("Produk tidak ditemukan!");
+      return false;
+    }
+    if (product.stock < quantity) {
+      alert("Stok tidak mencukupi! Stok saat ini: " + product.stock);
+      return false;
+    }
+    const unitPrice = getPriceForUser(product.price, customerRole, product.discount);
+    const total = unitPrice * quantity;
     const newOrder = {
       id: Date.now(),
-      productId: prod.id,
-      productName: prod.name,
-      quantity: qty,
-      unitPrice: finalPrice,
+      productId: product.id,
+      productName: product.name,
+      quantity: quantity,
+      unitPrice: unitPrice,
       totalPrice: total,
       status: "proses",
-      customerName: name,
-      customerEmail: email,
-      customerRole: role,
+      customerName: customerName,
+      customerEmail: customerEmail,
+      customerRole: customerRole,
       stockDeducted: false,
       createdAt: new Date().toISOString()
     };
     orders.unshift(newOrder);
-    await saveToFirebase();
-    const msg = `*ORDER BARU*\n\nNama: ${name}\nEmail: ${email}\nProduk: ${prod.name}\nJumlah: ${qty}\nTotal: Rp ${total.toLocaleString()}`;
-    window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`, "_blank");
-    alert(`✅ Pesanan ${prod.name} x${qty} berhasil! Admin akan hubungi via WA.`);
+    saveToLocal();
+    notifyAdminOrder(newOrder);
+    alert(`✅ Pesanan berhasil dicatat! Admin akan memproses.\nProduk: ${product.name} x${quantity}\nTotal: Rp ${total.toLocaleString()}\n\n*Stok akan berkurang hanya setelah pesanan berhasil.*`);
     renderApp();
     return true;
   }
 
-  async function updateOrderStatus(oid, newStatus) {
-    const order = orders.find(o=>o.id===oid);
+  function adminUpdateOrderStatus(orderId, newStatus) {
+    const order = orders.find(o => o.id === orderId);
     if (!order) return;
+    if (order.status === newStatus) return;
+
     if (newStatus === "berhasil" && !order.stockDeducted) {
-      const prod = products.find(p=>p.id===order.productId);
-      if (prod && prod.stock >= order.quantity) {
-        prod.stock -= order.quantity;
-        order.stockDeducted = true;
-        alert(`✅ Stok ${prod.name} berkurang ${order.quantity}`);
-      } else if (prod) { alert(`Stok tidak cukup`); return; }
+      const product = products.find(p => p.id === order.productId);
+      if (product) {
+        if (product.stock >= order.quantity) {
+          product.stock -= order.quantity;
+          order.stockDeducted = true;
+          alert(`✅ Stok berkurang untuk pesanan ${order.productName} (${order.quantity} pcs). Sisa stok: ${product.stock}`);
+        } else {
+          alert(`❌ Gagal: Stok produk ${order.productName} tidak mencukupi (tersisa ${product.stock}, dibutuhkan ${order.quantity}).`);
+          return;
+        }
+      } else {
+        alert("Produk tidak ditemukan!");
+        return;
+      }
     }
     order.status = newStatus;
-    await saveToFirebase();
+    saveToLocal();
     renderApp();
   }
 
-  async function createUser(name, email, phone, pass, role) {
-    if (!["admin","seller","reseller"].includes(role)) { alert("Role tidak valid"); return false; }
-    if (users.find(u=>u.email===email)) { alert("Email sudah ada"); return false; }
-    if (users.find(u=>u.phone===phone)) { alert("Nomor sudah ada"); return false; }
+  function updateAllProductsFromGrid() {
+    let updated = 0;
+    for (let prod of products) {
+      const priceInput = document.getElementById(`price-${prod.id}`);
+      const stockInput = document.getElementById(`stock-${prod.id}`);
+      const badgeSelect = document.getElementById(`badge-${prod.id}`);
+      const discountInput = document.getElementById(`discount-${prod.id}`);
+      if (priceInput && stockInput) {
+        const newPrice = parseInt(priceInput.value);
+        const newStock = parseInt(stockInput.value);
+        if (!isNaN(newPrice) && !isNaN(newStock) && newPrice >= 0 && newStock >= 0) {
+          prod.price = newPrice;
+          prod.stock = newStock;
+          if (badgeSelect) prod.badge = badgeSelect.value;
+          if (discountInput) prod.discount = parseInt(discountInput.value) || 0;
+          updated++;
+        }
+      }
+    }
+    if (updated > 0) {
+      saveToLocal();
+      alert(`✅ Berhasil memperbarui ${updated} produk!`);
+      renderApp(true);
+    } else {
+      alert("Tidak ada perubahan yang valid.");
+    }
+  }
+
+  function adminUpdateProduct(pid, newStock, newPrice, newBadge, newDiscount) {
+    const prod = products.find(p => p.id === pid);
+    if (prod) {
+      prod.stock = parseInt(newStock);
+      prod.price = parseInt(newPrice);
+      if (newBadge !== undefined) prod.badge = newBadge;
+      if (newDiscount !== undefined) prod.discount = parseInt(newDiscount) || 0;
+      saveToLocal();
+      alert(`✅ Produk "${prod.name}" berhasil diperbarui!`);
+      renderApp(true);
+    }
+  }
+
+  function backupToWhatsApp() {
+    let prodText = "📦 *DATA PRODUK ATHA STORE*\n";
+    products.forEach(p => {
+      let badgeText = "";
+      if (p.badge === "populer") badgeText = "🔥 Populer";
+      else if (p.badge === "bestseller") badgeText = "⭐ Best Seller";
+      let discountText = p.discount > 0 ? ` (Diskon ${p.discount}%)` : "";
+      prodText += `• ${p.name} | Rp ${p.price.toLocaleString()}${discountText} | Stok: ${p.stock} ${badgeText}\n`;
+    });
+    let orderText = "\n📋 *DATA ORDER*\n";
+    orders.forEach(o => {
+      orderText += `ID:${o.id} | ${o.productName} | ${o.quantity} pcs | Status: ${o.status} | Stok dipotong: ${o.stockDeducted ? "Ya" : "Belum"} | ${o.customerName}\n`;
+    });
+    const msg = `${prodText}\n${orderText}\nWaktu: ${new Date().toLocaleString()}`;
+    window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`, "_blank");
+  }
+
+  function ownerCreateUser(name, email, phone, password, role) {
+    if (!["admin", "seller", "reseller"].includes(role)) {
+      alert("Role hanya bisa admin, seller, atau reseller");
+      return false;
+    }
+    if (users.find(u => u.email === email)) {
+      alert("Email sudah terdaftar");
+      return false;
+    }
+    if (users.find(u => u.phone === phone)) {
+      alert("Nomor telepon sudah terdaftar");
+      return false;
+    }
     const newId = users.length + 1;
-    users.push({ id: newId, name, email, phone, password: pass, role });
-    await saveToFirebase();
-    alert(`Akun ${role} ${name} dibuat`);
+    users.push({ id: newId, name, email, phone, password, role });
+    saveToLocal();
+    alert(`Berhasil membuat akun ${role}: ${name}`);
     renderApp(true);
     return true;
   }
 
-  async function deleteUser(uid) {
-    if (uid === currentUser?.id) { alert("Tidak bisa hapus sendiri"); return; }
-    const u = users.find(u=>u.id===uid);
-    if (u && u.role === "owner") { alert("Tidak bisa hapus owner lain"); return; }
-    users = users.filter(u=>u.id!==uid);
-    await saveToFirebase();
+  function ownerDeleteUser(userId) {
+    if (userId === currentUser.id) {
+      alert("Tidak bisa menghapus akun sendiri");
+      return;
+    }
+    const user = users.find(u => u.id === userId);
+    if (user && user.role === "owner") {
+      alert("Tidak bisa menghapus owner lain");
+      return;
+    }
+    users = users.filter(u => u.id !== userId);
+    saveToLocal();
     renderApp(true);
   }
 
-  async function changePassword(uid, newPass) {
-    const u = users.find(u=>u.id===uid);
-    if (u) { u.password = newPass; await saveToFirebase(); alert(`Password ${u.name} diubah`); renderApp(true); }
-    else alert("User tidak ditemukan");
+  function ownerChangePassword(userId, newPassword) {
+    const user = users.find(u => u.id === userId);
+    if (user) {
+      user.password = newPassword;
+      saveToLocal();
+      alert(`Password untuk ${user.name} berhasil diubah!`);
+      renderApp(true);
+    } else {
+      alert("User tidak ditemukan");
+    }
   }
 
-  function backupWA() {
-    let prodTxt = "📦 PRODUK:\n" + products.map(p=>`${p.name} | Rp${p.price} | stok ${p.stock} | ${p.badge==='populer'?'🔥':p.badge==='bestseller'?'⭐':''}`).join("\n");
-    let orderTxt = "\n📋 ORDER:\n" + orders.map(o=>`${o.productName} x${o.quantity} | ${o.status} | ${o.customerName}`).join("\n");
-    window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(prodTxt+"\n"+orderTxt)}`, "_blank");
-  }
-
-  // Modal login/register
+  // MODAL LOGIN & REGISTER dengan fitur lihat sandi
   function showLoginModal() {
     const modal = document.getElementById("globalModal");
     const inner = document.getElementById("modalInner");
-    inner.innerHTML = `<h3>Masuk</h3><input type="email" id="loginEmail" placeholder="Email"><div class="password-wrapper"><input type="password" id="loginPassword" placeholder="Password"><i class="fas fa-eye toggle-password" data-target="loginPassword"></i></div><button id="loginBtn">Login</button><div class="switch-link" id="toRegister">Belum punya akun? Daftar</div><div class="switch-link" id="toForgot">Lupa password?</div>`;
+    inner.innerHTML = `
+      <h3><i class="fas fa-key"></i> Masuk</h3>
+      <input type="email" id="loginEmail" placeholder="Email" autocomplete="email">
+      <div class="password-wrapper">
+        <input type="password" id="loginPassword" placeholder="Password">
+        <i class="fas fa-eye toggle-password" data-target="loginPassword"></i>
+      </div>
+      <button id="loginBtnAction">Login</button>
+      <div class="switch-link" id="toRegister" style="margin-top:12px; text-align:center; color:#2c7a9e; cursor:pointer;">Belum punya akun? Daftar Member</div>
+      <div class="switch-link" id="toForgot" style="margin-top:8px; text-align:center; color:#2c7a9e; cursor:pointer;">Lupa password?</div>
+    `;
     modal.style.display = "flex";
-    document.querySelectorAll(".toggle-password").forEach(icon => icon.onclick = () => { const t=document.getElementById(icon.dataset.target); if(t.type==="password"){ t.type="text"; icon.classList.replace("fa-eye","fa-eye-slash"); } else { t.type="password"; icon.classList.replace("fa-eye-slash","fa-eye"); } });
-    document.getElementById("loginBtn").onclick = () => { const email=document.getElementById("loginEmail").value, pwd=document.getElementById("loginPassword").value; const u=users.find(u=>u.email===email && u.password===pwd); if(u){ currentUser={id:u.id,name:u.name,email:u.email,role:u.role}; localStorage.setItem("athastore_current_user",JSON.stringify(currentUser)); closeModal(); renderApp(); } else alert("Email/password salah"); };
+    
+    // Toggle password
+    document.querySelectorAll(".toggle-password").forEach(icon => {
+      icon.onclick = () => {
+        const target = document.getElementById(icon.dataset.target);
+        if (target.type === "password") {
+          target.type = "text";
+          icon.classList.remove("fa-eye");
+          icon.classList.add("fa-eye-slash");
+        } else {
+          target.type = "password";
+          icon.classList.remove("fa-eye-slash");
+          icon.classList.add("fa-eye");
+        }
+      };
+    });
+    
+    document.getElementById("loginBtnAction").onclick = () => {
+      const email = document.getElementById("loginEmail").value;
+      const pwd = document.getElementById("loginPassword").value;
+      const user = users.find(u => u.email === email && u.password === pwd);
+      if (user) {
+        currentUser = { id: user.id, name: user.name, email: user.email, role: user.role };
+        saveToLocal();
+        closeModal();
+        renderApp();
+      } else alert("Email/password salah");
+    };
     document.getElementById("toRegister").onclick = () => { closeModal(); showRegisterModal(); };
     document.getElementById("toForgot").onclick = () => { closeModal(); showForgotModal(); };
   }
@@ -981,201 +865,716 @@
   function showRegisterModal() {
     const modal = document.getElementById("globalModal");
     const inner = document.getElementById("modalInner");
-    inner.innerHTML = `<h3>Daftar Member</h3><input type="text" id="regName" placeholder="Nama"><input type="email" id="regEmail" placeholder="Email"><input type="tel" id="regPhone" placeholder="Nomor"><div class="password-wrapper"><input type="password" id="regPassword" placeholder="Password"><i class="fas fa-eye toggle-password" data-target="regPassword"></i></div><button id="registerBtn">Daftar</button><div class="switch-link" id="toLogin">Sudah punya akun? Login</div>`;
-    modal.style.display = "flex";
-    document.querySelectorAll(".toggle-password").forEach(icon => icon.onclick = () => { const t=document.getElementById(icon.dataset.target); if(t.type==="password"){ t.type="text"; icon.classList.replace("fa-eye","fa-eye-slash"); } else { t.type="password"; icon.classList.replace("fa-eye-slash","fa-eye"); } });
-    document.getElementById("registerBtn").onclick = async () => { const name=document.getElementById("regName").value.trim(), email=document.getElementById("regEmail").value.trim(), phone=document.getElementById("regPhone").value.trim(), pwd=document.getElementById("regPassword").value; if(!name||!email||!phone||!pwd) alert("Lengkapi semua"); else if(users.find(u=>u.email===email)) alert("Email sudah ada"); else if(users.find(u=>u.phone===phone)) alert("Nomor sudah ada"); else { const newId=users.length+1; users.push({id:newId,name,email,phone,password:pwd,role:"member"}); await saveToFirebase(); alert("Pendaftaran berhasil! Silakan login."); closeModal(); showLoginModal(); } };
+    inner.innerHTML = `
+      <h3><i class="fas fa-user-plus"></i> Daftar Member</h3>
+      <input type="text" id="regName" placeholder="Nama Lengkap">
+      <input type="email" id="regEmail" placeholder="Email">
+      <input type="tel" id="regPhone" placeholder="Nomor Telepon">
+      <div class="password-wrapper">
+        <input type="password" id="regPassword" placeholder="Password">
+        <i class="fas fa-eye toggle-password" data-target="regPassword"></i>
+      </div>
+      <button id="registerAction">Daftar</button>
+      <div class="switch-link" id="toLogin" style="margin-top:12px; text-align:center;">Sudah punya akun? Login</div>
+    `;
+    
+    document.querySelectorAll(".toggle-password").forEach(icon => {
+      icon.onclick = () => {
+        const target = document.getElementById(icon.dataset.target);
+        if (target.type === "password") {
+          target.type = "text";
+          icon.classList.remove("fa-eye");
+          icon.classList.add("fa-eye-slash");
+        } else {
+          target.type = "password";
+          icon.classList.remove("fa-eye-slash");
+          icon.classList.add("fa-eye");
+        }
+      };
+    });
+    
+    document.getElementById("registerAction").onclick = () => {
+      const name = document.getElementById("regName").value.trim();
+      const email = document.getElementById("regEmail").value.trim();
+      const phone = document.getElementById("regPhone").value.trim();
+      const pwd = document.getElementById("regPassword").value;
+      if (!name || !email || !phone || !pwd) return alert("Lengkapi semua field");
+      if (users.find(u => u.email === email)) return alert("Email sudah terdaftar");
+      if (users.find(u => u.phone === phone)) return alert("Nomor sudah terdaftar");
+      const newId = users.length + 1;
+      users.push({ id: newId, name, email, phone, password: pwd, role: "member" });
+      saveToLocal();
+      alert("Registrasi berhasil! Silakan login.");
+      closeModal();
+      showLoginModal();
+    };
     document.getElementById("toLogin").onclick = () => { closeModal(); showLoginModal(); };
+    modal.style.display = "flex";
   }
 
   function showForgotModal() {
     const modal = document.getElementById("globalModal");
     const inner = document.getElementById("modalInner");
-    inner.innerHTML = `<h3>Reset Password</h3><input type="text" id="resetId" placeholder="Email atau Nomor"><button id="resetBtn">Reset</button><div class="switch-link" id="backLogin">Kembali Login</div>`;
+    inner.innerHTML = `
+      <h3><i class="fas fa-lock"></i> Reset Password</h3>
+      <input type="text" id="resetIdentifier" placeholder="Email atau Nomor Telepon">
+      <button id="resetBtn">Reset Password</button>
+      <div class="switch-link" id="backLogin" style="margin-top:12px; text-align:center;">Kembali Login</div>
+    `;
     modal.style.display = "flex";
-    document.getElementById("resetBtn").onclick = async () => { const id=document.getElementById("resetId").value; const u=users.find(u=>u.email===id||u.phone===id); if(!u) alert("Data tidak ditemukan"); else { const newPass=prompt("Password baru (min 4 karakter):"); if(newPass && newPass.length>=4) { u.password=newPass; await saveToFirebase(); alert("Password diubah! Silakan login."); closeModal(); showLoginModal(); } else alert("Password minimal 4 karakter"); } };
+    document.getElementById("resetBtn").onclick = () => {
+      const identifier = document.getElementById("resetIdentifier").value;
+      const user = users.find(u => u.email === identifier || u.phone === identifier);
+      if (!user) return alert("Data tidak ditemukan");
+      const newPass = prompt("Masukkan password baru (min 4 karakter):");
+      if (newPass && newPass.length >= 4) {
+        user.password = newPass;
+        saveToLocal();
+        alert("Password berhasil diubah! Silakan login.");
+        closeModal();
+        showLoginModal();
+      } else alert("Password minimal 4 karakter");
+    };
     document.getElementById("backLogin").onclick = () => { closeModal(); showLoginModal(); };
   }
 
-  function closeModal() { document.getElementById("globalModal").style.display = "none"; }
-
-  function showOrderModal(pid, pname, stock, price, discount) {
-    const isLogged = currentUser !== null;
-    const name = isLogged ? currentUser.name : "";
-    const email = isLogged ? currentUser.email : "";
-    const role = isLogged ? currentUser.role : "guest";
-    const finalPrice = role === "reseller" ? Math.max(0, getDiscountedPrice(price, discount) - 1000) : getDiscountedPrice(price, discount);
-    const modal = document.getElementById("globalModal");
-    const inner = document.getElementById("modalInner");
-    inner.innerHTML = `<h3>Pesan ${pname}</h3><p>Harga: Rp ${price.toLocaleString()}${discount?`<br>Diskon ${discount}%: Rp ${getDiscountedPrice(price,discount).toLocaleString()}`:''}${role==='reseller'?`<br>Harga Reseller: Rp ${finalPrice.toLocaleString()}`:''}</p><input type="number" id="orderQty" min="1" max="${stock}" value="1"><input type="text" id="orderName" value="${escapeHtml(name)}" ${isLogged?'readonly':''}><input type="email" id="orderEmail" value="${escapeHtml(email)}" ${isLogged?'readonly':''}><button id="confirmOrder">Konfirmasi & Kirim ke WA</button><div class="switch-link" id="cancelOrder">Batal</div>`;
-    modal.style.display = "flex";
-    document.getElementById("confirmOrder").onclick = () => { const qty=parseInt(document.getElementById("orderQty").value), nm=document.getElementById("orderName").value.trim(), em=document.getElementById("orderEmail").value.trim(); if(qty>0 && nm && em) { if(qty>stock) alert(`Stok hanya ${stock}`); else placeOrder(pid,qty,nm,em,role).then(()=>modal.style.display="none"); } else alert("Lengkapi data"); };
-    document.getElementById("cancelOrder").onclick = () => modal.style.display="none";
+  function closeModal() {
+    document.getElementById("globalModal").style.display = "none";
   }
 
-  function getIcon(name) { const n=name.toLowerCase(); if(n.includes("alight")) return "fa-film"; if(n.includes("canva")) return "fa-palette"; if(n.includes("capcut")) return "fa-video"; if(n.includes("netflix")) return "fa-tv"; if(n.includes("spotify")) return "fa-music"; if(n.includes("youtube")) return "fa-youtube"; return "fa-crown"; }
-  function escapeHtml(str) { return String(str).replace(/[&<>]/g, m=>m==='&'?'&amp;':m==='<'?'&lt;':m==='>'?'&gt;':m); }
+  function showOrderModal(productId, productName, stockAvail, originalPrice, discount) {
+    const isLoggedIn = currentUser !== null;
+    const defaultName = isLoggedIn ? currentUser.name : "";
+    const defaultEmail = isLoggedIn ? currentUser.email : "";
+    const userRole = isLoggedIn ? currentUser.role : "guest";
+    const finalPrice = getPriceForUser(originalPrice, userRole, discount);
+    const discountedPrice = discount > 0 ? getDiscountedPrice(originalPrice, discount) : originalPrice;
+    
+    const modal = document.getElementById("globalModal");
+    const inner = document.getElementById("modalInner");
+    let priceHtml = `<p style="margin-bottom:12px; font-size:0.9rem;">Harga: Rp ${originalPrice.toLocaleString()}`;
+    if (discount > 0) {
+      priceHtml += `<br><span style="color:#e74c3c;">✨ Diskon ${discount}%: Rp ${discountedPrice.toLocaleString()}</span>`;
+    }
+    if (userRole === "reseller") {
+      priceHtml += `<br><span style="color:#1e6a50;">✨ Diskon Reseller: Rp ${finalPrice.toLocaleString()} per item</span>`;
+    }
+    priceHtml += `</p>`;
+    
+    inner.innerHTML = `
+      <h3>Pesan ${escapeHtml(productName)}</h3>
+      ${priceHtml}
+      <input type="number" id="orderQty" placeholder="Jumlah" min="1" max="${stockAvail}" value="1">
+      <input type="text" id="orderName" placeholder="Nama lengkap" value="${escapeHtml(defaultName)}" ${isLoggedIn ? 'readonly' : ''}>
+      <input type="email" id="orderEmail" placeholder="Email" value="${escapeHtml(defaultEmail)}" ${isLoggedIn ? 'readonly' : ''}>
+      <button id="confirmOrderBtn">Konfirmasi & Kirim ke WA</button>
+      <div class="switch-link" id="cancelOrder" style="margin-top:12px; text-align:center;">Batal</div>
+    `;
+    modal.style.display = "flex";
+    document.getElementById("confirmOrderBtn").onclick = () => {
+      let qty = parseInt(document.getElementById("orderQty").value);
+      let name = document.getElementById("orderName").value.trim();
+      let email = document.getElementById("orderEmail").value.trim();
+      if (isNaN(qty) || qty < 1) return alert("Jumlah tidak valid");
+      if (!name) return alert("Nama harus diisi");
+      if (!email) return alert("Email harus diisi");
+      if (qty > stockAvail) return alert(`Stok hanya ${stockAvail}`);
+      placeOrder(productId, qty, name, email, userRole);
+      closeModal();
+    };
+    document.getElementById("cancelOrder").onclick = () => closeModal();
+  }
 
-  // RENDER
-  function renderApp(stay=false) {
+  function showAddProductModal() {
+    const modal = document.getElementById("globalModal");
+    const inner = document.getElementById("modalInner");
+    inner.innerHTML = `
+      <h3><i class="fas fa-plus-circle"></i> Tambah Produk Baru</h3>
+      <input type="text" id="newProductName" placeholder="Nama Produk" required>
+      <input type="text" id="newProductCategory" placeholder="Kategori (Contoh: Editing Tools, Streaming & Movies, Music & Social)">
+      <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+        <input type="number" id="newProductPrice" placeholder="Harga (Rp)" style="flex:1">
+        <input type="number" id="newProductStock" placeholder="Stok" style="flex:1" value="0">
+      </div>
+      <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+        <select id="newProductBadge" style="flex:1">
+          <option value="">Tanpa Badge</option>
+          <option value="populer">🔥 Populer</option>
+          <option value="bestseller">⭐ Best Seller</option>
+        </select>
+        <input type="number" id="newProductDiscount" placeholder="Diskon %" style="flex:1" value="0">
+      </div>
+      <button id="confirmAddProductBtn" style="margin-top: 16px;">Tambah Produk</button>
+      <div class="switch-link" id="cancelAddProduct" style="margin-top:12px; text-align:center;">Batal</div>
+    `;
+    modal.style.display = "flex";
+    document.getElementById("confirmAddProductBtn").onclick = () => {
+      const name = document.getElementById("newProductName").value.trim();
+      const category = document.getElementById("newProductCategory").value.trim();
+      const price = document.getElementById("newProductPrice").value;
+      const stock = document.getElementById("newProductStock").value;
+      const badge = document.getElementById("newProductBadge").value;
+      const discount = document.getElementById("newProductDiscount").value;
+      if (!name) {
+        alert("Nama produk harus diisi!");
+        return;
+      }
+      if (!category) {
+        alert("Kategori harus diisi!");
+        return;
+      }
+      addProduct(name, category, price, stock, badge, discount);
+      closeModal();
+    };
+    document.getElementById("cancelAddProduct").onclick = () => closeModal();
+  }
+
+  // ======================== RENDER UTAMA ========================
+  function renderApp(stayOnCurrentView = false) {
     const container = document.getElementById("appContent");
     const navDiv = document.getElementById("navLinks");
     if (!container) return;
 
     let navHtml = `<a href="#" id="navHome">🏠 Beranda</a>`;
     if (currentUser) {
-      const roleName = {owner:"Owner",admin:"Admin",seller:"Seller",reseller:"Reseller",member:"Member"}[currentUser.role];
+      let roleName = currentUser.role === "owner" ? "Owner" : (currentUser.role === "admin" ? "Admin" : (currentUser.role === "seller" ? "Seller" : (currentUser.role === "reseller" ? "Reseller" : "Member")));
       navHtml += `<span class="user-badge"><i class="fas fa-user-circle"></i> ${currentUser.name} (${roleName})</span>`;
       if (currentUser.role === "owner") navHtml += `<a href="#" id="navOwnerPanel">👑 Owner Panel</a>`;
       if (currentUser.role === "admin") navHtml += `<a href="#" id="navAdminPanel">📊 Dashboard Admin</a>`;
       if (currentUser.role === "seller") navHtml += `<a href="#" id="navSellerPanel">🛍️ Panel Seller</a>`;
       if (currentUser.role === "member" || currentUser.role === "reseller") navHtml += `<a href="#" id="navMyOrders">📋 Pesanan Saya</a>`;
       navHtml += `<button id="logoutBtn">Keluar</button>`;
-    } else navHtml += `<button id="loginBtn">Masuk / Daftar</button>`;
+    } else {
+      navHtml += `<button id="loginBtn">Masuk / Daftar</button>`;
+    }
     navDiv.innerHTML = navHtml;
 
-    document.getElementById("navHome")?.addEventListener("click", (e) => { e.preventDefault(); currentView="home"; renderApp(); });
-    document.getElementById("navOwnerPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role==="owner") { currentView="owner"; renderApp(); } });
-    document.getElementById("navAdminPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role==="admin") { currentView="admin"; renderApp(); } });
-    document.getElementById("navSellerPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role==="seller") { currentView="seller"; renderApp(); } });
-    document.getElementById("navMyOrders")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role==="member"||currentUser?.role==="reseller") { currentView="myorders"; renderApp(); } });
-    document.getElementById("logoutBtn")?.addEventListener("click", () => { currentUser=null; localStorage.removeItem("athastore_current_user"); currentView="home"; renderApp(); });
+    document.getElementById("navHome")?.addEventListener("click", (e) => { e.preventDefault(); currentView = "home"; renderApp(); });
+    document.getElementById("navOwnerPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "owner") { currentView = "owner"; renderApp(); } });
+    document.getElementById("navAdminPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "admin") { currentView = "admin"; renderApp(); } });
+    document.getElementById("navSellerPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "seller") { currentView = "seller"; renderApp(); } });
+    document.getElementById("navMyOrders")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "member" || currentUser?.role === "reseller") { currentView = "myorders"; renderApp(); } });
+    document.getElementById("logoutBtn")?.addEventListener("click", () => { currentUser = null; currentView = "home"; saveToLocal(); renderApp(); });
     document.getElementById("loginBtn")?.addEventListener("click", () => showLoginModal());
 
-    if (!stay) {
-      if (currentView === "home") showHome();
-      else if (currentView === "owner" && currentUser?.role==="owner") showOwnerPanel();
-      else if (currentView === "admin" && currentUser?.role==="admin") showAdminPanel();
-      else if (currentView === "seller" && currentUser?.role==="seller") showSellerPanel();
-      else if (currentView === "myorders" && (currentUser?.role==="member"||currentUser?.role==="reseller")) showMemberOrders();
+    if (!stayOnCurrentView) {
+      if (!currentView || currentView === "home") showHome();
+      else if (currentView === "owner" && currentUser?.role === "owner") showOwnerPanel();
+      else if (currentView === "admin" && currentUser?.role === "admin") showAdminPanel(true);
+      else if (currentView === "seller" && currentUser?.role === "seller") showSellerPanel();
+      else if (currentView === "myorders" && (currentUser?.role === "member" || currentUser?.role === "reseller")) showMemberOrders();
       else showHome();
     } else {
       if (currentView === "home") showHome();
-      else if (currentView === "owner" && currentUser?.role==="owner") showOwnerPanel();
-      else if (currentView === "admin" && currentUser?.role==="admin") showAdminPanel();
-      else if (currentView === "seller" && currentUser?.role==="seller") showSellerPanel();
-      else if (currentView === "myorders" && (currentUser?.role==="member"||currentUser?.role==="reseller")) showMemberOrders();
+      else if (currentView === "owner" && currentUser?.role === "owner") showOwnerPanel();
+      else if (currentView === "admin" && currentUser?.role === "admin") showAdminPanel(true);
+      else if (currentView === "seller" && currentUser?.role === "seller") showSellerPanel();
+      else if (currentView === "myorders" && (currentUser?.role === "member" || currentUser?.role === "reseller")) showMemberOrders();
       else showHome();
     }
 
     function showHome() {
-      const best = products.filter(p=>p.badge==="bestseller");
-      const pop = products.filter(p=>p.badge==="populer");
-      const normal = products.filter(p=>p.badge!=="bestseller" && p.badge!=="populer");
+      currentView = "home";
+      
+      const bestSeller = products.filter(p => p.badge === "bestseller");
+      const populer = products.filter(p => p.badge === "populer");
+      const normal = products.filter(p => p.badge !== "bestseller" && p.badge !== "populer");
+      
       let html = "";
-      if (best.length) html += `<h2 class="section-title"><i class="fas fa-star"></i> ⭐ Best Seller</h2><div class="product-grid">${best.map(p=>productCard(p,"bestseller-animate")).join('')}</div>`;
-      if (pop.length) html += `<h2 class="section-title"><i class="fas fa-fire"></i> 🔥 Populer</h2><div class="product-grid">${pop.map(p=>productCard(p,"populer-animate")).join('')}</div>`;
-      if (normal.length) html += `<h2 class="section-title"><i class="fas fa-box"></i> Produk Lainnya</h2><div class="product-grid">${normal.map(p=>productCard(p,"")).join('')}</div>`;
+      
+      if (bestSeller.length > 0) {
+        html += `<h2 class="section-title"><i class="fas fa-star" style="color:#e74c3c;"></i> ⭐ Best Seller</h2>`;
+        html += `<div class="product-grid">`;
+        bestSeller.forEach(prod => {
+          html += renderProductCard(prod, "bestseller-animate");
+        });
+        html += `</div>`;
+      }
+      
+      if (populer.length > 0) {
+        html += `<h2 class="section-title"><i class="fas fa-fire" style="color:#ff9800;"></i> 🔥 Populer</h2>`;
+        html += `<div class="product-grid">`;
+        populer.forEach(prod => {
+          html += renderProductCard(prod, "populer-animate");
+        });
+        html += `</div>`;
+      }
+      
+      if (normal.length > 0) {
+        html += `<h2 class="section-title"><i class="fas fa-box"></i> Produk Lainnya</h2>`;
+        html += `<div class="product-grid">`;
+        normal.forEach(prod => {
+          html += renderProductCard(prod, "");
+        });
+        html += `</div>`;
+      }
+      
       container.innerHTML = html;
-      document.querySelectorAll(".order-btn").forEach(btn => btn.onclick = () => showOrderModal(parseInt(btn.dataset.id), btn.dataset.name, parseInt(btn.dataset.stock), parseInt(btn.dataset.price), parseInt(btn.dataset.discount)));
+      
+      document.querySelectorAll(".order-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const pid = parseInt(btn.dataset.id);
+          const pname = btn.dataset.name;
+          const stock = parseInt(btn.dataset.stock);
+          const price = parseInt(btn.dataset.price);
+          const discount = parseInt(btn.dataset.discount);
+          showOrderModal(pid, pname, stock, price, discount);
+        });
+      });
     }
-
-    function productCard(p, anim) {
-      const hasDisc = p.discount > 0;
-      const discPrice = hasDisc ? getDiscountedPrice(p.price, p.discount) : p.price;
-      const badgeHtml = p.badge === "populer" ? '<span class="product-badge badge-populer">🔥 Populer</span>' : (p.badge === "bestseller" ? '<span class="product-badge badge-bestseller">⭐ Best Seller</span>' : '');
-      const priceHtml = hasDisc ? `<div style="display:flex;gap:8px;flex-wrap:wrap;"><span class="price original">Rp ${p.price.toLocaleString()}</span><span class="price discounted">Rp ${discPrice.toLocaleString()}</span><span class="stock" style="background:#ff9800;">-${p.discount}%</span></div>` : `<span class="price">Rp ${p.price.toLocaleString()}</span>`;
-      return `<div class="product-card ${anim}">${badgeHtml}<div class="product-icon"><i class="fas ${getIcon(p.name)}"></i></div><div class="product-name">${escapeHtml(p.name)}</div><div class="price-stock">${priceHtml}<span class="stock ${p.stock<3?'low':''}"><i class="fas fa-boxes"></i> Stok: ${p.stock}</span></div><button class="order-btn" data-id="${p.id}" data-name="${escapeHtml(p.name)}" data-stock="${p.stock}" data-price="${p.price}" data-discount="${p.discount}" ${p.stock<=0?'disabled':''}><i class="fab fa-whatsapp"></i> Pesan</button></div>`;
+    
+    function renderProductCard(prod, animationClass) {
+      const stockClass = prod.stock < 3 ? "low" : "";
+      const displayPrice = getPriceForUser(prod.price, currentUser?.role || "guest", prod.discount);
+      const originalPrice = prod.price;
+      const hasDiscount = prod.discount > 0;
+      const discountedPrice = hasDiscount ? getDiscountedPrice(originalPrice, prod.discount) : originalPrice;
+      
+      let badgeHtml = "";
+      if (prod.badge === "populer") badgeHtml = `<span class="product-badge badge-populer">🔥 Populer</span>`;
+      else if (prod.badge === "bestseller") badgeHtml = `<span class="product-badge badge-bestseller">⭐ Best Seller</span>`;
+      
+      let priceHtml = "";
+      if (hasDiscount) {
+        priceHtml = `
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <span class="price original">Rp ${originalPrice.toLocaleString()}</span>
+            <span class="price discounted">Rp ${discountedPrice.toLocaleString()}</span>
+            <span class="stock" style="background:#ff9800; color:white;">-${prod.discount}%</span>
+          </div>
+        `;
+      } else {
+        priceHtml = `<span class="price">Rp ${originalPrice.toLocaleString()}</span>`;
+      }
+      
+      return `
+        <div class="product-card ${animationClass}">
+          ${badgeHtml}
+          <div class="product-icon"><i class="fas ${getIcon(prod.name)}"></i></div>
+          <div class="product-name">${escapeHtml(prod.name)}</div>
+          <div class="price-stock">
+            ${priceHtml}
+            <span class="stock ${stockClass}"><i class="fas fa-boxes"></i> Stok: ${prod.stock}</span>
+          </div>
+          <button class="order-btn" data-id="${prod.id}" data-name="${escapeHtml(prod.name)}" data-stock="${prod.stock}" data-price="${prod.price}" data-discount="${prod.discount}" ${prod.stock <= 0 ? 'disabled' : ''}>
+            <i class="fab fa-whatsapp"></i> Pesan Sekarang
+          </button>
+        </div>
+      `;
     }
 
     function showOwnerPanel() {
-      container.innerHTML = `<div class="panel"><h2><i class="fas fa-crown"></i> Owner Panel</h2><div class="tab-bar"><button class="tab ${currentTab==='tabUsers'?'active':''}" id="tabUsers">👥 Kelola User</button><button class="tab ${currentTab==='tabProducts'?'active':''}" id="tabProducts">📦 Kelola Produk</button><button class="tab ${currentTab==='tabOrders'?'active':''}" id="tabOrders">🎫 Ticket Pembelian</button><button class="tab ${currentTab==='tabTicket'?'active':''}" id="tabTicket">👥 Ticket Akun</button></div><div id="ownerContent"></div></div>`;
-      const div = document.getElementById("ownerContent");
+      currentView = "owner";
+      let html = `<div class="panel"><h2><i class="fas fa-crown"></i> Owner Panel</h2>
+        <div class="tab-bar"><button class="tab ${currentTab === 'tabUsers' ? 'active' : ''}" id="tabUsers">👥 Kelola User</button><button class="tab ${currentTab === 'tabProducts' ? 'active' : ''}" id="tabProducts">📦 Kelola Produk</button><button class="tab ${currentTab === 'tabOrders' ? 'active' : ''}" id="tabOrders">🎫 Ticket Pembelian</button><button class="tab ${currentTab === 'tabTicket' ? 'active' : ''}" id="tabTicket">👥 Ticket Akun</button></div>
+        <div id="ownerContent"></div></div>`;
+      container.innerHTML = html;
+      const contentDiv = document.getElementById("ownerContent");
 
-      const renderUsers = () => {
-        div.innerHTML = `<div class="search-box"><input id="searchUser" placeholder="Cari nama/email/nomor"><button id="searchUserBtn">Cari</button></div><div class="table-responsive"><table class="data-table"><thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Password</th><th>Aksi</th></tr></thead><tbody id="userTableBody"></tbody></table></div><hr><h3>Buat Akun Baru</h3><div style="display:flex;flex-wrap:wrap;gap:12px;"><input id="newName" placeholder="Nama"><input id="newEmail" placeholder="Email"><input id="newPhone" placeholder="Nomor"><input id="newPass" placeholder="Password"><select id="newRole"><option value="admin">Admin</option><option value="seller">Seller</option><option value="reseller">Reseller</option></select><button id="createUserBtn">Buat</button></div>`;
-        const renderList = (filter="") => {
+      const renderUserManagement = () => {
+        let search = `<div class="search-box"><input type="text" id="searchUser" placeholder="Cari nama/email/nomor"><button id="searchUserBtn">Cari</button></div>`;
+        let table = `<div class="table-responsive"><table class="data-table"><thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Password</th><th>Aksi</th></tr></thead><tbody id="userTableBody"></tbody></table></div>`;
+        contentDiv.innerHTML = search + table;
+        const renderUserList = (filter = "") => {
           const filtered = users.filter(u => u.name.toLowerCase().includes(filter) || u.email.toLowerCase().includes(filter) || u.phone.includes(filter));
           const tbody = document.getElementById("userTableBody");
-          tbody.innerHTML = filtered.map(u => `<tr><td>${u.id}</td><td>${escapeHtml(u.name)}</td><td>${escapeHtml(u.email)}</td><td>${escapeHtml(u.phone)}</td><td>${u.role}</td><td><code>${escapeHtml(u.password)}</code> <button class="changePass" data-id="${u.id}">Ganti</button></td><td>${u.id !== currentUser.id ? `<button class="delUser" data-id="${u.id}">Hapus</button>` : '-'}</td></tr>`).join('');
-          document.querySelectorAll(".delUser").forEach(btn => btn.onclick = () => deleteUser(parseInt(btn.dataset.id)));
-          document.querySelectorAll(".changePass").forEach(btn => btn.onclick = () => { const newPass=prompt("Password baru:"); if(newPass && newPass.length>=4) changePassword(parseInt(btn.dataset.id), newPass); else alert("Min 4 karakter"); });
+          tbody.innerHTML = filtered.map(u => `
+            <tr>
+              <td>${u.id}</td>
+              <td>${escapeHtml(u.name)}</td>
+              <td>${escapeHtml(u.email)}</td>
+              <td>${escapeHtml(u.phone)}</td>
+              <td>${u.role}</td>
+              <td><code>${escapeHtml(u.password)}</code> <button class="changePass" data-id="${u.id}">Ganti</button></td>
+              <td>${u.id !== currentUser.id ? `<button class="delUser" data-id="${u.id}">Hapus</button>` : '-'}</td>
+            </tr>
+          `).join("");
+          document.querySelectorAll(".delUser").forEach(btn => {
+            btn.onclick = () => { if(confirm("Hapus user ini?")) ownerDeleteUser(parseInt(btn.dataset.id)); };
+          });
+          document.querySelectorAll(".changePass").forEach(btn => {
+            btn.onclick = () => {
+              const uid = parseInt(btn.dataset.id);
+              const newPass = prompt("Masukkan password baru (min 4 karakter):");
+              if (newPass && newPass.length >= 4) {
+                ownerChangePassword(uid, newPass);
+              } else alert("Password minimal 4 karakter");
+            };
+          });
         };
-        renderList();
-        document.getElementById("searchUserBtn").onclick = () => renderList(document.getElementById("searchUser").value.toLowerCase());
-        document.getElementById("createUserBtn").onclick = async () => { const name=document.getElementById("newName").value.trim(), email=document.getElementById("newEmail").value.trim(), phone=document.getElementById("newPhone").value.trim(), pass=document.getElementById("newPass").value, role=document.getElementById("newRole").value; if(name&&email&&phone&&pass) await createUser(name,email,phone,pass,role); else alert("Isi semua field"); };
-      };
-
-      const renderProductsMgmt = () => {
-        div.innerHTML = `<div style="text-align:right;"><button id="addProductBtn" class="btn-add-product"><i class="fas fa-plus"></i> Tambah Produk</button></div><div class="product-mgmt-grid" id="prodMgmtGrid"></div><div style="text-align:center;"><button id="updateAllBtn" class="btn-update-all"><i class="fas fa-save"></i> Update Semua Produk</button></div>`;
-        const grid = document.getElementById("prodMgmtGrid");
-        grid.innerHTML = products.map(p => `<div class="product-mgmt-card"><button class="delete-product" data-id="${p.id}"><i class="fas fa-trash"></i></button><div class="product-mgmt-name">${escapeHtml(p.name)}</div><div class="product-mgmt-field"><label>Harga</label><input type="number" id="price-${p.id}" value="${p.price}"></div><div class="product-mgmt-field"><label>Stok</label><input type="number" id="stock-${p.id}" value="${p.stock}" min="0"></div><div class="product-mgmt-field"><label>Diskon %</label><input type="number" id="discount-${p.id}" value="${p.discount}" min="0" max="100"></div><div class="product-mgmt-field"><label>Badge</label><select id="badge-${p.id}"><option value="">Tanpa</option><option ${p.badge==='populer'?'selected':''} value="populer">🔥 Populer</option><option ${p.badge==='bestseller'?'selected':''} value="bestseller">⭐ Best Seller</option></select></div><button class="updateProd" data-id="${p.id}">Update</button></div>`).join('');
-        document.querySelectorAll(".delete-product").forEach(btn => btn.onclick = () => deleteProduct(parseInt(btn.dataset.id)));
-        document.querySelectorAll(".updateProd").forEach(btn => btn.onclick = () => { const id=parseInt(btn.dataset.id); updateProduct(id, document.getElementById(`stock-${id}`).value, document.getElementById(`price-${id}`).value, document.getElementById(`badge-${id}`).value, document.getElementById(`discount-${id}`).value); });
-        document.getElementById("updateAllBtn").onclick = updateAllProducts;
-        document.getElementById("addProductBtn").onclick = () => { const modalDiv = document.getElementById("globalModal"), inner = document.getElementById("modalInner"); inner.innerHTML = `<h3>Tambah Produk Baru</h3><input id="newProdName" placeholder="Nama"><input id="newProdCat" placeholder="Kategori"><div style="display:flex;gap:12px;"><input id="newProdPrice" type="number" placeholder="Harga"><input id="newProdStock" type="number" placeholder="Stok"></div><div style="display:flex;gap:12px;"><select id="newProdBadge"><option value="">Tanpa</option><option value="populer">Populer</option><option value="bestseller">Best Seller</option></select><input id="newProdDiscount" type="number" placeholder="Diskon %"></div><button id="confirmAdd">Tambah</button><div class="switch-link" id="cancelAdd">Batal</div>`; modalDiv.style.display="flex"; document.getElementById("confirmAdd").onclick = () => { addProduct(document.getElementById("newProdName").value, document.getElementById("newProdCat").value, document.getElementById("newProdPrice").value, document.getElementById("newProdStock").value, document.getElementById("newProdBadge").value, document.getElementById("newProdDiscount").value).then(()=>modalDiv.style.display="none"); }; document.getElementById("cancelAdd").onclick = () => modalDiv.style.display="none"; };
-      };
-
-      const renderOrdersTicket = () => {
-        div.innerHTML = `<div class="search-box"><input id="orderSearch" placeholder="Cari pembeli atau produk"><select id="statusFilter"><option value="all">Semua Status</option><option value="proses">Proses</option><option value="berhasil">Berhasil</option><option value="gagal">Gagal</option></select><button id="filterBtn">Filter</button><button id="resetBtn">Reset</button></div><div id="orderResult"></div>`;
-        const render = (search="", status="all") => {
-          let filtered = orders.filter(o => (search==="" || o.customerName.toLowerCase().includes(search) || o.productName.toLowerCase().includes(search)) && (status==="all" || o.status===status));
-          if(filtered.length===0) { document.getElementById("orderResult").innerHTML="<p>Belum ada transaksi</p>"; return; }
-          document.getElementById("orderResult").innerHTML = `<div class="table-responsive"><table class="data-table"><thead><tr><th>Tanggal</th><th>Pembeli</th><th>Produk</th><th>Jumlah</th><th>Total</th><th>Status</th><th>Stok Dipotong</th></tr></thead><tbody>${filtered.map(o => `<tr><td>${new Date(o.createdAt).toLocaleDateString()}</td><td>${escapeHtml(o.customerName)}</td><td>${escapeHtml(o.productName)}</td><td>${o.quantity}</td><td>Rp ${o.totalPrice.toLocaleString()}</td><td><span class="status-badge ${o.status==='proses'?'status-proses':o.status==='berhasil'?'status-berhasil':'status-gagal'}">${o.status==='proses'?'⏳ Proses':o.status==='berhasil'?'✅ Berhasil':'❌ Gagal'}</span></td><td>${o.stockDeducted ? '✅ Sudah' : '❌ Belum'}</td></tr>`).join('')}</tbody></table></div>`;
+        renderUserList();
+        document.getElementById("searchUserBtn").onclick = () => {
+          const val = document.getElementById("searchUser").value.toLowerCase();
+          renderUserList(val);
         };
-        render();
-        document.getElementById("filterBtn").onclick = () => render(document.getElementById("orderSearch").value.toLowerCase(), document.getElementById("statusFilter").value);
-        document.getElementById("resetBtn").onclick = () => { document.getElementById("orderSearch").value=""; document.getElementById("statusFilter").value="all"; render(); };
-      };
-
-      const renderTicketAkun = () => {
-        div.innerHTML = `<div class="search-box"><input id="ticketSearch" placeholder="Cari member/reseller"><button id="searchTicketBtn">Cari</button></div><div id="ticketResult"></div>`;
-        const members = users.filter(u=>u.role==="member"||u.role==="reseller");
-        const show = (filter="") => {
-          const filtered = members.filter(m => m.name.toLowerCase().includes(filter) || m.email.toLowerCase().includes(filter) || m.phone.includes(filter));
-          document.getElementById("ticketResult").innerHTML = `<div class="table-responsive"><table class="data-table"><thead><tr><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th></tr></thead><tbody>${filtered.map(m => `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td>${escapeHtml(m.phone)}</td><td>${m.role==='reseller'?'Reseller':'Member'}</td><td>${orders.filter(o=>o.customerEmail===m.email).length}</td></tr>`).join('')}</tbody></table></div>`;
+        const formHtml = `<hr style="margin:24px 0 16px;"><h3>Buat Akun Baru (Admin / Seller / Reseller)</h3>
+          <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+            <input type="text" id="newName" placeholder="Nama" style="flex:1; min-width:150px;">
+            <input type="email" id="newEmail" placeholder="Email" style="flex:1; min-width:180px;">
+            <input type="tel" id="newPhone" placeholder="Nomor" style="flex:1; min-width:150px;">
+            <input type="password" id="newPass" placeholder="Password" style="flex:1; min-width:130px;">
+            <select id="newRole" style="padding:8px 12px;"><option value="admin">Admin</option><option value="seller">Seller</option><option value="reseller">Reseller</option></select>
+            <button id="createUserBtn">Buat Akun</button>
+          </div>`;
+        contentDiv.insertAdjacentHTML("beforeend", formHtml);
+        document.getElementById("createUserBtn").onclick = () => {
+          const name = document.getElementById("newName").value.trim();
+          const email = document.getElementById("newEmail").value.trim();
+          const phone = document.getElementById("newPhone").value.trim();
+          const pass = document.getElementById("newPass").value;
+          const role = document.getElementById("newRole").value;
+          if (!name || !email || !phone || !pass) return alert("Isi semua field");
+          ownerCreateUser(name, email, phone, pass, role);
         };
-        show();
-        document.getElementById("searchTicketBtn").onclick = () => show(document.getElementById("ticketSearch").value.toLowerCase());
       };
 
-      document.getElementById("tabUsers").onclick = () => { setActive("tabUsers"); currentTab="tabUsers"; renderUsers(); };
-      document.getElementById("tabProducts").onclick = () => { setActive("tabProducts"); currentTab="tabProducts"; renderProductsMgmt(); };
-      document.getElementById("tabOrders").onclick = () => { setActive("tabOrders"); currentTab="tabOrders"; renderOrdersTicket(); };
-      document.getElementById("tabTicket").onclick = () => { setActive("tabTicket"); currentTab="tabTicket"; renderTicketAkun(); };
-      function setActive(id) { document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active")); document.getElementById(id).classList.add("active"); }
-      if (currentTab==="tabUsers") renderUsers();
-      else if (currentTab==="tabProducts") renderProductsMgmt();
-      else if (currentTab==="tabOrders") renderOrdersTicket();
-      else renderTicketAkun();
+      const renderProductManagement = () => {
+        let gridHtml = `<div style="margin-bottom:20px; text-align:right;"><button id="addProductBtn" class="btn-add-product"><i class="fas fa-plus"></i> Tambah Produk Baru</button></div>`;
+        gridHtml += `<div class="product-mgmt-grid">`;
+        products.forEach(p => {
+          gridHtml += `
+            <div class="product-mgmt-card">
+              <button class="delete-product" data-id="${p.id}"><i class="fas fa-trash"></i></button>
+              <div class="product-mgmt-name">${escapeHtml(p.name)}</div>
+              <div class="product-mgmt-field">
+                <label>Harga (Rp)</label>
+                <input type="number" id="price-${p.id}" value="${p.price}" step="500">
+              </div>
+              <div class="product-mgmt-field">
+                <label>Stok</label>
+                <input type="number" id="stock-${p.id}" value="${p.stock}" min="0">
+              </div>
+              <div class="product-mgmt-field">
+                <label>Diskon (%)</label>
+                <input type="number" id="discount-${p.id}" value="${p.discount}" min="0" max="100">
+              </div>
+              <div class="product-mgmt-field">
+                <label>Badge</label>
+                <select id="badge-${p.id}">
+                  <option value="" ${p.badge === "" ? "selected" : ""}>Tanpa Badge</option>
+                  <option value="populer" ${p.badge === "populer" ? "selected" : ""}>🔥 Populer</option>
+                  <option value="bestseller" ${p.badge === "bestseller" ? "selected" : ""}>⭐ Best Seller</option>
+                </select>
+              </div>
+              <button class="updateProd" data-id="${p.id}">Update Produk Ini</button>
+            </div>
+          `;
+        });
+        gridHtml += `</div>`;
+        gridHtml += `<div style="text-align:center; margin-top:24px;"><button id="updateAllBtn" class="btn-update-all"><i class="fas fa-save"></i> Update Semua Produk Sekaligus</button></div>`;
+        contentDiv.innerHTML = gridHtml;
+        
+        document.querySelectorAll(".delete-product").forEach(btn => {
+          btn.onclick = () => {
+            const id = parseInt(btn.dataset.id);
+            deleteProduct(id);
+          };
+        });
+        
+        document.querySelectorAll(".updateProd").forEach(btn => {
+          btn.onclick = () => {
+            const id = parseInt(btn.dataset.id);
+            const newPrice = document.getElementById(`price-${id}`).value;
+            const newStock = document.getElementById(`stock-${id}`).value;
+            const newBadge = document.getElementById(`badge-${id}`).value;
+            const newDiscount = document.getElementById(`discount-${id}`).value;
+            adminUpdateProduct(id, newStock, newPrice, newBadge, newDiscount);
+          };
+        });
+        document.getElementById("updateAllBtn").onclick = updateAllProductsFromGrid;
+        document.getElementById("addProductBtn").onclick = showAddProductModal;
+      };
+
+      const renderOrderTicket = () => {
+        let filterHtml = `
+          <div class="search-box">
+            <input type="text" id="orderSearch" placeholder="Cari pembeli atau produk...">
+            <select id="statusFilter">
+              <option value="all">Semua Status</option>
+              <option value="proses">Proses</option>
+              <option value="berhasil">Berhasil</option>
+              <option value="gagal">Gagal</option>
+            </select>
+            <button id="filterOrderBtn">Filter</button>
+            <button id="resetOrderBtn">Reset</button>
+          </div>
+          <div id="orderTicketResult"></div>
+        `;
+        contentDiv.innerHTML = filterHtml;
+        
+        const renderOrders = (search = "", status = "all") => {
+          let filtered = [...orders];
+          if (search) {
+            const lowerSearch = search.toLowerCase();
+            filtered = filtered.filter(o => 
+              o.customerName.toLowerCase().includes(lowerSearch) || 
+              o.productName.toLowerCase().includes(lowerSearch)
+            );
+          }
+          if (status !== "all") {
+            filtered = filtered.filter(o => o.status === status);
+          }
+          
+          if (filtered.length === 0) {
+            document.getElementById("orderTicketResult").innerHTML = "<p style='text-align:center; padding:40px;'>Belum ada transaksi</p>";
+            return;
+          }
+          
+          let tbl = `<div class="table-responsive"><table class="data-table"><thead><tr><th>ID</th><th>Tanggal</th><th>Pembeli</th><th>Email</th><th>Role</th><th>Produk</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Stok Dipotong</th></tr></thead><tbody>`;
+          
+          filtered.forEach(o => {
+            let statusClass = "";
+            let statusText = "";
+            if (o.status === "proses") { statusClass = "status-proses"; statusText = "⏳ Proses"; }
+            else if (o.status === "berhasil") { statusClass = "status-berhasil"; statusText = "✅ Berhasil"; }
+            else { statusClass = "status-gagal"; statusText = "❌ Gagal"; }
+            
+            tbl += `
+              <tr>
+                <td>${o.id}</td>
+                <td>${new Date(o.createdAt).toLocaleDateString()} ${new Date(o.createdAt).toLocaleTimeString()}</td>
+                <td>${escapeHtml(o.customerName)}</td>
+                <td>${escapeHtml(o.customerEmail)}</td>
+                <td>${o.customerRole === "reseller" ? "Reseller" : (o.customerRole === "member" ? "Member" : "Guest")}</td>
+                <td>${escapeHtml(o.productName)}</td>
+                <td>${o.quantity}</td>
+                <td>Rp ${o.unitPrice.toLocaleString()}</td>
+                <td>Rp ${o.totalPrice.toLocaleString()}</td>
+                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                <td>${o.stockDeducted ? "✅ Sudah" : "❌ Belum"}</td>
+              </tr>
+            `;
+          });
+          tbl += `</tbody></table></div>`;
+          document.getElementById("orderTicketResult").innerHTML = tbl;
+        };
+        
+        renderOrders();
+        
+        document.getElementById("filterOrderBtn").onclick = () => {
+          const search = document.getElementById("orderSearch").value;
+          const status = document.getElementById("statusFilter").value;
+          renderOrders(search, status);
+        };
+        document.getElementById("resetOrderBtn").onclick = () => {
+          document.getElementById("orderSearch").value = "";
+          document.getElementById("statusFilter").value = "all";
+          renderOrders("", "all");
+        };
+      };
+
+      const renderTicket = () => {
+        contentDiv.innerHTML = `<div class="search-box"><input type="text" id="ticketSearch" placeholder="Cari member/reseller (nama/email/nomor)"><button id="ticketSearchBtn">Cari</button></div>
+        <div id="ticketResult"></div>`;
+        const targetRoles = users.filter(u => u.role === "member" || u.role === "reseller");
+        const showMembers = (filter = "") => {
+          const filtered = targetRoles.filter(m => m.name.toLowerCase().includes(filter) || m.email.toLowerCase().includes(filter) || m.phone.includes(filter));
+          let tbl = `<div class="table-responsive"><table class="data-table"><thead><tr><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th></tr></thead><tbody>`;
+          filtered.forEach(m => {
+            const orderCount = orders.filter(o => o.customerEmail === m.email).length;
+            tbl += `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td>${escapeHtml(m.phone)}</td><td>${m.role === "reseller" ? "Reseller" : "Member"}</td><td>${orderCount}</td></tr>`;
+          });
+          tbl += `</tbody></table></div>`;
+          document.getElementById("ticketResult").innerHTML = tbl;
+        };
+        showMembers();
+        document.getElementById("ticketSearchBtn").onclick = () => {
+          const val = document.getElementById("ticketSearch").value.toLowerCase();
+          showMembers(val);
+        };
+      };
+
+      document.getElementById("tabUsers").onclick = () => { setActiveTab("tabUsers"); currentTab = "tabUsers"; renderUserManagement(); };
+      document.getElementById("tabProducts").onclick = () => { setActiveTab("tabProducts"); currentTab = "tabProducts"; renderProductManagement(); };
+      document.getElementById("tabOrders").onclick = () => { setActiveTab("tabOrders"); currentTab = "tabOrders"; renderOrderTicket(); };
+      document.getElementById("tabTicket").onclick = () => { setActiveTab("tabTicket"); currentTab = "tabTicket"; renderTicket(); };
+      function setActiveTab(activeId) {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        document.getElementById(activeId).classList.add("active");
+      }
+      if (currentTab === "tabUsers") renderUserManagement();
+      else if (currentTab === "tabProducts") renderProductManagement();
+      else if (currentTab === "tabOrders") renderOrderTicket();
+      else if (currentTab === "tabTicket") renderTicket();
+      else renderUserManagement();
     }
 
-    function showAdminPanel() {
-      container.innerHTML = `<div class="panel"><h2><i class="fas fa-shield-alt"></i> Dashboard Admin</h2><div class="tab-bar"><button class="tab ${adminCurrentTab==='tabProducts'?'active':''}" id="tabProducts">📦 Produk</button><button class="tab ${adminCurrentTab==='tabOrders'?'active':''}" id="tabOrders">📑 Order</button><button class="tab ${adminCurrentTab==='tabBackup'?'active':''}" id="tabBackup">💾 Backup WA</button></div><div id="adminContent"></div></div>`;
-      const div = document.getElementById("adminContent");
+    function showAdminPanel(includeTicket = true) {
+      currentView = "admin";
+      let html = `<div class="panel"><h2><i class="fas fa-shield-alt"></i> Dashboard Admin</h2>
+        <div class="tab-bar"><button class="tab ${adminCurrentTab === 'tabProducts' ? 'active' : ''}" id="tabProducts">📦 Kelola Produk</button><button class="tab ${adminCurrentTab === 'tabOrders' ? 'active' : ''}" id="tabOrders">📑 Order</button><button class="tab ${adminCurrentTab === 'tabBackup' ? 'active' : ''}" id="tabBackup">💾 Backup WA</button>${includeTicket ? '<button class="tab" id="tabTicketMember">🎫 Ticket Member & Reseller</button>' : ''}</div>
+        <div id="adminContent"></div></div>`;
+      container.innerHTML = html;
+      const contentDiv = document.getElementById("adminContent");
 
       const renderProducts = () => {
-        div.innerHTML = `<div class="product-mgmt-grid" id="adminProdGrid"></div><div style="text-align:center;"><button id="updateAllBtn" class="btn-update-all">Update Semua Produk</button></div>`;
-        const grid = document.getElementById("adminProdGrid");
-        grid.innerHTML = products.map(p => `<div class="product-mgmt-card"><div class="product-mgmt-name">${escapeHtml(p.name)}</div><div class="product-mgmt-field"><label>Harga</label><input type="number" id="price-${p.id}" value="${p.price}"></div><div class="product-mgmt-field"><label>Stok</label><input type="number" id="stock-${p.id}" value="${p.stock}" min="0"></div><div class="product-mgmt-field"><label>Diskon %</label><input type="number" id="discount-${p.id}" value="${p.discount}" min="0" max="100"></div><button class="updateProd" data-id="${p.id}">Update</button></div>`).join('');
-        document.querySelectorAll(".updateProd").forEach(btn => btn.onclick = () => { const id=parseInt(btn.dataset.id); updateProduct(id, document.getElementById(`stock-${id}`).value, document.getElementById(`price-${id}`).value, undefined, document.getElementById(`discount-${id}`).value); });
-        document.getElementById("updateAllBtn").onclick = updateAllProducts;
+        let gridHtml = `<div class="product-mgmt-grid">`;
+        products.forEach(p => {
+          gridHtml += `
+            <div class="product-mgmt-card">
+              <div class="product-mgmt-name">${escapeHtml(p.name)}</div>
+              <div class="product-mgmt-field">
+                <label>Harga (Rp)</label>
+                <input type="number" id="price-${p.id}" value="${p.price}" step="500">
+              </div>
+              <div class="product-mgmt-field">
+                <label>Stok</label>
+                <input type="number" id="stock-${p.id}" value="${p.stock}" min="0">
+              </div>
+              <div class="product-mgmt-field">
+                <label>Diskon (%)</label>
+                <input type="number" id="discount-${p.id}" value="${p.discount}" min="0" max="100">
+              </div>
+              <button class="updateProd" data-id="${p.id}">Update Produk Ini</button>
+            </div>
+          `;
+        });
+        gridHtml += `</div>`;
+        gridHtml += `<div style="text-align:center; margin-top:24px;"><button id="updateAllBtn" class="btn-update-all"><i class="fas fa-save"></i> Update Semua Produk Sekaligus</button></div>`;
+        contentDiv.innerHTML = gridHtml;
+        document.querySelectorAll(".updateProd").forEach(btn => {
+          btn.onclick = () => {
+            const id = parseInt(btn.dataset.id);
+            const newPrice = document.getElementById(`price-${id}`).value;
+            const newStock = document.getElementById(`stock-${id}`).value;
+            const newDiscount = document.getElementById(`discount-${id}`).value;
+            adminUpdateProduct(id, newStock, newPrice, undefined, newDiscount);
+          };
+        });
+        document.getElementById("updateAllBtn").onclick = updateAllProductsFromGrid;
       };
+
       const renderOrders = () => {
-        if(orders.length===0){ div.innerHTML="<p>Belum ada order</p>"; return; }
-        div.innerHTML = `<div class="table-responsive"><table class="data-table"><thead><tr><th>Produk</th><th>Pembeli</th><th>Role</th><th>Jumlah</th><th>Total</th><th>Status</th><th>Stok Dipotong</th><th>Aksi</th></tr></thead><tbody>${orders.map(o => `<tr><td>${escapeHtml(o.productName)}</td><td>${escapeHtml(o.customerName)}</td><td>${o.customerRole}</td><td>${o.quantity}</td><td>Rp ${o.totalPrice.toLocaleString()}</td><td><select class="statusSelect" data-id="${o.id}"><option ${o.status==='proses'?'selected':''} value="proses">Proses</option><option ${o.status==='berhasil'?'selected':''} value="berhasil">Berhasil</option><option ${o.status==='gagal'?'selected':''} value="gagal">Gagal</option></select></td><td>${o.stockDeducted ? '✅ Sudah' : '❌ Belum'}</td><td><button class="updateOrder" data-id="${o.id}">Update</button></td></tr>`).join('')}</tbody></table></div>`;
-        document.querySelectorAll(".updateOrder").forEach(btn => btn.onclick = () => { const oid=parseInt(btn.dataset.id); const select=document.querySelector(`.statusSelect[data-id="${oid}"]`); updateOrderStatus(oid, select.value); });
+        if (orders.length === 0) { contentDiv.innerHTML = "<p>Belum ada order</p>"; return; }
+        let tbl = `<div class="table-responsive"><table class="data-table"><thead>  <th>Produk</th><th>Pembeli</th><th>Role</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Stok Dipotong</th><th>Aksi</th> </thead><tbody>`;
+        orders.forEach(o => {
+          tbl += `
+              <tr>
+                <td>${escapeHtml(o.productName)}</td>
+                <td>${escapeHtml(o.customerName)}</td>
+                <td>${o.customerRole}</td>
+                <td>${o.quantity}</td>
+                <td>Rp ${o.unitPrice.toLocaleString()}</td>
+                <td>Rp ${o.totalPrice.toLocaleString()}</td>
+                <td>
+                  <select class="statusSelect" data-id="${o.id}">
+                    <option value="proses" ${o.status === "proses" ? "selected" : ""}>Proses</option>
+                    <option value="berhasil" ${o.status === "berhasil" ? "selected" : ""}>Berhasil</option>
+                    <option value="gagal" ${o.status === "gagal" ? "selected" : ""}>Gagal</option>
+                  </select>
+                </td>
+                <td>${o.stockDeducted ? "✅ Sudah" : "❌ Belum"}</td>
+                <td><button class="updateOrder" data-id="${o.id}">Update</button></td>
+              </tr>
+          `;
+        });
+        tbl += `</tbody> </div>`;
+        contentDiv.innerHTML = tbl;
+        document.querySelectorAll(".updateOrder").forEach(btn => {
+          btn.onclick = () => {
+            const oid = parseInt(btn.dataset.id);
+            const select = document.querySelector(`.statusSelect[data-id="${oid}"]`);
+            adminUpdateOrderStatus(oid, select.value);
+          };
+        });
       };
-      const renderBackup = () => { div.innerHTML = `<button id="backupBtn" style="background:#25D366;padding:12px 24px;">📲 Backup ke WhatsApp Admin</button>`; document.getElementById("backupBtn").onclick = backupWA; };
-      document.getElementById("tabProducts").onclick = () => { setActive("tabProducts"); adminCurrentTab="tabProducts"; renderProducts(); };
-      document.getElementById("tabOrders").onclick = () => { setActive("tabOrders"); adminCurrentTab="tabOrders"; renderOrders(); };
-      document.getElementById("tabBackup").onclick = () => { setActive("tabBackup"); adminCurrentTab="tabBackup"; renderBackup(); };
-      function setActive(id) { document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active")); document.getElementById(id).classList.add("active"); }
-      if (adminCurrentTab==="tabProducts") renderProducts();
-      else if (adminCurrentTab==="tabOrders") renderOrders();
-      else renderBackup();
+
+      const renderBackup = () => {
+        contentDiv.innerHTML = `<button id="doBackupBtn" style="background:#25D366; padding:10px 24px;">📲 Backup ke WhatsApp Admin</button>`;
+        document.getElementById("doBackupBtn").onclick = backupToWhatsApp;
+      };
+
+      const renderTicketMember = () => {
+        contentDiv.innerHTML = `<div class="search-box"><input type="text" id="ticketAdminSearch" placeholder="Cari member/reseller (nama/email/nomor)"><button id="searchTicketAdmin">Cari</button></div><div id="ticketAdminResult"></div>`;
+        const targetRoles = users.filter(u => u.role === "member" || u.role === "reseller");
+        const show = (filter = "") => {
+          const filtered = targetRoles.filter(m => m.name.toLowerCase().includes(filter) || m.email.toLowerCase().includes(filter) || m.phone.includes(filter));
+          let tbl = `<div class="table-responsive"><table class="data-table"><thead>  <th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th> </thead><tbody>`;
+          filtered.forEach(m => {
+            const orderCount = orders.filter(o => o.customerEmail === m.email).length;
+            tbl += `
+                <tr>
+                  <td>${escapeHtml(m.name)}</td>
+                  <td>${escapeHtml(m.email)}</td>
+                  <td>${escapeHtml(m.phone)}</td>
+                  <td>${m.role === "reseller" ? "Reseller" : "Member"}</td>
+                  <td>${orderCount}</td>
+                </tr>
+            `;
+          });
+          tbl += `</tbody> </div>`;
+          document.getElementById("ticketAdminResult").innerHTML = tbl;
+        };
+        show();
+        document.getElementById("searchTicketAdmin").onclick = () => {
+          const val = document.getElementById("ticketAdminSearch").value.toLowerCase();
+          show(val);
+        };
+      };
+
+      document.getElementById("tabProducts").onclick = () => { setActive("tabProducts"); adminCurrentTab = "tabProducts"; renderProducts(); };
+      document.getElementById("tabOrders").onclick = () => { setActive("tabOrders"); adminCurrentTab = "tabOrders"; renderOrders(); };
+      document.getElementById("tabBackup").onclick = () => { setActive("tabBackup"); adminCurrentTab = "tabBackup"; renderBackup(); };
+      if (includeTicket && document.getElementById("tabTicketMember")) {
+        document.getElementById("tabTicketMember").onclick = () => { setActive("tabTicketMember"); adminCurrentTab = "tabTicketMember"; renderTicketMember(); };
+      }
+      function setActive(activeId) {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        document.getElementById(activeId).classList.add("active");
+      }
+      if (adminCurrentTab === "tabProducts") renderProducts();
+      else if (adminCurrentTab === "tabOrders") renderOrders();
+      else if (adminCurrentTab === "tabBackup") renderBackup();
+      else if (adminCurrentTab === "tabTicketMember" && includeTicket) renderTicketMember();
+      else renderProducts();
     }
 
-    function showSellerPanel() { showAdminPanel(); }
+    function showSellerPanel() {
+      showAdminPanel(false);
+    }
 
     function showMemberOrders() {
+      currentView = "myorders";
       const myOrders = orders.filter(o => o.customerEmail === currentUser.email);
-      if(myOrders.length===0) { container.innerHTML = `<div class="panel"><h2>Pesanan Saya</h2><p>Belum ada pesanan.</p></div>`; return; }
-      container.innerHTML = `<div class="panel"><h2>📋 Pesanan Saya</h2><div class="table-responsive"><table class="data-table"><thead><tr><th>Produk</th><th>Jumlah</th><th>Total</th><th>Status</th><th>Tanggal</th></tr></thead><tbody>${myOrders.map(o => `<tr><td>${escapeHtml(o.productName)}</td><td>${o.quantity}</td><td>Rp ${o.totalPrice.toLocaleString()}</td><td>${o.status==='berhasil'?'✅ Berhasil':o.status==='gagal'?'❌ Gagal':'⏳ Proses'}</td><td>${new Date(o.createdAt).toLocaleDateString()}</td></tr>`).join('')}</tbody></table></div></div>`;
+      if (myOrders.length === 0) {
+        container.innerHTML = `<div class="panel"><h2>Pesanan Saya</h2><p>Belum ada pesanan.</p></div>`;
+        return;
+      }
+      let html = `<div class="panel"><h2>📋 Pesanan Saya</h2><div class="table-responsive"><table class="data-table"><thead>  <th>Produk</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Stok Dipotong</th><th>Tanggal</th> </thead><tbody>`;
+      myOrders.forEach(o => {
+        html += `
+            <tr>
+              <td>${escapeHtml(o.productName)}</td>
+              <td>${o.quantity}</td>
+              <td>Rp ${o.unitPrice.toLocaleString()}</td>
+              <td>Rp ${o.totalPrice.toLocaleString()}</td>
+              <td>${o.status === "berhasil" ? "✅ Berhasil" : (o.status === "gagal" ? "❌ Gagal" : "⏳ Proses")}</td>
+              <td>${o.stockDeducted ? "✅ Sudah" : "❌ Belum"}</td>
+              <td>${new Date(o.createdAt).toLocaleDateString()}</td>
+            </tr>
+        `;
+      });
+      html += `</tbody> </div></div>`;
+      container.innerHTML = html;
     }
   }
 
-  init();
+  function getIcon(name) {
+    const n = name.toLowerCase();
+    if (n.includes("alight")) return "fa-film";
+    if (n.includes("canva")) return "fa-palette";
+    if (n.includes("capcut")) return "fa-video";
+    if (n.includes("netflix")) return "fa-tv";
+    if (n.includes("spotify")) return "fa-music";
+    if (n.includes("youtube")) return "fa-youtube";
+    return "fa-crown";
+  }
+
+  function escapeHtml(str) { return String(str).replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+  window.onclick = function(e) { if (e.target === document.getElementById("globalModal")) closeModal(); };
+  loadData();
+  renderApp();
 </script>
 </body>
 </html>
