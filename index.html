@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>ATHA STORE | Premium Digital Account</title>
+  <title>ATHA STORE | Multi-Role System</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -12,54 +12,35 @@
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
       background: radial-gradient(circle at 10% 20%, #f5f9ff, #eef2fa);
       color: #1a2c3e;
-      overflow-x: hidden;
     }
-
-    /* modern glass morphism */
-    .glass {
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
-    }
-
-    .container {
-      max-width: 1300px;
-      margin: 0 auto;
-      padding: 0 28px;
-    }
-
-    /* navbar */
     .navbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      padding: 20px 32px;
-      background: rgba(18, 52, 77, 0.85);
-      backdrop-filter: blur(15px);
-      border-bottom: 1px solid rgba(255,255,240,0.2);
+      padding: 16px 32px;
+      background: rgba(18, 52, 77, 0.92);
+      backdrop-filter: blur(12px);
       position: sticky;
       top: 0;
       z-index: 100;
+      border-bottom: 1px solid rgba(255,255,240,0.2);
     }
     .logo {
-      font-size: 1.9rem;
+      font-size: 1.8rem;
       font-weight: 800;
-      background: linear-gradient(135deg, #FFF, #a0e7ff);
+      background: linear-gradient(135deg, #FFF, #9ad7f5);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      letter-spacing: -0.5px;
     }
     .nav-links {
       display: flex;
-      gap: 20px;
+      gap: 16px;
       align-items: center;
       flex-wrap: wrap;
     }
@@ -69,7 +50,7 @@
       color: #eef5ff;
       font-weight: 500;
       cursor: pointer;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       padding: 8px 16px;
       border-radius: 40px;
       transition: 0.2s;
@@ -79,82 +60,72 @@
     }
     .user-badge {
       background: #2c6e8f;
-      padding: 6px 16px;
+      padding: 6px 14px;
       border-radius: 40px;
-      font-size: 0.85rem;
-      font-weight: 500;
+      font-size: 0.8rem;
     }
-
-    /* hero */
     .hero {
       text-align: center;
-      padding: 60px 20px 40px;
+      padding: 50px 20px 30px;
     }
     .hero h1 {
-      font-size: 3.5rem;
+      font-size: 3rem;
       font-weight: 800;
       background: linear-gradient(145deg, #1c5d7a, #0f3e53);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
     }
-    .hero p {
-      max-width: 600px;
-      margin: 20px auto;
-      color: #3a5f74;
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 24px;
     }
-
-    /* product grid */
     .product-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: 30px;
+      gap: 28px;
       margin: 40px 0;
     }
     .product-card {
       background: white;
-      border-radius: 36px;
+      border-radius: 32px;
       padding: 24px;
-      transition: all 0.3s ease;
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.05);
       border: 1px solid rgba(0,0,0,0.03);
     }
     .product-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 30px 40px -18px rgba(0, 50, 70, 0.2);
-      border-color: #cbe2ef;
+      transform: translateY(-6px);
+      box-shadow: 0 28px 38px -18px rgba(0, 50, 70, 0.2);
     }
     .product-icon {
-      font-size: 2.5rem;
-      width: 60px;
-      height: 60px;
+      font-size: 2.2rem;
+      width: 56px;
+      height: 56px;
+      background: #eef5fc;
+      border-radius: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #eef5fc;
-      border-radius: 24px;
-      margin-bottom: 20px;
-      color: #2c7a9e;
+      margin-bottom: 18px;
     }
     .product-name {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 700;
-      line-height: 1.3;
-      margin: 12px 0 10px;
+      margin: 12px 0 8px;
     }
     .price-stock {
       display: flex;
       justify-content: space-between;
-      align-items: baseline;
       margin: 16px 0;
       font-weight: 600;
     }
     .price {
-      font-size: 1.3rem;
-      color: #1e6a50;
       background: #e2f3ec;
       padding: 4px 12px;
       border-radius: 40px;
+      color: #1e6a50;
     }
     .stock {
       background: #ecf3f8;
@@ -174,95 +145,19 @@
       border-radius: 50px;
       font-weight: 700;
       color: white;
-      font-size: 0.9rem;
       cursor: pointer;
       transition: 0.2s;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
     }
     .order-btn:disabled {
       background: #b9dac9;
       cursor: not-allowed;
     }
-
-    /* modal modern */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(5px);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    .modal-card {
-      background: white;
-      max-width: 450px;
-      width: 90%;
-      border-radius: 40px;
-      padding: 32px;
-      animation: fadeUp 0.25s ease;
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .modal-card h3 {
-      font-size: 1.7rem;
-      margin-bottom: 20px;
-    }
-    .modal-card input, .modal-card select {
-      width: 100%;
-      padding: 14px;
-      margin-bottom: 16px;
-      border: 1px solid #ddd;
-      border-radius: 60px;
-      font-size: 0.9rem;
-    }
-    .role-select {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    .role-opt {
-      flex: 1;
-      text-align: center;
-      padding: 8px;
-      background: #eef2f6;
-      border-radius: 60px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .role-opt.active {
-      background: #2c7a9e;
-      color: white;
-    }
-    .modal-card button {
-      width: 100%;
-      padding: 12px;
-      border-radius: 60px;
-      background: #1d6f8f;
-      color: white;
-      border: none;
-      font-weight: 600;
-      margin-top: 8px;
-    }
-    .switch-link {
-      text-align: center;
-      margin-top: 16px;
-      color: #2c7a9e;
-      cursor: pointer;
-      font-size: 0.85rem;
-    }
-
-    /* admin panel */
-    .admin-panel, .orders-panel {
+    /* Panel umum */
+    .panel {
       background: white;
       border-radius: 32px;
       padding: 28px;
@@ -272,9 +167,9 @@
     .tab-bar {
       display: flex;
       gap: 12px;
-      margin-bottom: 24px;
       border-bottom: 1px solid #e2e8f0;
       padding-bottom: 12px;
+      margin-bottom: 24px;
     }
     .tab {
       background: none;
@@ -293,31 +188,61 @@
       border-collapse: collapse;
     }
     th, td {
-      padding: 12px 6px;
+      padding: 12px 8px;
       text-align: left;
       border-bottom: 1px solid #e2e8f0;
     }
-    input.small-input {
-      width: 80px;
-      padding: 6px;
-      border-radius: 30px;
+    input, select {
+      padding: 8px 12px;
+      border-radius: 40px;
       border: 1px solid #ccc;
     }
-    .backup-wa {
-      background: #25D366;
-      margin-top: 20px;
-      display: inline-block;
+    button {
+      background: #1d6f8f;
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 40px;
+      cursor: pointer;
+    }
+    .search-box {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .search-box input {
+      flex: 1;
+      max-width: 300px;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-card {
+      background: white;
+      max-width: 450px;
+      width: 90%;
+      border-radius: 40px;
+      padding: 28px;
     }
     footer {
       text-align: center;
       padding: 40px 20px;
       color: #517f94;
     }
-
     @media (max-width: 680px) {
       .navbar { flex-direction: column; gap: 12px; }
-      .hero h1 { font-size: 2.2rem; }
-      .product-grid { gap: 20px; }
+      .hero h1 { font-size: 2rem; }
     }
   </style>
 </head>
@@ -333,15 +258,12 @@
   </div>
 </div>
 <div class="container" id="appContent"></div>
-<footer>© ATHA STORE • Semua produk bergaransi • Hubungi admin via WhatsApp untuk info lebih lanjut</footer>
+<footer>© ATHA STORE • Multi-role system • Owner dapat mengelola semua akun</footer>
 
-<!-- Modal Global -->
-<div id="globalModal" class="modal">
-  <div class="modal-card" id="modalInner"></div>
-</div>
+<div id="globalModal" class="modal"><div class="modal-card" id="modalInner"></div></div>
 
 <script>
-  // ====================== DATA ======================
+  // ======================== DATA INISIAL ========================
   const DEFAULT_PRODUCTS = [
     { id: 1, name: "Alight Motion Private (1 Tahun)", category: "Editing Tools", price: 4000, stock: 10 },
     { id: 2, name: "Canva 1 Bulan", category: "Editing Tools", price: 2000, stock: 10 },
@@ -372,11 +294,11 @@
 
   let users = [];      // { id, name, email, phone, password, role }
   let products = [];
-  let orders = [];     // { id, productId, productName, quantity, totalPrice, status, customerName, customerEmail, createdAt }
+  let orders = [];
   let currentUser = null;
   const ADMIN_WA = "6281910545769";
 
-  // helper
+  // helper save/load
   function saveToLocal() {
     localStorage.setItem("athastore_users", JSON.stringify(users));
     localStorage.setItem("athastore_products", JSON.stringify(products));
@@ -385,11 +307,15 @@
 
   function loadData() {
     const storedUsers = localStorage.getItem("athastore_users");
-    if (storedUsers) users = JSON.parse(storedUsers);
-    else {
+    if (storedUsers) {
+      users = JSON.parse(storedUsers);
+    } else {
+      // Default users: admin, member, dan dua owner
       users = [
         { id: 1, name: "Admin ATHA", email: "admin@athastore.com", phone: "08123456789", password: "admin123", role: "admin" },
-        { id: 2, name: "Member Demo", email: "member@demo.com", phone: "08123456788", password: "member123", role: "member" }
+        { id: 2, name: "Member Demo", email: "member@demo.com", phone: "08123456788", password: "member123", role: "member" },
+        { id: 3, name: "rafi", email: "rapiatha5@gmail.com", phone: "081910545769", password: "rafiganteng", role: "owner" },
+        { id: 4, name: "Rafi Atha", email: "rafiathamusyaffa@gmail.com", phone: "087730365877", password: "rafiatha", role: "owner" }
       ];
     }
     const storedProducts = localStorage.getItem("athastore_products");
@@ -402,18 +328,17 @@
 
   // Kirim order ke WA admin
   function notifyAdminOrder(order) {
-    const msg = `*ORDER BARU ATHA STORE* 🛒\n\nNama: ${order.customerName}\nEmail: ${order.customerEmail}\nProduk: ${order.productName}\nJumlah: ${order.quantity}\nTotal: Rp ${order.totalPrice.toLocaleString()}\nStatus: ${order.status}\n\nSegera diproses ya!`;
+    const msg = `*ORDER BARU ATHA STORE* 🛒\n\nNama: ${order.customerName}\nEmail: ${order.customerEmail}\nProduk: ${order.productName}\nJumlah: ${order.quantity}\nTotal: Rp ${order.totalPrice.toLocaleString()}\nStatus: ${order.status}\n\nSegera diproses!`;
     window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`, "_blank");
   }
 
-  // Place order (guest / member)
+  // Place order (guest atau member)
   function placeOrder(productId, quantity, customerName, customerEmail) {
     const product = products.find(p => p.id === productId);
     if (!product || product.stock < quantity) {
       alert("Stok tidak mencukupi!");
       return false;
     }
-    // kurangi stok
     product.stock -= quantity;
     const total = product.price * quantity;
     const newOrder = {
@@ -424,7 +349,7 @@
       totalPrice: total,
       status: "proses",
       customerName: customerName,
-      customerEmail: customerEmail || "guest@email.com",
+      customerEmail: customerEmail,
       createdAt: new Date().toISOString()
     };
     orders.unshift(newOrder);
@@ -435,7 +360,7 @@
     return true;
   }
 
-  // Admin functions
+  // ======================== ADMIN / SELLER / OWNER FUNCTIONS ========================
   function adminUpdateProduct(pid, newStock, newPrice) {
     const prod = products.find(p => p.id === pid);
     if (prod) {
@@ -464,11 +389,49 @@
     orders.forEach(o => {
       orderText += `ID:${o.id} | ${o.productName} | ${o.quantity} pcs | Status: ${o.status} | ${o.customerName}\n`;
     });
-    const msg = `${prodText}\n${orderText}\nWaktu backup: ${new Date().toLocaleString()}`;
+    const msg = `${prodText}\n${orderText}\nWaktu: ${new Date().toLocaleString()}`;
     window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`, "_blank");
   }
 
-  // Auth modals
+  // Owner: buat user baru (admin/seller)
+  function ownerCreateUser(name, email, phone, password, role) {
+    if (!["admin", "seller"].includes(role)) {
+      alert("Role hanya bisa admin atau seller");
+      return false;
+    }
+    if (users.find(u => u.email === email)) {
+      alert("Email sudah terdaftar");
+      return false;
+    }
+    if (users.find(u => u.phone === phone)) {
+      alert("Nomor telepon sudah terdaftar");
+      return false;
+    }
+    const newId = users.length + 1;
+    users.push({ id: newId, name, email, phone, password, role });
+    saveToLocal();
+    alert(`Berhasil membuat akun ${role}: ${name}`);
+    renderApp();
+    return true;
+  }
+
+  // Owner: hapus user (tidak bisa hapus diri sendiri)
+  function ownerDeleteUser(userId) {
+    if (userId === currentUser.id) {
+      alert("Tidak bisa menghapus akun sendiri");
+      return;
+    }
+    const user = users.find(u => u.id === userId);
+    if (user && user.role === "owner") {
+      alert("Tidak bisa menghapus owner lain");
+      return;
+    }
+    users = users.filter(u => u.id !== userId);
+    saveToLocal();
+    renderApp();
+  }
+
+  // ======================== MODAL LOGIN & REGISTER ========================
   function showLoginModal() {
     const modal = document.getElementById("globalModal");
     const inner = document.getElementById("modalInner");
@@ -476,29 +439,23 @@
       <h3><i class="fas fa-key"></i> Masuk</h3>
       <input type="email" id="loginEmail" placeholder="Email" autocomplete="email">
       <input type="password" id="loginPassword" placeholder="Password">
-      <div class="role-select">
-        <div class="role-opt active" data-role="member">Member</div>
-        <div class="role-opt" data-role="admin">Admin</div>
-      </div>
       <button id="loginBtnAction">Login</button>
-      <div class="switch-link" id="toRegister">Belum punya akun? Daftar</div>
-      <div class="switch-link" id="toForgot">Lupa password?</div>
+      <div class="switch-link" id="toRegister" style="margin-top:12px; text-align:center; color:#2c7a9e; cursor:pointer;">Belum punya akun? Daftar Member</div>
+      <div class="switch-link" id="toForgot" style="margin-top:8px; text-align:center; color:#2c7a9e; cursor:pointer;">Lupa password?</div>
     `;
     modal.style.display = "flex";
-    attachRoleSelect();
     document.getElementById("loginBtnAction").onclick = () => {
       const email = document.getElementById("loginEmail").value;
       const pwd = document.getElementById("loginPassword").value;
-      const selectedRole = document.querySelector(".role-opt.active").dataset.role;
-      const user = users.find(u => u.email === email && u.password === pwd && u.role === selectedRole);
+      const user = users.find(u => u.email === email && u.password === pwd);
       if (user) {
         currentUser = { id: user.id, name: user.name, email: user.email, role: user.role };
         closeModal();
         renderApp();
-      } else alert("Email/password salah atau role tidak sesuai");
+      } else alert("Email/password salah");
     };
-    document.getElementById("toRegister").onclick = () => showRegisterModal();
-    document.getElementById("toForgot").onclick = () => showForgotModal();
+    document.getElementById("toRegister").onclick = () => { closeModal(); showRegisterModal(); };
+    document.getElementById("toForgot").onclick = () => { closeModal(); showForgotModal(); };
   }
 
   function showRegisterModal() {
@@ -511,7 +468,7 @@
       <input type="tel" id="regPhone" placeholder="Nomor Telepon">
       <input type="password" id="regPassword" placeholder="Password">
       <button id="registerAction">Daftar</button>
-      <div class="switch-link" id="toLogin">Sudah punya akun? Login</div>
+      <div class="switch-link" id="toLogin" style="margin-top:12px; text-align:center;">Sudah punya akun? Login</div>
     `;
     document.getElementById("registerAction").onclick = () => {
       const name = document.getElementById("regName").value.trim();
@@ -525,9 +482,10 @@
       users.push({ id: newId, name, email, phone, password: pwd, role: "member" });
       saveToLocal();
       alert("Registrasi berhasil! Silakan login.");
+      closeModal();
       showLoginModal();
     };
-    document.getElementById("toLogin").onclick = () => showLoginModal();
+    document.getElementById("toLogin").onclick = () => { closeModal(); showLoginModal(); };
     modal.style.display = "flex";
   }
 
@@ -538,7 +496,7 @@
       <h3><i class="fas fa-lock"></i> Reset Password</h3>
       <input type="text" id="resetIdentifier" placeholder="Email atau Nomor Telepon">
       <button id="resetBtn">Reset Password</button>
-      <div class="switch-link" id="backLogin">Kembali Login</div>
+      <div class="switch-link" id="backLogin" style="margin-top:12px; text-align:center;">Kembali Login</div>
     `;
     document.getElementById("resetBtn").onclick = () => {
       const identifier = document.getElementById("resetIdentifier").value;
@@ -553,24 +511,15 @@
         showLoginModal();
       } else alert("Password minimal 4 karakter");
     };
-    document.getElementById("backLogin").onclick = () => showLoginModal();
+    document.getElementById("backLogin").onclick = () => { closeModal(); showLoginModal(); };
     modal.style.display = "flex";
-  }
-
-  function attachRoleSelect() {
-    document.querySelectorAll(".role-opt").forEach(opt => {
-      opt.onclick = () => {
-        document.querySelectorAll(".role-opt").forEach(o => o.classList.remove("active"));
-        opt.classList.add("active");
-      };
-    });
   }
 
   function closeModal() {
     document.getElementById("globalModal").style.display = "none";
   }
 
-  // Order modal (guest or member)
+  // Order modal (guest/member)
   function showOrderModal(productId, productName, stockAvail) {
     const isMember = currentUser && currentUser.role === "member";
     const defaultName = isMember ? currentUser.name : "";
@@ -583,7 +532,7 @@
       <input type="text" id="orderName" placeholder="Nama lengkap" value="${escapeHtml(defaultName)}" ${isMember ? 'readonly' : ''}>
       <input type="email" id="orderEmail" placeholder="Email" value="${escapeHtml(defaultEmail)}" ${isMember ? 'readonly' : ''}>
       <button id="confirmOrderBtn">Konfirmasi & Kirim ke WA</button>
-      <div class="switch-link" id="cancelOrder">Batal</div>
+      <div class="switch-link" id="cancelOrder" style="margin-top:12px; text-align:center;">Batal</div>
     `;
     modal.style.display = "flex";
     document.getElementById("confirmOrderBtn").onclick = () => {
@@ -600,18 +549,20 @@
     document.getElementById("cancelOrder").onclick = () => closeModal();
   }
 
-  // RENDER UI
+  // ======================== RENDER UTAMA ========================
   function renderApp() {
     const container = document.getElementById("appContent");
     const navDiv = document.getElementById("navLinks");
     if (!container) return;
 
-    // navbar
+    // Navbar
     let navHtml = `<a href="#" id="navHome">🏠 Beranda</a>`;
     if (currentUser) {
-      navHtml += `<span class="user-badge"><i class="fas fa-user-circle"></i> ${currentUser.name} (${currentUser.role === "admin" ? "Admin" : "Member"})</span>`;
-      if (currentUser.role === "admin") navHtml += `<a href="#" id="navAdmin">⚙️ Dashboard Admin</a>`;
-      else navHtml += `<a href="#" id="navMyOrders">📋 Pesanan Saya</a>`;
+      navHtml += `<span class="user-badge"><i class="fas fa-user-circle"></i> ${currentUser.name} (${currentUser.role === "owner" ? "Owner" : currentUser.role === "admin" ? "Admin" : currentUser.role === "seller" ? "Seller" : "Member"})</span>`;
+      if (currentUser.role === "owner") navHtml += `<a href="#" id="navOwnerPanel">👑 Owner Panel</a>`;
+      if (currentUser.role === "admin") navHtml += `<a href="#" id="navAdminPanel">📊 Dashboard Admin</a>`;
+      if (currentUser.role === "seller") navHtml += `<a href="#" id="navSellerPanel">🛍️ Panel Seller</a>`;
+      if (currentUser.role === "member") navHtml += `<a href="#" id="navMyOrders">📋 Pesanan Saya</a>`;
       navHtml += `<button id="logoutBtn">Keluar</button>`;
     } else {
       navHtml += `<button id="loginBtn">Masuk / Daftar</button>`;
@@ -619,13 +570,16 @@
     navDiv.innerHTML = navHtml;
 
     document.getElementById("navHome")?.addEventListener("click", (e) => { e.preventDefault(); showHome(); });
-    document.getElementById("navAdmin")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role==="admin") showAdminPanel(); });
-    document.getElementById("navMyOrders")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role==="member") showMemberOrders(); });
+    document.getElementById("navOwnerPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "owner") showOwnerPanel(); });
+    document.getElementById("navAdminPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "admin") showAdminPanel(false); });
+    document.getElementById("navSellerPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "seller") showSellerPanel(); });
+    document.getElementById("navMyOrders")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "member") showMemberOrders(); });
     document.getElementById("logoutBtn")?.addEventListener("click", () => { currentUser = null; renderApp(); });
     document.getElementById("loginBtn")?.addEventListener("click", () => showLoginModal());
 
     showHome();
 
+    // ========== HOME (PRODUK) ==========
     function showHome() {
       let html = `<div class="product-grid">`;
       products.forEach(prod => {
@@ -656,28 +610,101 @@
       });
     }
 
-    function showAdminPanel() {
-      let html = `<div class="admin-panel">
-        <h2><i class="fas fa-shield-alt"></i> Panel Admin</h2>
-        <div class="tab-bar">
-          <button class="tab active" id="tabProducts">📦 Produk</button>
-          <button class="tab" id="tabOrders">📑 Order</button>
-          <button class="tab" id="tabBackup">💾 Backup WA</button>
-        </div>
-        <div id="adminContent"></div>
-      </div>`;
+    // ========== PANEL OWNER (kelola semua user, lihat password, buat admin/seller) ==========
+    function showOwnerPanel() {
+      let html = `<div class="panel"><h2><i class="fas fa-crown"></i> Owner Panel</h2>
+        <div class="tab-bar"><button class="tab active" id="tabUsers">👥 Kelola User</button><button class="tab" id="tabTicket">🎫 Ticket Akun Member</button></div>
+        <div id="ownerContent"></div></div>`;
       container.innerHTML = html;
+      const contentDiv = document.getElementById("ownerContent");
 
+      const renderUserManagement = () => {
+        let search = `<div class="search-box"><input type="text" id="searchUser" placeholder="Cari nama/email/nomor"><button id="searchUserBtn">Cari</button></div>`;
+        let table = `<table><thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Password</th><th>Aksi</th></tr></thead><tbody id="userTableBody"></tbody></table>`;
+        contentDiv.innerHTML = search + table;
+        const renderUserList = (filter = "") => {
+          const filtered = users.filter(u => u.name.toLowerCase().includes(filter) || u.email.toLowerCase().includes(filter) || u.phone.includes(filter));
+          const tbody = document.getElementById("userTableBody");
+          tbody.innerHTML = filtered.map(u => `
+            <tr>
+              <td>${u.id}</td><td>${escapeHtml(u.name)}</td><td>${escapeHtml(u.email)}</td><td>${escapeHtml(u.phone)}</td><td>${u.role}</td>
+              <td><code>${escapeHtml(u.password)}</code></td>
+              <td>${u.id !== currentUser.id ? `<button class="delUser" data-id="${u.id}">Hapus</button>` : '-'}</td>
+            </tr>
+          `).join("");
+          document.querySelectorAll(".delUser").forEach(btn => {
+            btn.onclick = () => { if(confirm("Hapus user ini?")) ownerDeleteUser(parseInt(btn.dataset.id)); };
+          });
+        };
+        renderUserList();
+        document.getElementById("searchUserBtn").onclick = () => {
+          const val = document.getElementById("searchUser").value.toLowerCase();
+          renderUserList(val);
+        };
+        // Form tambah admin/seller
+        const formHtml = `<hr><h3>Buat Akun Baru (Admin / Seller)</h3>
+          <input type="text" id="newName" placeholder="Nama" style="width:200px;"> 
+          <input type="email" id="newEmail" placeholder="Email"> 
+          <input type="tel" id="newPhone" placeholder="Nomor"> 
+          <input type="password" id="newPass" placeholder="Password"> 
+          <select id="newRole"><option value="admin">Admin</option><option value="seller">Seller</option></select>
+          <button id="createUserBtn">Buat Akun</button>`;
+        contentDiv.insertAdjacentHTML("beforeend", formHtml);
+        document.getElementById("createUserBtn").onclick = () => {
+          const name = document.getElementById("newName").value.trim();
+          const email = document.getElementById("newEmail").value.trim();
+          const phone = document.getElementById("newPhone").value.trim();
+          const pass = document.getElementById("newPass").value;
+          const role = document.getElementById("newRole").value;
+          if (!name || !email || !phone || !pass) return alert("Isi semua field");
+          ownerCreateUser(name, email, phone, pass, role);
+        };
+      };
+
+      const renderTicket = () => {
+        contentDiv.innerHTML = `<div class="search-box"><input type="text" id="ticketSearch" placeholder="Cari member (nama/email/nomor)"><button id="ticketSearchBtn">Cari</button></div>
+        <div id="ticketResult"></div>`;
+        const members = users.filter(u => u.role === "member");
+        const showMembers = (filter = "") => {
+          const filtered = members.filter(m => m.name.toLowerCase().includes(filter) || m.email.toLowerCase().includes(filter) || m.phone.includes(filter));
+          let tbl = `<table><thead><tr><th>Nama</th><th>Email</th><th>Nomor</th><th>Total Order</th></tr></thead><tbody>`;
+          filtered.forEach(m => {
+            const orderCount = orders.filter(o => o.customerEmail === m.email).length;
+            tbl += `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td>${escapeHtml(m.phone)}</td><td>${orderCount}</td></tr>`;
+          });
+          tbl += `</tbody></table>`;
+          document.getElementById("ticketResult").innerHTML = tbl;
+        };
+        showMembers();
+        document.getElementById("ticketSearchBtn").onclick = () => {
+          const val = document.getElementById("ticketSearch").value.toLowerCase();
+          showMembers(val);
+        };
+      };
+
+      document.getElementById("tabUsers").onclick = () => { setActiveTab("tabUsers"); renderUserManagement(); };
+      document.getElementById("tabTicket").onclick = () => { setActiveTab("tabTicket"); renderTicket(); };
+      function setActiveTab(activeId) {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        document.getElementById(activeId).classList.add("active");
+      }
+      renderUserManagement();
+    }
+
+    // ========== PANEL ADMIN (kelola produk/order + ticket member) ==========
+    function showAdminPanel(includeTicket = true) {
+      let html = `<div class="panel"><h2><i class="fas fa-shield-alt"></i> Dashboard Admin</h2>
+        <div class="tab-bar"><button class="tab active" id="tabProducts">📦 Produk</button><button class="tab" id="tabOrders">📑 Order</button><button class="tab" id="tabBackup">💾 Backup WA</button>${includeTicket ? '<button class="tab" id="tabTicketMember">🎫 Ticket Member</button>' : ''}</div>
+        <div id="adminContent"></div></div>`;
+      container.innerHTML = html;
       const contentDiv = document.getElementById("adminContent");
+
       const renderProducts = () => {
         let tbl = `<table><thead><tr><th>Produk</th><th>Harga</th><th>Stok</th><th>Aksi</th></tr></thead><tbody>`;
         products.forEach(p => {
-          tbl += `<tr>
-            <td>${escapeHtml(p.name)}</td>
-            <td><input class="small-input" type="number" id="price-${p.id}" value="${p.price}"></td>
-            <td><input class="small-input" type="number" id="stock-${p.id}" value="${p.stock}" min="0"></td>
-            <td><button class="updateProd" data-id="${p.id}">Update</button></td>
-          </tr>`;
+          tbl += `<tr><td>${escapeHtml(p.name)}</td><td><input class="small-input" type="number" id="price-${p.id}" value="${p.price}" style="width:90px"></td>
+          <td><input class="small-input" type="number" id="stock-${p.id}" value="${p.stock}" min="0" style="width:80px"></td>
+          <td><button class="updateProd" data-id="${p.id}">Update</button></td></tr>`;
         });
         tbl += `</tbody></table>`;
         contentDiv.innerHTML = tbl;
@@ -690,24 +717,17 @@
           };
         });
       };
+
       const renderOrders = () => {
         if (orders.length === 0) { contentDiv.innerHTML = "<p>Belum ada order</p>"; return; }
         let tbl = `<table><thead><tr><th>Produk</th><th>Pembeli</th><th>Jumlah</th><th>Total</th><th>Status</th><th>Aksi</th></tr></thead><tbody>`;
         orders.forEach(o => {
-          tbl += `<tr>
-            <td>${escapeHtml(o.productName)}</td>
-            <td>${escapeHtml(o.customerName)}</td>
-            <td>${o.quantity}</td>
-            <td>Rp ${o.totalPrice.toLocaleString()}</td>
-            <td>
-              <select class="statusSelect" data-id="${o.id}">
-                <option value="proses" ${o.status === "proses" ? "selected" : ""}>Proses</option>
-                <option value="berhasil" ${o.status === "berhasil" ? "selected" : ""}>Berhasil</option>
-                <option value="gagal" ${o.status === "gagal" ? "selected" : ""}>Gagal</option>
-              </select>
-            </td>
-            <td><button class="updateOrder" data-id="${o.id}">Update</button></td>
-          </tr>`;
+          tbl += `<tr><td>${escapeHtml(o.productName)}</td><td>${escapeHtml(o.customerName)}</td><td>${o.quantity}</td>
+          <td>Rp ${o.totalPrice.toLocaleString()}</td>
+          <td><select class="statusSelect" data-id="${o.id}"><option value="proses" ${o.status === "proses" ? "selected" : ""}>Proses</option>
+          <option value="berhasil" ${o.status === "berhasil" ? "selected" : ""}>Berhasil</option>
+          <option value="gagal" ${o.status === "gagal" ? "selected" : ""}>Gagal</option></select></td>
+          <td><button class="updateOrder" data-id="${o.id}">Update</button></td></tr>`;
         });
         tbl += `</tbody></table>`;
         contentDiv.innerHTML = tbl;
@@ -719,29 +739,61 @@
           };
         });
       };
+
       const renderBackup = () => {
-        contentDiv.innerHTML = `<button class="backup-wa" style="background:#25D366; padding:12px 24px; border-radius:50px;">📲 Backup ke WhatsApp Admin</button>`;
-        document.querySelector(".backup-wa").onclick = backupToWhatsApp;
+        contentDiv.innerHTML = `<button id="doBackupBtn" style="background:#25D366; padding:10px 24px;">📲 Backup ke WhatsApp Admin</button>`;
+        document.getElementById("doBackupBtn").onclick = backupToWhatsApp;
       };
-      document.getElementById("tabProducts").onclick = () => { setActiveTab("tabProducts"); renderProducts(); };
-      document.getElementById("tabOrders").onclick = () => { setActiveTab("tabOrders"); renderOrders(); };
-      document.getElementById("tabBackup").onclick = () => { setActiveTab("tabBackup"); renderBackup(); };
-      function setActiveTab(activeId) {
+
+      const renderTicketMember = () => {
+        contentDiv.innerHTML = `<div class="search-box"><input type="text" id="ticketAdminSearch" placeholder="Cari member (nama/email/nomor)"><button id="searchTicketAdmin">Cari</button></div><div id="ticketAdminResult"></div>`;
+        const members = users.filter(u => u.role === "member");
+        const show = (filter = "") => {
+          const filtered = members.filter(m => m.name.toLowerCase().includes(filter) || m.email.toLowerCase().includes(filter) || m.phone.includes(filter));
+          let tbl = `<table><thead><tr><th>Nama</th><th>Email</th><th>Nomor</th><th>Total Order</th></tr></thead><tbody>`;
+          filtered.forEach(m => {
+            const orderCount = orders.filter(o => o.customerEmail === m.email).length;
+            tbl += `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td>${escapeHtml(m.phone)}</td><td>${orderCount}</td></tr>`;
+          });
+          tbl += `</tbody></table>`;
+          document.getElementById("ticketAdminResult").innerHTML = tbl;
+        };
+        show();
+        document.getElementById("searchTicketAdmin").onclick = () => {
+          const val = document.getElementById("ticketAdminSearch").value.toLowerCase();
+          show(val);
+        };
+      };
+
+      document.getElementById("tabProducts").onclick = () => { setActive("tabProducts"); renderProducts(); };
+      document.getElementById("tabOrders").onclick = () => { setActive("tabOrders"); renderOrders(); };
+      document.getElementById("tabBackup").onclick = () => { setActive("tabBackup"); renderBackup(); };
+      if (includeTicket && document.getElementById("tabTicketMember")) {
+        document.getElementById("tabTicketMember").onclick = () => { setActive("tabTicketMember"); renderTicketMember(); };
+      }
+      function setActive(activeId) {
         document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
         document.getElementById(activeId).classList.add("active");
       }
       renderProducts();
     }
 
+    // ========== PANEL SELLER (sama seperti admin tanpa ticket member) ==========
+    function showSellerPanel() {
+      showAdminPanel(false);
+    }
+
     function showMemberOrders() {
       const myOrders = orders.filter(o => o.customerEmail === currentUser.email);
       if (myOrders.length === 0) {
-        container.innerHTML = `<div class="orders-panel"><h2>Pesanan Saya</h2><p>Belum ada pesanan.</p></div>`;
+        container.innerHTML = `<div class="panel"><h2>Pesanan Saya</h2><p>Belum ada pesanan.</p></div>`;
         return;
       }
-      let html = `<div class="orders-panel"><h2>📋 Pesanan Saya</h2><table><thead><tr><th>Produk</th><th>Jumlah</th><th>Total</th><th>Status</th><th>Tanggal</th></tr></thead><tbody>`;
+      let html = `<div class="panel"><h2>📋 Pesanan Saya</h2><table><thead><tr><th>Produk</th><th>Jumlah</th><th>Total</th><th>Status</th><th>Tanggal</th></tr></thead><tbody>`;
       myOrders.forEach(o => {
-        html += `<tr><td>${escapeHtml(o.productName)}</td><td>${o.quantity}</td><td>Rp ${o.totalPrice.toLocaleString()}</td><td>${o.status === "berhasil" ? "✅ Berhasil" : (o.status === "gagal" ? "❌ Gagal" : "⏳ Proses")}</td><td>${new Date(o.createdAt).toLocaleDateString()}</td></tr>`;
+        html += `<tr><td>${escapeHtml(o.productName)}</td><td>${o.quantity}</td><td>Rp ${o.totalPrice.toLocaleString()}</td>
+        <td>${o.status === "berhasil" ? "✅ Berhasil" : (o.status === "gagal" ? "❌ Gagal" : "⏳ Proses")}</td>
+        <td>${new Date(o.createdAt).toLocaleDateString()}</td></tr>`;
       });
       html += `</tbody></table></div>`;
       container.innerHTML = html;
