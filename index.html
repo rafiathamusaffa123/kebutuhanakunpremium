@@ -81,18 +81,11 @@
       margin: 0 auto;
       padding: 0 24px;
     }
-    .section-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin: 30px 0 20px;
-      padding-left: 16px;
-      border-left: 5px solid #1d6f8f;
-    }
     .product-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
       gap: 28px;
-      margin: 20px 0 40px;
+      margin: 40px 0;
     }
     .product-card {
       background: white;
@@ -103,34 +96,6 @@
       border: 1px solid rgba(0,0,0,0.03);
       position: relative;
       overflow: hidden;
-    }
-    /* Animasi untuk produk best seller */
-    .product-card.bestseller-animate {
-      animation: pulse 2s infinite;
-      box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4);
-    }
-    @keyframes pulse {
-      0% {
-        box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4);
-      }
-      70% {
-        box-shadow: 0 0 0 15px rgba(231, 76, 60, 0);
-      }
-      100% {
-        box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
-      }
-    }
-    /* Animasi untuk produk populer */
-    .product-card.populer-animate {
-      animation: glow 1.5s ease-in-out infinite alternate;
-    }
-    @keyframes glow {
-      from {
-        box-shadow: 0 0 5px #ff9800, 0 0 10px #ff9800;
-      }
-      to {
-        box-shadow: 0 0 20px #ff9800, 0 0 30px #ff9800;
-      }
     }
     .product-card:hover {
       transform: translateY(-6px);
@@ -149,20 +114,10 @@
     .badge-populer {
       background: #ff9800;
       color: white;
-      animation: badgePulse 1s ease-in-out infinite alternate;
     }
     .badge-bestseller {
       background: #e74c3c;
       color: white;
-      animation: badgeShake 0.5s ease-in-out infinite alternate;
-    }
-    @keyframes badgePulse {
-      from { transform: scale(1); }
-      to { transform: scale(1.05); }
-    }
-    @keyframes badgeShake {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(3deg); }
     }
     .product-icon {
       font-size: 2.2rem;
@@ -192,16 +147,6 @@
       padding: 4px 12px;
       border-radius: 40px;
       color: #1e6a50;
-    }
-    .price.original {
-      background: #f0f0f0;
-      text-decoration: line-through;
-      color: #999;
-      font-size: 0.8rem;
-    }
-    .price.discounted {
-      background: #ff9800;
-      color: white;
     }
     .stock {
       background: #ecf3f8;
@@ -272,30 +217,10 @@
       padding: 20px;
       border: 1px solid #e2e8f0;
       transition: 0.2s;
-      position: relative;
     }
     .product-mgmt-card:hover {
       border-color: #cbd5e1;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-    .delete-product {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: #fee2e2;
-      color: #e74c3c;
-      border: none;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 0.8rem;
-      transition: 0.2s;
-    }
-    .delete-product:hover {
-      background: #e74c3c;
-      color: white;
-      transform: scale(1.05);
     }
     .product-mgmt-name {
       font-weight: 700;
@@ -304,7 +229,6 @@
       word-break: break-word;
       padding-bottom: 8px;
       border-bottom: 1px dashed #cbd5e1;
-      padding-right: 35px;
     }
     .product-mgmt-field {
       margin: 12px 0;
@@ -382,6 +306,15 @@
       border-bottom: 1px solid #e2e8f0;
       vertical-align: middle;
     }
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+    .data-table code {
+      background: #eef2f5;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+    }
     .search-box {
       display: flex;
       gap: 12px;
@@ -442,6 +375,18 @@
       font-size: 0.75rem;
       font-weight: 600;
     }
+    .status-proses {
+      background: #fff3e0;
+      color: #e67e22;
+    }
+    .status-berhasil {
+      background: #e0f7e8;
+      color: #27ae60;
+    }
+    .status-gagal {
+      background: #fee2e2;
+      color: #e74c3c;
+    }
     footer {
       text-align: center;
       padding: 40px 20px;
@@ -468,38 +413,38 @@
   </div>
 </div>
 <div class="container" id="appContent"></div>
-<footer>© ATHA STORE • Owner dapat mengelola semua produk & transaksi</footer>
+<footer>© ATHA STORE • Owner dapat menambah produk & menandai Populer/Best Seller</footer>
 
 <div id="globalModal" class="modal"><div class="modal-card" id="modalInner"></div></div>
 
 <script>
   // ======================== DATA INISIAL ========================
   const DEFAULT_PRODUCTS = [
-    { id: 1, name: "Alight Motion Private (1 Tahun)", category: "Editing Tools", price: 4000, stock: 10, badge: "", discount: 0 },
-    { id: 2, name: "Canva 1 Bulan", category: "Editing Tools", price: 2000, stock: 10, badge: "populer", discount: 10 },
-    { id: 3, name: "Canva 1 Tahun (Renew 1 Bulan)", category: "Editing Tools", price: 5000, stock: 10, badge: "", discount: 0 },
-    { id: 4, name: "Canva Lifetime", category: "Editing Tools", price: 6000, stock: 10, badge: "bestseller", discount: 15 },
-    { id: 5, name: "Canva Head 1 Bulan", category: "Editing Tools", price: 7000, stock: 10, badge: "", discount: 0 },
-    { id: 6, name: "CapCut Sharing 1 Bulan", category: "Editing Tools", price: 5000, stock: 10, badge: "", discount: 0 },
-    { id: 7, name: "CapCut Private 1 Bulan", category: "Editing Tools", price: 7000, stock: 10, badge: "", discount: 0 },
-    { id: 8, name: "VIU Lifetime", category: "Streaming & Movies", price: 4000, stock: 10, badge: "", discount: 0 },
-    { id: 9, name: "VIU Private Unlimited", category: "Streaming & Movies", price: 2000, stock: 10, badge: "", discount: 0 },
-    { id: 10, name: "Netflix 1 Profile 1 User 1 Bulan", category: "Streaming & Movies", price: 25000, stock: 10, badge: "bestseller", discount: 20 },
-    { id: 11, name: "Netflix 1 Profile 2 User 1 Bulan", category: "Streaming & Movies", price: 15000, stock: 10, badge: "", discount: 0 },
-    { id: 12, name: "Netflix Semi Private 1 Bulan", category: "Streaming & Movies", price: 27000, stock: 10, badge: "", discount: 0 },
-    { id: 13, name: "Netflix 1 Profile 1 User 1 Hari", category: "Streaming & Movies", price: 5000, stock: 10, badge: "", discount: 0 },
-    { id: 14, name: "Netflix 1 Profile 1 User 7 Hari", category: "Streaming & Movies", price: 10500, stock: 10, badge: "", discount: 0 },
-    { id: 15, name: "HBO MAX Sharing 8 User", category: "Streaming & Movies", price: 60000, stock: 10, badge: "", discount: 0 },
-    { id: 16, name: "HBO MAX Sharing 5 User", category: "Streaming & Movies", price: 10000, stock: 10, badge: "", discount: 0 },
-    { id: 17, name: "IQIYI Sharing 1 Bulan", category: "Streaming & Movies", price: 5000, stock: 10, badge: "", discount: 0 },
-    { id: 18, name: "Vidio Only TV 1 Tahun (Garansi 1 Bulan)", category: "Streaming & Movies", price: 5000, stock: 10, badge: "", discount: 0 },
-    { id: 19, name: "Vidio Sharing 2 User Mobile 1 Bulan", category: "Streaming & Movies", price: 17000, stock: 10, badge: "", discount: 0 },
-    { id: 20, name: "WeTV Sharing 6 User", category: "Streaming & Movies", price: 7000, stock: 10, badge: "", discount: 0 },
-    { id: 21, name: "WeTV Sharing 3 User", category: "Streaming & Movies", price: 8000, stock: 10, badge: "", discount: 0 },
-    { id: 22, name: "Spotify Individual Plan 1 Bulan", category: "Music & Social", price: 17500, stock: 10, badge: "populer", discount: 5 },
-    { id: 23, name: "YouTube Family Plan 1 Bulan", category: "Music & Social", price: 2000, stock: 10, badge: "", discount: 0 },
-    { id: 24, name: "YouTube Individual Plan 1 Bulan", category: "Music & Social", price: 8000, stock: 10, badge: "", discount: 0 },
-    { id: 25, name: "YouTube Head Plan 1 Bulan", category: "Music & Social", price: 9000, stock: 10, badge: "", discount: 0 }
+    { id: 1, name: "Alight Motion Private (1 Tahun)", category: "Editing Tools", price: 4000, stock: 10, badge: "" },
+    { id: 2, name: "Canva 1 Bulan", category: "Editing Tools", price: 2000, stock: 10, badge: "populer" },
+    { id: 3, name: "Canva 1 Tahun (Renew 1 Bulan)", category: "Editing Tools", price: 5000, stock: 10, badge: "" },
+    { id: 4, name: "Canva Lifetime", category: "Editing Tools", price: 6000, stock: 10, badge: "bestseller" },
+    { id: 5, name: "Canva Head 1 Bulan", category: "Editing Tools", price: 7000, stock: 10, badge: "" },
+    { id: 6, name: "CapCut Sharing 1 Bulan", category: "Editing Tools", price: 5000, stock: 10, badge: "" },
+    { id: 7, name: "CapCut Private 1 Bulan", category: "Editing Tools", price: 7000, stock: 10, badge: "" },
+    { id: 8, name: "VIU Lifetime", category: "Streaming & Movies", price: 4000, stock: 10, badge: "" },
+    { id: 9, name: "VIU Private Unlimited", category: "Streaming & Movies", price: 2000, stock: 10, badge: "" },
+    { id: 10, name: "Netflix 1 Profile 1 User 1 Bulan", category: "Streaming & Movies", price: 25000, stock: 10, badge: "bestseller" },
+    { id: 11, name: "Netflix 1 Profile 2 User 1 Bulan", category: "Streaming & Movies", price: 15000, stock: 10, badge: "" },
+    { id: 12, name: "Netflix Semi Private 1 Bulan", category: "Streaming & Movies", price: 27000, stock: 10, badge: "" },
+    { id: 13, name: "Netflix 1 Profile 1 User 1 Hari", category: "Streaming & Movies", price: 5000, stock: 10, badge: "" },
+    { id: 14, name: "Netflix 1 Profile 1 User 7 Hari", category: "Streaming & Movies", price: 10500, stock: 10, badge: "" },
+    { id: 15, name: "HBO MAX Sharing 8 User", category: "Streaming & Movies", price: 60000, stock: 10, badge: "" },
+    { id: 16, name: "HBO MAX Sharing 5 User", category: "Streaming & Movies", price: 10000, stock: 10, badge: "" },
+    { id: 17, name: "IQIYI Sharing 1 Bulan", category: "Streaming & Movies", price: 5000, stock: 10, badge: "" },
+    { id: 18, name: "Vidio Only TV 1 Tahun (Garansi 1 Bulan)", category: "Streaming & Movies", price: 5000, stock: 10, badge: "" },
+    { id: 19, name: "Vidio Sharing 2 User Mobile 1 Bulan", category: "Streaming & Movies", price: 17000, stock: 10, badge: "" },
+    { id: 20, name: "WeTV Sharing 6 User", category: "Streaming & Movies", price: 7000, stock: 10, badge: "" },
+    { id: 21, name: "WeTV Sharing 3 User", category: "Streaming & Movies", price: 8000, stock: 10, badge: "" },
+    { id: 22, name: "Spotify Individual Plan 1 Bulan", category: "Music & Social", price: 17500, stock: 10, badge: "populer" },
+    { id: 23, name: "YouTube Family Plan 1 Bulan", category: "Music & Social", price: 2000, stock: 10, badge: "" },
+    { id: 24, name: "YouTube Individual Plan 1 Bulan", category: "Music & Social", price: 8000, stock: 10, badge: "" },
+    { id: 25, name: "YouTube Head Plan 1 Bulan", category: "Music & Social", price: 9000, stock: 10, badge: "" }
   ];
 
   const OWNER_ACCOUNTS = [
@@ -515,11 +460,6 @@
   let currentTab = "tabUsers";
   let adminCurrentTab = "tabProducts";
   const ADMIN_WA = "6281910545769";
-
-  function getDiscountedPrice(price, discountPercent) {
-    if (discountPercent <= 0) return price;
-    return Math.floor(price * (100 - discountPercent) / 100);
-  }
 
   function saveToLocal() {
     localStorage.setItem("athastore_users", JSON.stringify(users));
@@ -586,7 +526,8 @@
     return maxId + 1;
   }
 
-  function addProduct(name, category, price, stock, badge, discount) {
+  // Tambah produk baru
+  function addProduct(name, category, price, stock, badge) {
     if (!name || !category) {
       alert("Nama dan kategori harus diisi!");
       return false;
@@ -598,8 +539,7 @@
       category: category,
       price: parseInt(price) || 0,
       stock: parseInt(stock) || 0,
-      badge: badge || "",
-      discount: parseInt(discount) || 0
+      badge: badge || ""
     };
     products.push(newProduct);
     saveToLocal();
@@ -608,26 +548,18 @@
     return true;
   }
 
-  function deleteProduct(productId) {
+  function updateProductBadge(productId, badge) {
     const product = products.find(p => p.id === productId);
-    if (!product) return;
-    if (confirm(`Hapus produk "${product.name}"?`)) {
-      products = products.filter(p => p.id !== productId);
+    if (product) {
+      product.badge = badge;
       saveToLocal();
-      alert(`✅ Produk "${product.name}" berhasil dihapus!`);
       renderApp(true);
     }
   }
 
-  function getPriceForUser(productPrice, userRole, discount) {
-    let finalPrice = productPrice;
-    if (discount > 0) {
-      finalPrice = getDiscountedPrice(productPrice, discount);
-    }
-    if (userRole === "reseller") {
-      return Math.max(0, finalPrice - 1000);
-    }
-    return finalPrice;
+  function getPriceForUser(productPrice, userRole) {
+    if (userRole === "reseller") return Math.max(0, productPrice - 1000);
+    return productPrice;
   }
 
   function notifyAdminOrder(order) {
@@ -645,7 +577,7 @@
       alert("Stok tidak mencukupi! Stok saat ini: " + product.stock);
       return false;
     }
-    const unitPrice = getPriceForUser(product.price, customerRole, product.discount);
+    const unitPrice = getPriceForUser(product.price, customerRole);
     const total = unitPrice * quantity;
     const newOrder = {
       id: Date.now(),
@@ -701,7 +633,6 @@
       const priceInput = document.getElementById(`price-${prod.id}`);
       const stockInput = document.getElementById(`stock-${prod.id}`);
       const badgeSelect = document.getElementById(`badge-${prod.id}`);
-      const discountInput = document.getElementById(`discount-${prod.id}`);
       if (priceInput && stockInput) {
         const newPrice = parseInt(priceInput.value);
         const newStock = parseInt(stockInput.value);
@@ -709,7 +640,6 @@
           prod.price = newPrice;
           prod.stock = newStock;
           if (badgeSelect) prod.badge = badgeSelect.value;
-          if (discountInput) prod.discount = parseInt(discountInput.value) || 0;
           updated++;
         }
       }
@@ -723,13 +653,12 @@
     }
   }
 
-  function adminUpdateProduct(pid, newStock, newPrice, newBadge, newDiscount) {
+  function adminUpdateProduct(pid, newStock, newPrice, newBadge) {
     const prod = products.find(p => p.id === pid);
     if (prod) {
       prod.stock = parseInt(newStock);
       prod.price = parseInt(newPrice);
       if (newBadge !== undefined) prod.badge = newBadge;
-      if (newDiscount !== undefined) prod.discount = parseInt(newDiscount) || 0;
       saveToLocal();
       alert(`✅ Produk "${prod.name}" berhasil diperbarui!`);
       renderApp(true);
@@ -742,8 +671,7 @@
       let badgeText = "";
       if (p.badge === "populer") badgeText = "🔥 Populer";
       else if (p.badge === "bestseller") badgeText = "⭐ Best Seller";
-      let discountText = p.discount > 0 ? ` (Diskon ${p.discount}%)` : "";
-      prodText += `• ${p.name} | Rp ${p.price.toLocaleString()}${discountText} | Stok: ${p.stock} ${badgeText}\n`;
+      prodText += `• ${p.name} | Rp ${p.price.toLocaleString()} | Stok: ${p.stock} ${badgeText}\n`;
     });
     let orderText = "\n📋 *DATA ORDER*\n";
     orders.forEach(o => {
@@ -890,28 +818,18 @@
     document.getElementById("globalModal").style.display = "none";
   }
 
-  function showOrderModal(productId, productName, stockAvail, originalPrice, discount) {
+  function showOrderModal(productId, productName, stockAvail, originalPrice) {
     const isLoggedIn = currentUser !== null;
     const defaultName = isLoggedIn ? currentUser.name : "";
     const defaultEmail = isLoggedIn ? currentUser.email : "";
     const userRole = isLoggedIn ? currentUser.role : "guest";
-    const finalPrice = getPriceForUser(originalPrice, userRole, discount);
-    const discountedPrice = discount > 0 ? getDiscountedPrice(originalPrice, discount) : originalPrice;
+    const finalPrice = getPriceForUser(originalPrice, userRole);
     
     const modal = document.getElementById("globalModal");
     const inner = document.getElementById("modalInner");
-    let priceHtml = `<p style="margin-bottom:12px; font-size:0.9rem;">Harga: Rp ${originalPrice.toLocaleString()}`;
-    if (discount > 0) {
-      priceHtml += `<br><span style="color:#e74c3c;">✨ Diskon ${discount}%: Rp ${discountedPrice.toLocaleString()}</span>`;
-    }
-    if (userRole === "reseller") {
-      priceHtml += `<br><span style="color:#1e6a50;">✨ Diskon Reseller: Rp ${finalPrice.toLocaleString()} per item</span>`;
-    }
-    priceHtml += `</p>`;
-    
     inner.innerHTML = `
       <h3>Pesan ${escapeHtml(productName)}</h3>
-      ${priceHtml}
+      <p style="margin-bottom:12px; font-size:0.9rem;">Harga: Rp ${originalPrice.toLocaleString()}${userRole === "reseller" ? `<br><span style="color:#1e6a50;">✨ Diskon Reseller: Rp ${finalPrice.toLocaleString()} per item</span>` : ""}</p>
       <input type="number" id="orderQty" placeholder="Jumlah" min="1" max="${stockAvail}" value="1">
       <input type="text" id="orderName" placeholder="Nama lengkap" value="${escapeHtml(defaultName)}" ${isLoggedIn ? 'readonly' : ''}>
       <input type="email" id="orderEmail" placeholder="Email" value="${escapeHtml(defaultEmail)}" ${isLoggedIn ? 'readonly' : ''}>
@@ -933,6 +851,7 @@
     document.getElementById("cancelOrder").onclick = () => closeModal();
   }
 
+  // Modal tambah produk
   function showAddProductModal() {
     const modal = document.getElementById("globalModal");
     const inner = document.getElementById("modalInner");
@@ -944,14 +863,11 @@
         <input type="number" id="newProductPrice" placeholder="Harga (Rp)" style="flex:1">
         <input type="number" id="newProductStock" placeholder="Stok" style="flex:1" value="0">
       </div>
-      <div style="display: flex; gap: 12px; margin-bottom: 16px;">
-        <select id="newProductBadge" style="flex:1">
-          <option value="">Tanpa Badge</option>
-          <option value="populer">🔥 Populer</option>
-          <option value="bestseller">⭐ Best Seller</option>
-        </select>
-        <input type="number" id="newProductDiscount" placeholder="Diskon %" style="flex:1" value="0">
-      </div>
+      <select id="newProductBadge">
+        <option value="">Tanpa Badge</option>
+        <option value="populer">🔥 Populer</option>
+        <option value="bestseller">⭐ Best Seller</option>
+      </select>
       <button id="confirmAddProductBtn" style="margin-top: 16px;">Tambah Produk</button>
       <div class="switch-link" id="cancelAddProduct" style="margin-top:12px; text-align:center;">Batal</div>
     `;
@@ -962,7 +878,6 @@
       const price = document.getElementById("newProductPrice").value;
       const stock = document.getElementById("newProductStock").value;
       const badge = document.getElementById("newProductBadge").value;
-      const discount = document.getElementById("newProductDiscount").value;
       if (!name) {
         alert("Nama produk harus diisi!");
         return;
@@ -971,7 +886,7 @@
         alert("Kategori harus diisi!");
         return;
       }
-      addProduct(name, category, price, stock, badge, discount);
+      addProduct(name, category, price, stock, badge);
       closeModal();
     };
     document.getElementById("cancelAddProduct").onclick = () => closeModal();
@@ -1023,96 +938,40 @@
 
     function showHome() {
       currentView = "home";
-      
-      // Pisahkan produk berdasarkan badge
-      const bestSeller = products.filter(p => p.badge === "bestseller");
-      const populer = products.filter(p => p.badge === "populer");
-      const normal = products.filter(p => p.badge !== "bestseller" && p.badge !== "populer");
-      
-      let html = "";
-      
-      // Best Seller section
-      if (bestSeller.length > 0) {
-        html += `<h2 class="section-title"><i class="fas fa-star" style="color:#e74c3c;"></i> ⭐ Best Seller</h2>`;
-        html += `<div class="product-grid">`;
-        bestSeller.forEach(prod => {
-          html += renderProductCard(prod, "bestseller-animate");
-        });
-        html += `</div>`;
-      }
-      
-      // Populer section
-      if (populer.length > 0) {
-        html += `<h2 class="section-title"><i class="fas fa-fire" style="color:#ff9800;"></i> 🔥 Populer</h2>`;
-        html += `<div class="product-grid">`;
-        populer.forEach(prod => {
-          html += renderProductCard(prod, "populer-animate");
-        });
-        html += `</div>`;
-      }
-      
-      // Produk Lainnya section
-      if (normal.length > 0) {
-        html += `<h2 class="section-title"><i class="fas fa-box"></i> Produk Lainnya</h2>`;
-        html += `<div class="product-grid">`;
-        normal.forEach(prod => {
-          html += renderProductCard(prod, "");
-        });
-        html += `</div>`;
-      }
-      
+      let html = `<div class="product-grid">`;
+      products.forEach(prod => {
+        const stockClass = prod.stock < 3 ? "low" : "";
+        const displayPrice = currentUser?.role === "reseller" ? Math.max(0, prod.price - 1000) : prod.price;
+        let badgeHtml = "";
+        if (prod.badge === "populer") badgeHtml = `<span class="product-badge badge-populer">🔥 Populer</span>`;
+        else if (prod.badge === "bestseller") badgeHtml = `<span class="product-badge badge-bestseller">⭐ Best Seller</span>`;
+        
+        html += `
+          <div class="product-card">
+            ${badgeHtml}
+            <div class="product-icon"><i class="fas ${getIcon(prod.name)}"></i></div>
+            <div class="product-name">${escapeHtml(prod.name)}</div>
+            <div class="price-stock">
+              <span class="price">Rp ${displayPrice.toLocaleString()}${currentUser?.role === "reseller" ? ' (Reseller)' : ''}</span>
+              <span class="stock ${stockClass}"><i class="fas fa-boxes"></i> Stok: ${prod.stock}</span>
+            </div>
+            <button class="order-btn" data-id="${prod.id}" data-name="${escapeHtml(prod.name)}" data-stock="${prod.stock}" data-price="${prod.price}" ${prod.stock <= 0 ? 'disabled' : ''}>
+              <i class="fab fa-whatsapp"></i> Pesan Sekarang
+            </button>
+          </div>
+        `;
+      });
+      html += `</div>`;
       container.innerHTML = html;
-      
       document.querySelectorAll(".order-btn").forEach(btn => {
         btn.addEventListener("click", () => {
           const pid = parseInt(btn.dataset.id);
           const pname = btn.dataset.name;
           const stock = parseInt(btn.dataset.stock);
           const price = parseInt(btn.dataset.price);
-          const discount = parseInt(btn.dataset.discount);
-          showOrderModal(pid, pname, stock, price, discount);
+          showOrderModal(pid, pname, stock, price);
         });
       });
-    }
-    
-    function renderProductCard(prod, animationClass) {
-      const stockClass = prod.stock < 3 ? "low" : "";
-      const displayPrice = getPriceForUser(prod.price, currentUser?.role || "guest", prod.discount);
-      const originalPrice = prod.price;
-      const hasDiscount = prod.discount > 0;
-      const discountedPrice = hasDiscount ? getDiscountedPrice(originalPrice, prod.discount) : originalPrice;
-      
-      let badgeHtml = "";
-      if (prod.badge === "populer") badgeHtml = `<span class="product-badge badge-populer">🔥 Populer</span>`;
-      else if (prod.badge === "bestseller") badgeHtml = `<span class="product-badge badge-bestseller">⭐ Best Seller</span>`;
-      
-      let priceHtml = "";
-      if (hasDiscount) {
-        priceHtml = `
-          <div style="display: flex; gap: 8px; align-items: center;">
-            <span class="price original">Rp ${originalPrice.toLocaleString()}</span>
-            <span class="price discounted">Rp ${discountedPrice.toLocaleString()}</span>
-            <span class="stock" style="background:#ff9800; color:white;">-${prod.discount}%</span>
-          </div>
-        `;
-      } else {
-        priceHtml = `<span class="price">Rp ${originalPrice.toLocaleString()}</span>`;
-      }
-      
-      return `
-        <div class="product-card ${animationClass}">
-          ${badgeHtml}
-          <div class="product-icon"><i class="fas ${getIcon(prod.name)}"></i></div>
-          <div class="product-name">${escapeHtml(prod.name)}</div>
-          <div class="price-stock">
-            ${priceHtml}
-            <span class="stock ${stockClass}"><i class="fas fa-boxes"></i> Stok: ${prod.stock}</span>
-          </div>
-          <button class="order-btn" data-id="${prod.id}" data-name="${escapeHtml(prod.name)}" data-stock="${prod.stock}" data-price="${prod.price}" data-discount="${prod.discount}" ${prod.stock <= 0 ? 'disabled' : ''}>
-            <i class="fab fa-whatsapp"></i> Pesan Sekarang
-          </button>
-        </div>
-      `;
     }
 
     function showOwnerPanel() {
@@ -1139,7 +998,7 @@
               <td>${u.role}</td>
               <td><code>${escapeHtml(u.password)}</code> <button class="changePass" data-id="${u.id}">Ganti</button></td>
               <td>${u.id !== currentUser.id ? `<button class="delUser" data-id="${u.id}">Hapus</button>` : '-'}</td>
-             </tr>
+            </tr>
           `).join("");
           document.querySelectorAll(".delUser").forEach(btn => {
             btn.onclick = () => { if(confirm("Hapus user ini?")) ownerDeleteUser(parseInt(btn.dataset.id)); };
@@ -1186,7 +1045,6 @@
         products.forEach(p => {
           gridHtml += `
             <div class="product-mgmt-card">
-              <button class="delete-product" data-id="${p.id}"><i class="fas fa-trash"></i></button>
               <div class="product-mgmt-name">${escapeHtml(p.name)}</div>
               <div class="product-mgmt-field">
                 <label>Harga (Rp)</label>
@@ -1195,10 +1053,6 @@
               <div class="product-mgmt-field">
                 <label>Stok</label>
                 <input type="number" id="stock-${p.id}" value="${p.stock}" min="0">
-              </div>
-              <div class="product-mgmt-field">
-                <label>Diskon (%)</label>
-                <input type="number" id="discount-${p.id}" value="${p.discount}" min="0" max="100">
               </div>
               <div class="product-mgmt-field">
                 <label>Badge</label>
@@ -1216,21 +1070,13 @@
         gridHtml += `<div style="text-align:center; margin-top:24px;"><button id="updateAllBtn" class="btn-update-all"><i class="fas fa-save"></i> Update Semua Produk Sekaligus</button></div>`;
         contentDiv.innerHTML = gridHtml;
         
-        document.querySelectorAll(".delete-product").forEach(btn => {
-          btn.onclick = () => {
-            const id = parseInt(btn.dataset.id);
-            deleteProduct(id);
-          };
-        });
-        
         document.querySelectorAll(".updateProd").forEach(btn => {
           btn.onclick = () => {
             const id = parseInt(btn.dataset.id);
             const newPrice = document.getElementById(`price-${id}`).value;
             const newStock = document.getElementById(`stock-${id}`).value;
             const newBadge = document.getElementById(`badge-${id}`).value;
-            const newDiscount = document.getElementById(`discount-${id}`).value;
-            adminUpdateProduct(id, newStock, newPrice, newBadge, newDiscount);
+            adminUpdateProduct(id, newStock, newPrice, newBadge);
           };
         });
         document.getElementById("updateAllBtn").onclick = updateAllProductsFromGrid;
@@ -1299,7 +1145,7 @@
               </tr>
             `;
           });
-          tbl += `</tbody></table></div>`;
+          tbl += `</tbody> </div>`;
           document.getElementById("orderTicketResult").innerHTML = tbl;
         };
         
@@ -1328,7 +1174,7 @@
             const orderCount = orders.filter(o => o.customerEmail === m.email).length;
             tbl += `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td>${escapeHtml(m.phone)}</td><td>${m.role === "reseller" ? "Reseller" : "Member"}</td><td>${orderCount}</td></tr>`;
           });
-          tbl += `</tbody></table></div>`;
+          tbl += `</tbody> </div>`;
           document.getElementById("ticketResult").innerHTML = tbl;
         };
         showMembers();
@@ -1375,10 +1221,6 @@
                 <label>Stok</label>
                 <input type="number" id="stock-${p.id}" value="${p.stock}" min="0">
               </div>
-              <div class="product-mgmt-field">
-                <label>Diskon (%)</label>
-                <input type="number" id="discount-${p.id}" value="${p.discount}" min="0" max="100">
-              </div>
               <button class="updateProd" data-id="${p.id}">Update Produk Ini</button>
             </div>
           `;
@@ -1391,8 +1233,7 @@
             const id = parseInt(btn.dataset.id);
             const newPrice = document.getElementById(`price-${id}`).value;
             const newStock = document.getElementById(`stock-${id}`).value;
-            const newDiscount = document.getElementById(`discount-${id}`).value;
-            adminUpdateProduct(id, newStock, newPrice, undefined, newDiscount);
+            adminUpdateProduct(id, newStock, newPrice);
           };
         });
         document.getElementById("updateAllBtn").onclick = updateAllProductsFromGrid;
@@ -1402,69 +1243,25 @@
         if (orders.length === 0) { contentDiv.innerHTML = "<p>Belum ada order</p>"; return; }
         let tbl = `<div class="table-responsive"><table class="data-table"><thead><tr><th>Produk</th><th>Pembeli</th><th>Role</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Stok Dipotong</th><th>Aksi</th></tr></thead><tbody>`;
         orders.forEach(o => {
-          tbl += `
-            <tr>
-              <td>${escapeHtml(o.productName)}</td>
-              <td>${escapeHtml(o.customerName)}</td>
-              <td>${o.customerRole}</td>
-              <td>${o.quantity}</td>
-              <td>Rp ${o.unitPrice.toLocaleString()}</td>
-              <td>Rp ${o.totalPrice.toLocaleString()}</td>
-              <td>
-                <select class="statusSelect" data-id="${o.id}">
-                  <option value="proses" ${o.status === "proses" ? "selected" : ""}>Proses</option>
-                  <option value="berhasil" ${o.status === "berhasil" ? "selected" : ""}>Berhasil</option>
-                  <option value="gagal" ${o.status === "gagal" ? "selected" : ""}>Gagal</option>
-                </select>
-               </div>
-               <div class="product-mgmt-field">
-                <label>Diskon (%)</label>
-                <input type="number" id="discount-${p.id}" value="${p.discount}" min="0" max="100">
-              </div>
-              <button class="updateProd" data-id="${p.id}">Update Produk Ini</button>
-            </div>
-          `;
+          tbl += `<tr>
+            <td>${escapeHtml(o.productName)}</td>
+            <td>${escapeHtml(o.customerName)}</td>
+            <td>${o.customerRole}</td>
+            <td>${o.quantity}</td>
+            <td>Rp ${o.unitPrice.toLocaleString()}</td>
+            <td>Rp ${o.totalPrice.toLocaleString()}</td>
+            <td>
+              <select class="statusSelect" data-id="${o.id}">
+                <option value="proses" ${o.status === "proses" ? "selected" : ""}>Proses</option>
+                <option value="berhasil" ${o.status === "berhasil" ? "selected" : ""}>Berhasil</option>
+                <option value="gagal" ${o.status === "gagal" ? "selected" : ""}>Gagal</option>
+              </select>
+            </td>
+            <td>${o.stockDeducted ? "✅ Sudah" : "❌ Belum"}</td>
+            <td><button class="updateOrder" data-id="${o.id}">Update</button></td>
+          </tr>`;
         });
-        gridHtml += `</div>`;
-        gridHtml += `<div style="text-align:center; margin-top:24px;"><button id="updateAllBtn" class="btn-update-all"><i class="fas fa-save"></i> Update Semua Produk Sekaligus</button></div>`;
-        contentDiv.innerHTML = gridHtml;
-        document.querySelectorAll(".updateProd").forEach(btn => {
-          btn.onclick = () => {
-            const id = parseInt(btn.dataset.id);
-            const newPrice = document.getElementById(`price-${id}`).value;
-            const newStock = document.getElementById(`stock-${id}`).value;
-            const newDiscount = document.getElementById(`discount-${id}`).value;
-            adminUpdateProduct(id, newStock, newPrice, undefined, newDiscount);
-          };
-        });
-        document.getElementById("updateAllBtn").onclick = updateAllProductsFromGrid;
-      };
-
-      const renderOrders = () => {
-        if (orders.length === 0) { contentDiv.innerHTML = "<p>Belum ada order</p>"; return; }
-        let tbl = `<div class="table-responsive"><table class="data-table"><thead>  <th>Produk</th><th>Pembeli</th><th>Role</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Stok Dipotong</th><th>Aksi</th> </thead><tbody>`;
-        orders.forEach(o => {
-          tbl += `
-             <tr>
-               <td>${escapeHtml(o.productName)}</td>
-               <td>${escapeHtml(o.customerName)}</td>
-               <td>${o.customerRole}</td>
-               <td>${o.quantity}</td>
-               <td>Rp ${o.unitPrice.toLocaleString()}</td>
-               <td>Rp ${o.totalPrice.toLocaleString()}</td>
-               <td>
-                 <select class="statusSelect" data-id="${o.id}">
-                   <option value="proses" ${o.status === "proses" ? "selected" : ""}>Proses</option>
-                   <option value="berhasil" ${o.status === "berhasil" ? "selected" : ""}>Berhasil</option>
-                   <option value="gagal" ${o.status === "gagal" ? "selected" : ""}>Gagal</option>
-                 </select>
-               </td>
-               <td>${o.stockDeducted ? "✅ Sudah" : "❌ Belum"}</td>
-               <td><button class="updateOrder" data-id="${o.id}">Update</button></td>
-             </tr>
-          `;
-        });
-        tbl += `</tbody></table></div>`;
+        tbl += `</tbody> </div>`;
         contentDiv.innerHTML = tbl;
         document.querySelectorAll(".updateOrder").forEach(btn => {
           btn.onclick = () => {
@@ -1485,20 +1282,12 @@
         const targetRoles = users.filter(u => u.role === "member" || u.role === "reseller");
         const show = (filter = "") => {
           const filtered = targetRoles.filter(m => m.name.toLowerCase().includes(filter) || m.email.toLowerCase().includes(filter) || m.phone.includes(filter));
-          let tbl = `<div class="table-responsive"><table class="data-table"><thead>  <th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th> </thead><tbody>`;
+          let tbl = `<div class="table-responsive"><table class="data-table"><thead><tr><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th></tr></thead><tbody>`;
           filtered.forEach(m => {
             const orderCount = orders.filter(o => o.customerEmail === m.email).length;
-            tbl += `
-               <tr>
-                 <td>${escapeHtml(m.name)}</td>
-                 <td>${escapeHtml(m.email)}</td>
-                 <td>${escapeHtml(m.phone)}</td>
-                 <td>${m.role === "reseller" ? "Reseller" : "Member"}</td>
-                 <td>${orderCount}</td>
-               </tr>
-            `;
+            tbl += `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td>${escapeHtml(m.phone)}</td><td>${m.role === "reseller" ? "Reseller" : "Member"}</td><td>${orderCount}</td></tr>`;
           });
-          tbl += `</tbody></table></div>`;
+          tbl += `</tbody> </div>`;
           document.getElementById("ticketAdminResult").innerHTML = tbl;
         };
         show();
@@ -1536,21 +1325,19 @@
         container.innerHTML = `<div class="panel"><h2>Pesanan Saya</h2><p>Belum ada pesanan.</p></div>`;
         return;
       }
-      let html = `<div class="panel"><h2>📋 Pesanan Saya</h2><div class="table-responsive"><table class="data-table"><thead>  <th>Produk</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Stok Dipotong</th><th>Tanggal</th> </thead><tbody>`;
+      let html = `<div class="panel"><h2>📋 Pesanan Saya</h2><div class="table-responsive"><table class="data-table"><thead><tr><th>Produk</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Stok Dipotong</th><th>Tanggal</th></tr></thead><tbody>`;
       myOrders.forEach(o => {
-        html += `
-           <tr>
-             <td>${escapeHtml(o.productName)}</td>
-             <td>${o.quantity}</td>
-             <td>Rp ${o.unitPrice.toLocaleString()}</td>
-             <td>Rp ${o.totalPrice.toLocaleString()}</td>
-             <td>${o.status === "berhasil" ? "✅ Berhasil" : (o.status === "gagal" ? "❌ Gagal" : "⏳ Proses")}</td>
-             <td>${o.stockDeducted ? "✅ Sudah" : "❌ Belum"}</td>
-             <td>${new Date(o.createdAt).toLocaleDateString()}</td>
-           </tr>
-        `;
+        html += `<tr>
+          <td>${escapeHtml(o.productName)}</td>
+          <td>${o.quantity}</td>
+          <td>Rp ${o.unitPrice.toLocaleString()}</td>
+          <td>Rp ${o.totalPrice.toLocaleString()}</td>
+          <td>${o.status === "berhasil" ? "✅ Berhasil" : (o.status === "gagal" ? "❌ Gagal" : "⏳ Proses")}</td>
+          <td>${o.stockDeducted ? "✅ Sudah" : "❌ Belum"}</td>
+          <td>${new Date(o.createdAt).toLocaleDateString()}</td>
+        </tr>`;
       });
-      html += `</tbody></table></div></div>`;
+      html += `</tbody> </div></div>`;
       container.innerHTML = html;
     }
   }
