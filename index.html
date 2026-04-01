@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>ATHA STORE | Multi-Role System</title>
+  <title>ATHA STORE | Multi-Role + Reseller</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -156,7 +156,6 @@
       background: #b9dac9;
       cursor: not-allowed;
     }
-    /* Panel umum */
     .panel {
       background: white;
       border-radius: 32px;
@@ -170,6 +169,7 @@
       border-bottom: 1px solid #e2e8f0;
       padding-bottom: 12px;
       margin-bottom: 24px;
+      flex-wrap: wrap;
     }
     .tab {
       background: none;
@@ -186,6 +186,8 @@
     table {
       width: 100%;
       border-collapse: collapse;
+      overflow-x: auto;
+      display: block;
     }
     th, td {
       padding: 12px 8px;
@@ -243,6 +245,7 @@
     @media (max-width: 680px) {
       .navbar { flex-direction: column; gap: 12px; }
       .hero h1 { font-size: 2rem; }
+      table { display: block; overflow-x: auto; }
     }
   </style>
 </head>
@@ -258,7 +261,7 @@
   </div>
 </div>
 <div class="container" id="appContent"></div>
-<footer>© ATHA STORE • Multi-role system • Owner dapat mengelola semua akun</footer>
+<footer>© ATHA STORE • Multi-role system • Reseller mendapat diskon Rp1.000 per produk</footer>
 
 <div id="globalModal" class="modal"><div class="modal-card" id="modalInner"></div></div>
 
@@ -292,13 +295,18 @@
     { id: 25, name: "YouTube Head Plan 1 Bulan", category: "Music & Social", price: 9000, stock: 10 }
   ];
 
-  let users = [];      // { id, name, email, phone, password, role }
+  // OWNER ACCOUNTS (akan selalu ada)
+  const OWNER_ACCOUNTS = [
+    { id: 1001, name: "rafi", email: "rapiatha5@gmail.com", phone: "081910545769", password: "rafiganteng", role: "owner" },
+    { id: 1002, name: "Rafi Atha", email: "rafiathamusyaffa@gmail.com", phone: "087730365877", password: "rafiatha", role: "owner" }
+  ];
+
+  let users = [];
   let products = [];
   let orders = [];
   let currentUser = null;
   const ADMIN_WA = "6281910545769";
 
-  // helper save/load
   function saveToLocal() {
     localStorage.setItem("athastore_users", JSON.stringify(users));
     localStorage.setItem("athastore_products", JSON.stringify(products));
@@ -310,57 +318,78 @@
     if (storedUsers) {
       users = JSON.parse(storedUsers);
     } else {
-      // Default users: admin, member, dan dua owner
       users = [
         { id: 1, name: "Admin ATHA", email: "admin@athastore.com", phone: "08123456789", password: "admin123", role: "admin" },
         { id: 2, name: "Member Demo", email: "member@demo.com", phone: "08123456788", password: "member123", role: "member" },
-        { id: 3, name: "rafi", email: "rapiatha5@gmail.com", phone: "081910545769", password: "rafiganteng", role: "owner" },
-        { id: 4, name: "Rafi Atha", email: "rafiathamusyaffa@gmail.com", phone: "087730365877", password: "rafiatha", role: "owner" }
+        { id: 3, name: "Reseller Demo", email: "reseller@demo.com", phone: "08123456787", password: "reseller123", role: "reseller" }
       ];
     }
+    // Ensure owner accounts always exist
+    for (let owner of OWNER_ACCOUNTS) {
+      const exists = users.some(u => u.email === owner.email);
+      if (!exists) {
+        const maxId = users.length > 0 ? Math.max(...users.map(u => u.id)) : 0;
+        owner.id = maxId + 1;
+        users.push(owner);
+      }
+    }
+
     const storedProducts = localStorage.getItem("athastore_products");
     if (storedProducts) products = JSON.parse(storedProducts);
     else products = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+
     const storedOrders = localStorage.getItem("athastore_orders");
     if (storedOrders) orders = JSON.parse(storedOrders);
     else orders = [];
+
+    saveToLocal();
+  }
+
+  // Helper untuk menghitung harga berdasarkan role
+  function getPriceForUser(productPrice, userRole) {
+    if (userRole === "reseller") {
+      return Math.max(0, productPrice - 1000);
+    }
+    return productPrice;
   }
 
   // Kirim order ke WA admin
   function notifyAdminOrder(order) {
-    const msg = `*ORDER BARU ATHA STORE* 🛒\n\nNama: ${order.customerName}\nEmail: ${order.customerEmail}\nProduk: ${order.productName}\nJumlah: ${order.quantity}\nTotal: Rp ${order.totalPrice.toLocaleString()}\nStatus: ${order.status}\n\nSegera diproses!`;
+    const msg = `*ORDER BARU ATHA STORE* 🛒\n\nNama: ${order.customerName}\nEmail: ${order.customerEmail}\nRole: ${order.customerRole}\nProduk: ${order.productName}\nJumlah: ${order.quantity}\nHarga Satuan: Rp ${order.unitPrice.toLocaleString()}\nTotal: Rp ${order.totalPrice.toLocaleString()}\nStatus: ${order.status}\n\nSegera diproses!`;
     window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`, "_blank");
   }
 
-  // Place order (guest atau member)
-  function placeOrder(productId, quantity, customerName, customerEmail) {
+  function placeOrder(productId, quantity, customerName, customerEmail, customerRole = "guest") {
     const product = products.find(p => p.id === productId);
     if (!product || product.stock < quantity) {
       alert("Stok tidak mencukupi!");
       return false;
     }
+    const unitPrice = getPriceForUser(product.price, customerRole);
+    const total = unitPrice * quantity;
     product.stock -= quantity;
-    const total = product.price * quantity;
     const newOrder = {
       id: Date.now(),
       productId: product.id,
       productName: product.name,
       quantity: quantity,
+      unitPrice: unitPrice,
       totalPrice: total,
       status: "proses",
       customerName: customerName,
       customerEmail: customerEmail,
+      customerRole: customerRole,
       createdAt: new Date().toISOString()
     };
     orders.unshift(newOrder);
     saveToLocal();
     notifyAdminOrder(newOrder);
-    alert(`✅ Pesanan berhasil! Admin akan segera menghubungi via WhatsApp.\nPesanan: ${product.name} x${quantity}`);
+    alert(`✅ Pesanan berhasil! Admin akan segera menghubungi via WhatsApp.\nProduk: ${product.name} x${quantity}\nTotal: Rp ${total.toLocaleString()}`);
     renderApp();
     return true;
   }
 
-  // ======================== ADMIN / SELLER / OWNER FUNCTIONS ========================
+  // Admin / Seller functions
   function adminUpdateProduct(pid, newStock, newPrice) {
     const prod = products.find(p => p.id === pid);
     if (prod) {
@@ -387,16 +416,16 @@
     });
     let orderText = "\n📋 *DATA ORDER*\n";
     orders.forEach(o => {
-      orderText += `ID:${o.id} | ${o.productName} | ${o.quantity} pcs | Status: ${o.status} | ${o.customerName}\n`;
+      orderText += `ID:${o.id} | ${o.productName} | ${o.quantity} pcs | Rp ${o.totalPrice.toLocaleString()} | Status: ${o.status} | ${o.customerName} (${o.customerRole})\n`;
     });
     const msg = `${prodText}\n${orderText}\nWaktu: ${new Date().toLocaleString()}`;
     window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`, "_blank");
   }
 
-  // Owner: buat user baru (admin/seller)
+  // Owner: buat user baru (admin, seller, reseller)
   function ownerCreateUser(name, email, phone, password, role) {
-    if (!["admin", "seller"].includes(role)) {
-      alert("Role hanya bisa admin atau seller");
+    if (!["admin", "seller", "reseller"].includes(role)) {
+      alert("Role hanya bisa admin, seller, atau reseller");
       return false;
     }
     if (users.find(u => u.email === email)) {
@@ -415,7 +444,6 @@
     return true;
   }
 
-  // Owner: hapus user (tidak bisa hapus diri sendiri)
   function ownerDeleteUser(userId) {
     if (userId === currentUser.id) {
       alert("Tidak bisa menghapus akun sendiri");
@@ -431,7 +459,7 @@
     renderApp();
   }
 
-  // ======================== MODAL LOGIN & REGISTER ========================
+  // MODAL LOGIN & REGISTER
   function showLoginModal() {
     const modal = document.getElementById("globalModal");
     const inner = document.getElementById("modalInner");
@@ -519,18 +547,23 @@
     document.getElementById("globalModal").style.display = "none";
   }
 
-  // Order modal (guest/member)
-  function showOrderModal(productId, productName, stockAvail) {
-    const isMember = currentUser && currentUser.role === "member";
-    const defaultName = isMember ? currentUser.name : "";
-    const defaultEmail = isMember ? currentUser.email : "";
+  // Order modal (guest/member/reseller)
+  function showOrderModal(productId, productName, stockAvail, originalPrice) {
+    const isLoggedIn = currentUser !== null;
+    const defaultName = isLoggedIn ? currentUser.name : "";
+    const defaultEmail = isLoggedIn ? currentUser.email : "";
+    const userRole = isLoggedIn ? currentUser.role : "guest";
+    const finalPrice = getPriceForUser(originalPrice, userRole);
+    const priceInfo = userRole === "reseller" ? ` (diskon Rp1.000, harga khusus: Rp ${finalPrice.toLocaleString()})` : ` (Rp ${originalPrice.toLocaleString()})`;
+    
     const modal = document.getElementById("globalModal");
     const inner = document.getElementById("modalInner");
     inner.innerHTML = `
       <h3>Pesan ${escapeHtml(productName)}</h3>
+      <p style="margin-bottom:12px; font-size:0.9rem;">Harga: Rp ${originalPrice.toLocaleString()}${userRole === "reseller" ? `<br><span style="color:#1e6a50;">✨ Diskon Reseller: Rp ${finalPrice.toLocaleString()} per item</span>` : ""}</p>
       <input type="number" id="orderQty" placeholder="Jumlah" min="1" max="${stockAvail}" value="1">
-      <input type="text" id="orderName" placeholder="Nama lengkap" value="${escapeHtml(defaultName)}" ${isMember ? 'readonly' : ''}>
-      <input type="email" id="orderEmail" placeholder="Email" value="${escapeHtml(defaultEmail)}" ${isMember ? 'readonly' : ''}>
+      <input type="text" id="orderName" placeholder="Nama lengkap" value="${escapeHtml(defaultName)}" ${isLoggedIn ? 'readonly' : ''}>
+      <input type="email" id="orderEmail" placeholder="Email" value="${escapeHtml(defaultEmail)}" ${isLoggedIn ? 'readonly' : ''}>
       <button id="confirmOrderBtn">Konfirmasi & Kirim ke WA</button>
       <div class="switch-link" id="cancelOrder" style="margin-top:12px; text-align:center;">Batal</div>
     `;
@@ -543,7 +576,7 @@
       if (!name) return alert("Nama harus diisi");
       if (!email) return alert("Email harus diisi");
       if (qty > stockAvail) return alert(`Stok hanya ${stockAvail}`);
-      placeOrder(productId, qty, name, email);
+      placeOrder(productId, qty, name, email, userRole);
       closeModal();
     };
     document.getElementById("cancelOrder").onclick = () => closeModal();
@@ -558,41 +591,44 @@
     // Navbar
     let navHtml = `<a href="#" id="navHome">🏠 Beranda</a>`;
     if (currentUser) {
-      navHtml += `<span class="user-badge"><i class="fas fa-user-circle"></i> ${currentUser.name} (${currentUser.role === "owner" ? "Owner" : currentUser.role === "admin" ? "Admin" : currentUser.role === "seller" ? "Seller" : "Member"})</span>`;
+      let roleName = currentUser.role === "owner" ? "Owner" : (currentUser.role === "admin" ? "Admin" : (currentUser.role === "seller" ? "Seller" : (currentUser.role === "reseller" ? "Reseller" : "Member")));
+      navHtml += `<span class="user-badge"><i class="fas fa-user-circle"></i> ${currentUser.name} (${roleName})</span>`;
       if (currentUser.role === "owner") navHtml += `<a href="#" id="navOwnerPanel">👑 Owner Panel</a>`;
       if (currentUser.role === "admin") navHtml += `<a href="#" id="navAdminPanel">📊 Dashboard Admin</a>`;
       if (currentUser.role === "seller") navHtml += `<a href="#" id="navSellerPanel">🛍️ Panel Seller</a>`;
-      if (currentUser.role === "member") navHtml += `<a href="#" id="navMyOrders">📋 Pesanan Saya</a>`;
+      if (currentUser.role === "member" || currentUser.role === "reseller") navHtml += `<a href="#" id="navMyOrders">📋 Pesanan Saya</a>`;
       navHtml += `<button id="logoutBtn">Keluar</button>`;
     } else {
       navHtml += `<button id="loginBtn">Masuk / Daftar</button>`;
     }
     navDiv.innerHTML = navHtml;
 
+    // Event listeners
     document.getElementById("navHome")?.addEventListener("click", (e) => { e.preventDefault(); showHome(); });
     document.getElementById("navOwnerPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "owner") showOwnerPanel(); });
-    document.getElementById("navAdminPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "admin") showAdminPanel(false); });
+    document.getElementById("navAdminPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "admin") showAdminPanel(true); });
     document.getElementById("navSellerPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "seller") showSellerPanel(); });
-    document.getElementById("navMyOrders")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "member") showMemberOrders(); });
+    document.getElementById("navMyOrders")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "member" || currentUser?.role === "reseller") showMemberOrders(); });
     document.getElementById("logoutBtn")?.addEventListener("click", () => { currentUser = null; renderApp(); });
     document.getElementById("loginBtn")?.addEventListener("click", () => showLoginModal());
 
     showHome();
 
-    // ========== HOME (PRODUK) ==========
+    // HOME (PRODUCTS)
     function showHome() {
       let html = `<div class="product-grid">`;
       products.forEach(prod => {
         const stockClass = prod.stock < 3 ? "low" : "";
+        const displayPrice = currentUser?.role === "reseller" ? Math.max(0, prod.price - 1000) : prod.price;
         html += `
           <div class="product-card">
             <div class="product-icon"><i class="fas ${getIcon(prod.name)}"></i></div>
             <div class="product-name">${escapeHtml(prod.name)}</div>
             <div class="price-stock">
-              <span class="price">Rp ${prod.price.toLocaleString()}</span>
+              <span class="price">Rp ${displayPrice.toLocaleString()}${currentUser?.role === "reseller" ? ' (Reseller)' : ''}</span>
               <span class="stock ${stockClass}"><i class="fas fa-boxes"></i> Stok: ${prod.stock}</span>
             </div>
-            <button class="order-btn" data-id="${prod.id}" data-name="${escapeHtml(prod.name)}" data-stock="${prod.stock}" ${prod.stock <= 0 ? 'disabled' : ''}>
+            <button class="order-btn" data-id="${prod.id}" data-name="${escapeHtml(prod.name)}" data-stock="${prod.stock}" data-price="${prod.price}" ${prod.stock <= 0 ? 'disabled' : ''}>
               <i class="fab fa-whatsapp"></i> Pesan Sekarang
             </button>
           </div>
@@ -605,15 +641,16 @@
           const pid = parseInt(btn.dataset.id);
           const pname = btn.dataset.name;
           const stock = parseInt(btn.dataset.stock);
-          showOrderModal(pid, pname, stock);
+          const price = parseInt(btn.dataset.price);
+          showOrderModal(pid, pname, stock, price);
         });
       });
     }
 
-    // ========== PANEL OWNER (kelola semua user, lihat password, buat admin/seller) ==========
+    // OWNER PANEL
     function showOwnerPanel() {
       let html = `<div class="panel"><h2><i class="fas fa-crown"></i> Owner Panel</h2>
-        <div class="tab-bar"><button class="tab active" id="tabUsers">👥 Kelola User</button><button class="tab" id="tabTicket">🎫 Ticket Akun Member</button></div>
+        <div class="tab-bar"><button class="tab active" id="tabUsers">👥 Kelola User</button><button class="tab" id="tabTicket">🎫 Ticket Akun Member & Reseller</button></div>
         <div id="ownerContent"></div></div>`;
       container.innerHTML = html;
       const contentDiv = document.getElementById("ownerContent");
@@ -641,13 +678,12 @@
           const val = document.getElementById("searchUser").value.toLowerCase();
           renderUserList(val);
         };
-        // Form tambah admin/seller
-        const formHtml = `<hr><h3>Buat Akun Baru (Admin / Seller)</h3>
+        const formHtml = `<hr><h3>Buat Akun Baru (Admin / Seller / Reseller)</h3>
           <input type="text" id="newName" placeholder="Nama" style="width:200px;"> 
           <input type="email" id="newEmail" placeholder="Email"> 
           <input type="tel" id="newPhone" placeholder="Nomor"> 
           <input type="password" id="newPass" placeholder="Password"> 
-          <select id="newRole"><option value="admin">Admin</option><option value="seller">Seller</option></select>
+          <select id="newRole"><option value="admin">Admin</option><option value="seller">Seller</option><option value="reseller">Reseller</option></select>
           <button id="createUserBtn">Buat Akun</button>`;
         contentDiv.insertAdjacentHTML("beforeend", formHtml);
         document.getElementById("createUserBtn").onclick = () => {
@@ -662,15 +698,15 @@
       };
 
       const renderTicket = () => {
-        contentDiv.innerHTML = `<div class="search-box"><input type="text" id="ticketSearch" placeholder="Cari member (nama/email/nomor)"><button id="ticketSearchBtn">Cari</button></div>
+        contentDiv.innerHTML = `<div class="search-box"><input type="text" id="ticketSearch" placeholder="Cari member/reseller (nama/email/nomor)"><button id="ticketSearchBtn">Cari</button></div>
         <div id="ticketResult"></div>`;
-        const members = users.filter(u => u.role === "member");
+        const targetRoles = users.filter(u => u.role === "member" || u.role === "reseller");
         const showMembers = (filter = "") => {
-          const filtered = members.filter(m => m.name.toLowerCase().includes(filter) || m.email.toLowerCase().includes(filter) || m.phone.includes(filter));
-          let tbl = `<table><thead><tr><th>Nama</th><th>Email</th><th>Nomor</th><th>Total Order</th></tr></thead><tbody>`;
+          const filtered = targetRoles.filter(m => m.name.toLowerCase().includes(filter) || m.email.toLowerCase().includes(filter) || m.phone.includes(filter));
+          let tbl = `<table><thead><tr><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th></tr></thead><tbody>`;
           filtered.forEach(m => {
             const orderCount = orders.filter(o => o.customerEmail === m.email).length;
-            tbl += `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td>${escapeHtml(m.phone)}</td><td>${orderCount}</td></tr>`;
+            tbl += `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td>${escapeHtml(m.phone)}</td><td>${m.role === "reseller" ? "Reseller" : "Member"}</td><td>${orderCount}</td></tr>`;
           });
           tbl += `</tbody></table>`;
           document.getElementById("ticketResult").innerHTML = tbl;
@@ -691,10 +727,10 @@
       renderUserManagement();
     }
 
-    // ========== PANEL ADMIN (kelola produk/order + ticket member) ==========
+    // ADMIN PANEL (dengan ticket member & reseller)
     function showAdminPanel(includeTicket = true) {
       let html = `<div class="panel"><h2><i class="fas fa-shield-alt"></i> Dashboard Admin</h2>
-        <div class="tab-bar"><button class="tab active" id="tabProducts">📦 Produk</button><button class="tab" id="tabOrders">📑 Order</button><button class="tab" id="tabBackup">💾 Backup WA</button>${includeTicket ? '<button class="tab" id="tabTicketMember">🎫 Ticket Member</button>' : ''}</div>
+        <div class="tab-bar"><button class="tab active" id="tabProducts">📦 Produk</button><button class="tab" id="tabOrders">📑 Order</button><button class="tab" id="tabBackup">💾 Backup WA</button>${includeTicket ? '<button class="tab" id="tabTicketMember">🎫 Ticket Member & Reseller</button>' : ''}</div>
         <div id="adminContent"></div></div>`;
       container.innerHTML = html;
       const contentDiv = document.getElementById("adminContent");
@@ -720,10 +756,10 @@
 
       const renderOrders = () => {
         if (orders.length === 0) { contentDiv.innerHTML = "<p>Belum ada order</p>"; return; }
-        let tbl = `<table><thead><tr><th>Produk</th><th>Pembeli</th><th>Jumlah</th><th>Total</th><th>Status</th><th>Aksi</th></tr></thead><tbody>`;
+        let tbl = `<table><thead><tr><th>Produk</th><th>Pembeli</th><th>Role</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Aksi</th></tr></thead><tbody>`;
         orders.forEach(o => {
-          tbl += `<tr><td>${escapeHtml(o.productName)}</td><td>${escapeHtml(o.customerName)}</td><td>${o.quantity}</td>
-          <td>Rp ${o.totalPrice.toLocaleString()}</td>
+          tbl += `<tr><td>${escapeHtml(o.productName)}</td><td>${escapeHtml(o.customerName)}</td><td>${o.customerRole}</td><td>${o.quantity}</td>
+          <td>Rp ${o.unitPrice.toLocaleString()}</td><td>Rp ${o.totalPrice.toLocaleString()}</td>
           <td><select class="statusSelect" data-id="${o.id}"><option value="proses" ${o.status === "proses" ? "selected" : ""}>Proses</option>
           <option value="berhasil" ${o.status === "berhasil" ? "selected" : ""}>Berhasil</option>
           <option value="gagal" ${o.status === "gagal" ? "selected" : ""}>Gagal</option></select></td>
@@ -746,14 +782,14 @@
       };
 
       const renderTicketMember = () => {
-        contentDiv.innerHTML = `<div class="search-box"><input type="text" id="ticketAdminSearch" placeholder="Cari member (nama/email/nomor)"><button id="searchTicketAdmin">Cari</button></div><div id="ticketAdminResult"></div>`;
-        const members = users.filter(u => u.role === "member");
+        contentDiv.innerHTML = `<div class="search-box"><input type="text" id="ticketAdminSearch" placeholder="Cari member/reseller (nama/email/nomor)"><button id="searchTicketAdmin">Cari</button></div><div id="ticketAdminResult"></div>`;
+        const targetRoles = users.filter(u => u.role === "member" || u.role === "reseller");
         const show = (filter = "") => {
-          const filtered = members.filter(m => m.name.toLowerCase().includes(filter) || m.email.toLowerCase().includes(filter) || m.phone.includes(filter));
-          let tbl = `<table><thead><tr><th>Nama</th><th>Email</th><th>Nomor</th><th>Total Order</th></tr></thead><tbody>`;
+          const filtered = targetRoles.filter(m => m.name.toLowerCase().includes(filter) || m.email.toLowerCase().includes(filter) || m.phone.includes(filter));
+          let tbl = `<table><thead><tr><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th></tr></thead><tbody>`;
           filtered.forEach(m => {
             const orderCount = orders.filter(o => o.customerEmail === m.email).length;
-            tbl += `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td>${escapeHtml(m.phone)}</td><td>${orderCount}</td></tr>`;
+            tbl += `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td>${escapeHtml(m.phone)}</td><td>${m.role === "reseller" ? "Reseller" : "Member"}</td><td>${orderCount}</td></tr>`;
           });
           tbl += `</tbody></table>`;
           document.getElementById("ticketAdminResult").innerHTML = tbl;
@@ -778,7 +814,6 @@
       renderProducts();
     }
 
-    // ========== PANEL SELLER (sama seperti admin tanpa ticket member) ==========
     function showSellerPanel() {
       showAdminPanel(false);
     }
@@ -789,9 +824,9 @@
         container.innerHTML = `<div class="panel"><h2>Pesanan Saya</h2><p>Belum ada pesanan.</p></div>`;
         return;
       }
-      let html = `<div class="panel"><h2>📋 Pesanan Saya</h2><table><thead><tr><th>Produk</th><th>Jumlah</th><th>Total</th><th>Status</th><th>Tanggal</th></tr></thead><tbody>`;
+      let html = `<div class="panel"><h2>📋 Pesanan Saya</h2><table><thead><tr><th>Produk</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Tanggal</th></tr></thead><tbody>`;
       myOrders.forEach(o => {
-        html += `<tr><td>${escapeHtml(o.productName)}</td><td>${o.quantity}</td><td>Rp ${o.totalPrice.toLocaleString()}</td>
+        html += `<tr><td>${escapeHtml(o.productName)}</td><td>${o.quantity}</td><td>Rp ${o.unitPrice.toLocaleString()}</td><td>Rp ${o.totalPrice.toLocaleString()}</td>
         <td>${o.status === "berhasil" ? "✅ Berhasil" : (o.status === "gagal" ? "❌ Gagal" : "⏳ Proses")}</td>
         <td>${new Date(o.createdAt).toLocaleDateString()}</td></tr>`;
       });
