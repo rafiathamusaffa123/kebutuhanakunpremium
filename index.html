@@ -3,11 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>ATHA STORE | Akun Digital Premium</title>
-  <!-- Font Awesome 6 (Free) -->
+  <title>ATHA STORE | Premium Digital Account</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Google Fonts: Inter & Poppins -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -16,614 +14,756 @@
     }
 
     body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(145deg, #f6f9fc 0%, #eef2f5 100%);
-      color: #0a2a3b;
-      scroll-behavior: smooth;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at 10% 20%, #f5f9ff, #eef2fa);
+      color: #1a2c3e;
+      overflow-x: hidden;
+    }
+
+    /* modern glass morphism */
+    .glass {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
     }
 
     .container {
       max-width: 1300px;
       margin: 0 auto;
-      padding: 0 24px;
+      padding: 0 28px;
     }
 
-    /* Hero Section Modern */
-    .hero {
-      background: radial-gradient(circle at 10% 20%, #0f2c3b, #06212e);
-      border-radius: 0 0 40px 40px;
-      padding: 48px 0 56px;
-      margin-bottom: 48px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.2);
+    /* navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 20px 32px;
+      background: rgba(18, 52, 77, 0.85);
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid rgba(255,255,240,0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
-
-    .hero::after {
-      content: "✨";
-      font-size: 280px;
-      opacity: 0.06;
-      position: absolute;
-      bottom: -70px;
-      right: -30px;
-      pointer-events: none;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-    }
-
-    .store-badge {
-      display: inline-block;
-      background: rgba(255,255,240,0.2);
-      backdrop-filter: blur(5px);
-      padding: 6px 18px;
-      border-radius: 60px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: #eef7ff;
-      margin-bottom: 24px;
-      letter-spacing: 0.3px;
-    }
-
-    h1 {
-      font-family: 'Poppins', sans-serif;
-      font-size: 3rem;
+    .logo {
+      font-size: 1.9rem;
       font-weight: 800;
-      color: white;
-      margin-bottom: 12px;
-      line-height: 1.2;
+      background: linear-gradient(135deg, #FFF, #a0e7ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
       letter-spacing: -0.5px;
     }
-
-    .hero p {
-      color: #cde3ef;
-      font-size: 1.05rem;
-      max-width: 620px;
-      margin-bottom: 28px;
-    }
-
-    .info-highlight {
+    .nav-links {
       display: flex;
-      flex-wrap: wrap;
       gap: 20px;
-      margin-top: 18px;
-    }
-
-    .info-chip {
-      background: rgba(255,255,245,0.12);
-      backdrop-filter: blur(4px);
-      padding: 8px 20px;
-      border-radius: 60px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: #f0fcff;
-    }
-
-    .info-chip i {
-      margin-right: 8px;
-      color: #7fd1e8;
-    }
-
-    /* Search */
-    .search-section {
-      margin-bottom: 48px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .search-wrapper {
-      background: white;
-      border-radius: 80px;
-      padding: 5px 5px 5px 24px;
-      display: flex;
       align-items: center;
-      gap: 12px;
-      box-shadow: 0 12px 28px -12px rgba(0,0,0,0.08);
-      width: 100%;
-      max-width: 540px;
-      border: 1px solid rgba(0,0,0,0.04);
-      transition: all 0.25s ease;
-    }
-
-    .search-wrapper:focus-within {
-      box-shadow: 0 18px 32px -12px rgba(0,80,100,0.2);
-      border-color: #2c8eb0;
-    }
-
-    .search-wrapper i {
-      color: #488aa3;
-      font-size: 1.2rem;
-    }
-
-    #searchInput {
-      flex: 1;
-      border: none;
-      outline: none;
-      font-size: 1rem;
-      padding: 14px 0;
-      background: transparent;
-      font-weight: 500;
-    }
-
-    .search-wrapper button {
-      background: #146b8a;
-      border: none;
-      color: white;
-      padding: 10px 26px;
-      border-radius: 50px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
-      font-size: 0.85rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .search-wrapper button:hover {
-      background: #0d5068;
-      transform: scale(0.96);
-    }
-
-    /* Category */
-    .category {
-      margin-bottom: 58px;
-    }
-
-    .category-title {
-      display: flex;
-      align-items: baseline;
-      gap: 15px;
-      margin-bottom: 28px;
       flex-wrap: wrap;
-      justify-content: space-between;
-      border-left: 6px solid #1c7b9e;
-      padding-left: 22px;
     }
-
-    .category-title h2 {
-      font-size: 2rem;
-      font-weight: 700;
-      font-family: 'Poppins', sans-serif;
-      color: #0f3b4b;
-      letter-spacing: -0.3px;
-    }
-
-    .category-title span {
-      background: #e0eff5;
-      padding: 5px 16px;
+    .nav-links a, .nav-links button {
+      background: transparent;
+      border: none;
+      color: #eef5ff;
+      font-weight: 500;
+      cursor: pointer;
+      font-size: 0.95rem;
+      padding: 8px 16px;
       border-radius: 40px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: #146b8a;
+      transition: 0.2s;
+    }
+    .nav-links a:hover, .nav-links button:hover {
+      background: rgba(255,255,255,0.15);
+    }
+    .user-badge {
+      background: #2c6e8f;
+      padding: 6px 16px;
+      border-radius: 40px;
+      font-size: 0.85rem;
+      font-weight: 500;
     }
 
-    /* Product Grid Modern */
+    /* hero */
+    .hero {
+      text-align: center;
+      padding: 60px 20px 40px;
+    }
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      background: linear-gradient(145deg, #1c5d7a, #0f3e53);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .hero p {
+      max-width: 600px;
+      margin: 20px auto;
+      color: #3a5f74;
+    }
+
+    /* product grid */
     .product-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 32px;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 30px;
+      margin: 40px 0;
     }
-
-    /* Card Premium */
     .product-card {
-      background: #ffffff;
-      border-radius: 32px;
-      transition: all 0.35s cubic-bezier(0.2, 0, 0, 1);
-      box-shadow: 0 15px 30px -12px rgba(0, 0, 0, 0.08);
-      overflow: hidden;
-      border: 1px solid rgba(0,0,0,0.02);
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      backdrop-filter: blur(2px);
+      background: white;
+      border-radius: 36px;
+      padding: 24px;
+      transition: all 0.3s ease;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0,0,0,0.03);
     }
-
     .product-card:hover {
       transform: translateY(-8px);
-      box-shadow: 0 30px 40px -18px rgba(0, 55, 70, 0.25);
-      border-color: #cae0ea;
+      box-shadow: 0 30px 40px -18px rgba(0, 50, 70, 0.2);
+      border-color: #cbe2ef;
     }
-
-    .card-content {
-      padding: 28px 26px 28px 26px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
     .product-icon {
-      font-size: 2.2rem;
-      background: linear-gradient(135deg, #eef4fa, #e2edf4);
-      width: 64px;
-      height: 64px;
+      font-size: 2.5rem;
+      width: 60px;
+      height: 60px;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 28px;
-      margin-bottom: 24px;
-      color: #1b6e8c;
-      transition: 0.2s;
+      background: #eef5fc;
+      border-radius: 24px;
+      margin-bottom: 20px;
+      color: #2c7a9e;
     }
-
-    .product-card:hover .product-icon {
-      background: #ddecf3;
-      transform: scale(0.98);
-    }
-
     .product-name {
-      font-size: 1.32rem;
+      font-size: 1.25rem;
       font-weight: 700;
-      line-height: 1.4;
-      margin-bottom: 14px;
-      color: #0a3345;
+      line-height: 1.3;
+      margin: 12px 0 10px;
+    }
+    .price-stock {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin: 16px 0;
+      font-weight: 600;
+    }
+    .price {
+      font-size: 1.3rem;
+      color: #1e6a50;
+      background: #e2f3ec;
+      padding: 4px 12px;
+      border-radius: 40px;
+    }
+    .stock {
+      background: #ecf3f8;
+      padding: 4px 12px;
+      border-radius: 40px;
+      font-size: 0.8rem;
+    }
+    .stock.low {
+      background: #ffedd5;
+      color: #b45309;
+    }
+    .order-btn {
+      background: #25D366;
+      width: 100%;
+      border: none;
+      padding: 12px;
+      border-radius: 50px;
+      font-weight: 700;
+      color: white;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .order-btn:disabled {
+      background: #b9dac9;
+      cursor: not-allowed;
     }
 
-    .feature-badge {
-      display: inline-flex;
+    /* modal modern */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
+      justify-content: center;
       align-items: center;
-      gap: 8px;
-      background: #f1f8fe;
-      border-radius: 30px;
-      padding: 6px 14px;
-      width: fit-content;
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: #146b8a;
+      z-index: 1000;
+    }
+    .modal-card {
+      background: white;
+      max-width: 450px;
+      width: 90%;
+      border-radius: 40px;
+      padding: 32px;
+      animation: fadeUp 0.25s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .modal-card h3 {
+      font-size: 1.7rem;
       margin-bottom: 20px;
     }
-
-    .feature-badge i {
-      font-size: 0.7rem;
-    }
-
-    .wa-button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      background: linear-gradient(105deg, #25D366, #20b85f);
-      color: white;
-      font-weight: 700;
-      padding: 14px 0;
-      border-radius: 60px;
-      text-decoration: none;
-      font-size: 0.95rem;
-      transition: all 0.25s;
-      margin-top: 12px;
-      border: none;
-      cursor: pointer;
+    .modal-card input, .modal-card select {
       width: 100%;
-      box-shadow: 0 4px 10px rgba(37,211,102,0.25);
-      letter-spacing: 0.3px;
-    }
-
-    .wa-button i {
-      font-size: 1.2rem;
-    }
-
-    .wa-button:hover {
-      background: linear-gradient(105deg, #20b45a, #179c50);
-      transform: scale(0.98);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.1);
-    }
-
-    /* Channel banner */
-    .channel-banner {
-      background: linear-gradient(125deg, #143c4b, #0e2f3c);
-      border-radius: 32px;
-      padding: 28px 32px;
-      margin: 56px 0 40px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .channel-text h3 {
-      color: white;
-      font-weight: 700;
-      font-size: 1.4rem;
-      margin-bottom: 6px;
-    }
-
-    .channel-text p {
-      color: #b8dfee;
-      font-size: 0.85rem;
-    }
-
-    .channel-link {
-      background: white;
-      padding: 12px 32px;
+      padding: 14px;
+      margin-bottom: 16px;
+      border: 1px solid #ddd;
       border-radius: 60px;
-      text-decoration: none;
-      font-weight: 700;
-      color: #0a2e3f;
-      transition: 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      font-size: 0.9rem;
     }
-
-    .channel-link i {
-      font-size: 1.2rem;
-      color: #25D366;
-    }
-
-    .channel-link:hover {
-      background: #e9f5fa;
-      transform: translateX(5px);
-    }
-
-    /* no result */
-    .no-result {
-      text-align: center;
-      padding: 70px 20px;
-      background: #f2f8fc;
-      border-radius: 48px;
-      color: #4b788b;
-      margin-top: 20px;
-    }
-
-    .footer {
-      margin-top: 70px;
-      padding: 36px 0 40px;
-      border-top: 1px solid #d4e2ea;
-      text-align: center;
-      font-size: 0.85rem;
-      color: #3f7085;
-    }
-
-    .footer .contact-foot {
+    .role-select {
       display: flex;
-      justify-content: center;
-      gap: 28px;
-      flex-wrap: wrap;
-      margin: 16px 0 12px;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .role-opt {
+      flex: 1;
+      text-align: center;
+      padding: 8px;
+      background: #eef2f6;
+      border-radius: 60px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .role-opt.active {
+      background: #2c7a9e;
+      color: white;
+    }
+    .modal-card button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 60px;
+      background: #1d6f8f;
+      color: white;
+      border: none;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+    .switch-link {
+      text-align: center;
+      margin-top: 16px;
+      color: #2c7a9e;
+      cursor: pointer;
+      font-size: 0.85rem;
     }
 
-    .footer a {
-      color: #146b8a;
-      text-decoration: none;
-      font-weight: 500;
+    /* admin panel */
+    .admin-panel, .orders-panel {
+      background: white;
+      border-radius: 32px;
+      padding: 28px;
+      margin: 30px 0;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.05);
     }
-
-    .footer a:hover {
-      text-decoration: underline;
+    .tab-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 12px;
+    }
+    .tab {
+      background: none;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .tab.active {
+      background: #1d6f8f;
+      color: white;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px 6px;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    input.small-input {
+      width: 80px;
+      padding: 6px;
+      border-radius: 30px;
+      border: 1px solid #ccc;
+    }
+    .backup-wa {
+      background: #25D366;
+      margin-top: 20px;
+      display: inline-block;
+    }
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: #517f94;
     }
 
     @media (max-width: 680px) {
-      .container {
-        padding: 0 18px;
-      }
-      h1 {
-        font-size: 2.2rem;
-      }
-      .category-title h2 {
-        font-size: 1.6rem;
-      }
-      .product-grid {
-        gap: 24px;
-      }
-      .channel-banner {
-        flex-direction: column;
-        text-align: center;
-      }
+      .navbar { flex-direction: column; gap: 12px; }
+      .hero h1 { font-size: 2.2rem; }
+      .product-grid { gap: 20px; }
     }
   </style>
 </head>
 <body>
-
+<div class="navbar">
+  <div class="logo">✦ ATHA STORE</div>
+  <div class="nav-links" id="navLinks"></div>
+</div>
 <div class="hero">
-  <div class="container hero-content">
-    <div class="store-badge">
-      <i class="fas fa-gem"></i> PREMIUM DIGITAL HUB
-    </div>
-    <h1>ATHA STORE <span style="font-weight: 600;">✦</span></h1>
-    <p>Akun premium, aplikasi editing, streaming, musik — legal, bergaransi, dan pelayanan cepat. <strong>Harga terbaik via WhatsApp!</strong></p>
-    <div class="info-highlight">
-      <div class="info-chip"><i class="fas fa-shield-alt"></i> Garansi 100%</div>
-      <div class="info-chip"><i class="fab fa-whatsapp"></i> Konfirmasi harga & stok</div>
-      <div class="info-chip"><i class="fas fa-bolt"></i> Respon cepat</div>
-    </div>
+  <div class="container">
+    <h1>Akun Premium <span style="color:#2c7a9e;">✦</span> Legal Bergaransi</h1>
+    <p>Editing, Streaming, Music — harga ramah kantong, stok selalu diperbarui</p>
   </div>
 </div>
+<div class="container" id="appContent"></div>
+<footer>© ATHA STORE • Semua produk bergaransi • Hubungi admin via WhatsApp untuk info lebih lanjut</footer>
 
-<div class="container">
-  <div class="search-section">
-    <div class="search-wrapper">
-      <i class="fas fa-search"></i>
-      <input type="text" id="searchInput" placeholder="Cari produk, misal: Canva Lifetime, Netflix, Alight Motion..." autocomplete="off">
-      <button id="resetSearchBtn"><i class="fas fa-undo-alt"></i> Reset</button>
-    </div>
-  </div>
-
-  <div id="categoriesContainer"></div>
-
-  <div class="channel-banner">
-    <div class="channel-text">
-      <h3><i class="fab fa-whatsapp"></i> Gabung Saluran Update</h3>
-      <p>Info restok kilat, promo eksklusif & produk terbaru langsung ke WhatsApp kamu.</p>
-    </div>
-    <a href="https://whatsapp.com/channel/0029Vb7quqX9xVJbV5myDS1g" target="_blank" class="channel-link" rel="noopener noreferrer">
-      <i class="fab fa-whatsapp"></i> JOIN NOW
-      <i class="fas fa-arrow-right"></i>
-    </a>
-  </div>
-
-  <div style="background: #eaf3f8; border-radius: 28px; padding: 18px 24px; margin: 30px 0 0; text-align: center; font-size: 0.85rem; font-weight: 500;">
-    <i class="fas fa-users"></i> <strong>GRUP JUAL BELI AKUN</strong> — Mau jual akun cepat laku atau cari akun tertentu?  
-    <a href="https://wa.me/6281910545769?text=Halo%20ATHA%20STORE%2C%20saya%20tertarik%20join%20grup%20jual%20beli%20akun" style="color:#146b8a; font-weight:700;">Hubungi admin via WA</a> untuk info grup.
-  </div>
+<!-- Modal Global -->
+<div id="globalModal" class="modal">
+  <div class="modal-card" id="modalInner"></div>
 </div>
-
-<footer class="footer container">
-  <div class="contact-foot">
-    <a href="https://wa.me/6281910545769?text=Halo%20ATHA%20STORE%2C%20saya%20mau%20order%20akun" target="_blank"><i class="fab fa-whatsapp"></i> wa.me/6281910545769</a>
-    <span><i class="fas fa-clock"></i> Stok berjalan tiap saat — tanyakan ketersediaan</span>
-  </div>
-  <p>© 2025 ATHA STORE • Kualitas Premium • Garansi Penuh • Harga dikonfirmasi via WhatsApp</p>
-</footer>
 
 <script>
-  // ========== DATABASE PRODUK (NAMA LENGKAP, TIDAK ADA SINGKATAN) ==========
-  const productsData = [
-    // EDITING TOOLS
-    { name: "Alight Motion Private (1 Tahun)", category: "Editing Tools" },
-    { name: "Canva 1 Bulan", category: "Editing Tools" },
-    { name: "Canva 1 Tahun (Renew 1 Bulan)", category: "Editing Tools" },
-    { name: "Canva Lifetime", category: "Editing Tools" },
-    { name: "Canva Head 1 Bulan", category: "Editing Tools" },
-    { name: "CapCut Sharing 1 Bulan", category: "Editing Tools" },
-    { name: "CapCut Private 1 Bulan", category: "Editing Tools" },
-
-    // STREAMING & MOVIES
-    { name: "VIU Lifetime", category: "Streaming & Movies" },
-    { name: "VIU Private Unlimited", category: "Streaming & Movies" },
-    { name: "Netflix 1 Profile 1 User 1 Bulan", category: "Streaming & Movies" },
-    { name: "Netflix 1 Profile 2 User 1 Bulan", category: "Streaming & Movies" },
-    { name: "Netflix Semi Private 1 Bulan", category: "Streaming & Movies" },
-    { name: "Netflix 1 Profile 1 User 1 Hari", category: "Streaming & Movies" },
-    { name: "Netflix 1 Profile 1 User 7 Hari", category: "Streaming & Movies" },
-    { name: "HBO MAX Sharing 8 User", category: "Streaming & Movies" },
-    { name: "HBO MAX Sharing 5 User", category: "Streaming & Movies" },
-    { name: "IQIYI Sharing 1 Bulan", category: "Streaming & Movies" },
-    { name: "Vidio Only TV 1 Tahun (Garansi 1 Bulan)", category: "Streaming & Movies" },
-    { name: "Vidio Sharing 2 User Mobile 1 Bulan", category: "Streaming & Movies" },
-    { name: "WeTV Sharing 6 User", category: "Streaming & Movies" },
-    { name: "WeTV Sharing 3 User", category: "Streaming & Movies" },
-
-    // MUSIC & SOCIAL
-    { name: "Spotify Individual Plan 1 Bulan", category: "Music & Social" },
-    { name: "YouTube Family Plan 1 Bulan", category: "Music & Social" },
-    { name: "YouTube Individual Plan 1 Bulan", category: "Music & Social" },
-    { name: "YouTube Head Plan 1 Bulan", category: "Music & Social" }
+  // ====================== DATA ======================
+  const DEFAULT_PRODUCTS = [
+    { id: 1, name: "Alight Motion Private (1 Tahun)", category: "Editing Tools", price: 4000, stock: 10 },
+    { id: 2, name: "Canva 1 Bulan", category: "Editing Tools", price: 2000, stock: 10 },
+    { id: 3, name: "Canva 1 Tahun (Renew 1 Bulan)", category: "Editing Tools", price: 5000, stock: 10 },
+    { id: 4, name: "Canva Lifetime", category: "Editing Tools", price: 6000, stock: 10 },
+    { id: 5, name: "Canva Head 1 Bulan", category: "Editing Tools", price: 7000, stock: 10 },
+    { id: 6, name: "CapCut Sharing 1 Bulan", category: "Editing Tools", price: 5000, stock: 10 },
+    { id: 7, name: "CapCut Private 1 Bulan", category: "Editing Tools", price: 7000, stock: 10 },
+    { id: 8, name: "VIU Lifetime", category: "Streaming & Movies", price: 4000, stock: 10 },
+    { id: 9, name: "VIU Private Unlimited", category: "Streaming & Movies", price: 2000, stock: 10 },
+    { id: 10, name: "Netflix 1 Profile 1 User 1 Bulan", category: "Streaming & Movies", price: 25000, stock: 10 },
+    { id: 11, name: "Netflix 1 Profile 2 User 1 Bulan", category: "Streaming & Movies", price: 15000, stock: 10 },
+    { id: 12, name: "Netflix Semi Private 1 Bulan", category: "Streaming & Movies", price: 27000, stock: 10 },
+    { id: 13, name: "Netflix 1 Profile 1 User 1 Hari", category: "Streaming & Movies", price: 5000, stock: 10 },
+    { id: 14, name: "Netflix 1 Profile 1 User 7 Hari", category: "Streaming & Movies", price: 10500, stock: 10 },
+    { id: 15, name: "HBO MAX Sharing 8 User", category: "Streaming & Movies", price: 60000, stock: 10 },
+    { id: 16, name: "HBO MAX Sharing 5 User", category: "Streaming & Movies", price: 10000, stock: 10 },
+    { id: 17, name: "IQIYI Sharing 1 Bulan", category: "Streaming & Movies", price: 5000, stock: 10 },
+    { id: 18, name: "Vidio Only TV 1 Tahun (Garansi 1 Bulan)", category: "Streaming & Movies", price: 5000, stock: 10 },
+    { id: 19, name: "Vidio Sharing 2 User Mobile 1 Bulan", category: "Streaming & Movies", price: 17000, stock: 10 },
+    { id: 20, name: "WeTV Sharing 6 User", category: "Streaming & Movies", price: 7000, stock: 10 },
+    { id: 21, name: "WeTV Sharing 3 User", category: "Streaming & Movies", price: 8000, stock: 10 },
+    { id: 22, name: "Spotify Individual Plan 1 Bulan", category: "Music & Social", price: 17500, stock: 10 },
+    { id: 23, name: "YouTube Family Plan 1 Bulan", category: "Music & Social", price: 2000, stock: 10 },
+    { id: 24, name: "YouTube Individual Plan 1 Bulan", category: "Music & Social", price: 8000, stock: 10 },
+    { id: 25, name: "YouTube Head Plan 1 Bulan", category: "Music & Social", price: 9000, stock: 10 }
   ];
 
-  const categoryOrder = ["Editing Tools", "Streaming & Movies", "Music & Social"];
-  const categoryIcon = {
-    "Editing Tools": "fa-pen-ruler",
-    "Streaming & Movies": "fa-clapperboard",
-    "Music & Social": "fa-head-side-headphones"
-  };
+  let users = [];      // { id, name, email, phone, password, role }
+  let products = [];
+  let orders = [];     // { id, productId, productName, quantity, totalPrice, status, customerName, customerEmail, createdAt }
+  let currentUser = null;
+  const ADMIN_WA = "6281910545769";
 
-  // Helper: escape HTML
-  function escapeHtml(str) {
-    return str.replace(/[&<>]/g, function(m) {
-      if (m === '&') return '&amp;';
-      if (m === '<') return '&lt;';
-      if (m === '>') return '&gt;';
-      return m;
-    });
+  // helper
+  function saveToLocal() {
+    localStorage.setItem("athastore_users", JSON.stringify(users));
+    localStorage.setItem("athastore_products", JSON.stringify(products));
+    localStorage.setItem("athastore_orders", JSON.stringify(orders));
   }
 
-  // Fungsi membuat card produk dengan pesan WA yang menggunakan format bold (*produk*)
-  function createProductCard(product) {
-    // Pesan WhatsApp dengan produk dalam format bold (*...*)
-    const waMessage = `Halo ka, saya tertarik dengan produk *${product.name}*. Apakah stoknya masih ada? Boleh minta info harganya juga ya. Terima kasih!`;
-    const waUrl = `https://wa.me/6281910545769?text=${encodeURIComponent(waMessage)}`;
-    
-    // Pilih ikon berdasarkan keyword
-    let iconClass = "fa-crown";
-    const nameLower = product.name.toLowerCase();
-    if (nameLower.includes("alight motion")) iconClass = "fa-film";
-    else if (nameLower.includes("canva")) iconClass = "fa-palette";
-    else if (nameLower.includes("capcut")) iconClass = "fa-video";
-    else if (nameLower.includes("netflix")) iconClass = "fa-tv";
-    else if (nameLower.includes("hbo")) iconClass = "fa-play-circle";
-    else if (nameLower.includes("viu")) iconClass = "fa-film";
-    else if (nameLower.includes("vidio")) iconClass = "fa-video";
-    else if (nameLower.includes("wetv")) iconClass = "fa-tv";
-    else if (nameLower.includes("spotify")) iconClass = "fa-music";
-    else if (nameLower.includes("youtube")) iconClass = "fa-youtube";
-    else if (nameLower.includes("iqiyi")) iconClass = "fa-play";
-    
-    return `
-      <div class="product-card" data-product-name="${product.name.toLowerCase()}">
-        <div class="card-content">
-          <div class="product-icon">
-            <i class="fas ${iconClass}"></i>
-          </div>
-          <div class="product-name">${escapeHtml(product.name)}</div>
-          <div class="feature-badge">
-            <i class="fas fa-check-circle"></i> Garansi Resmi
-            <i class="fas fa-shield-alt" style="margin-left: 8px;"></i> Legal 100%
-          </div>
-          <a href="${waUrl}" target="_blank" class="wa-button">
-            <i class="fab fa-whatsapp"></i> Tanya Stok & Harga
-          </a>
-        </div>
+  function loadData() {
+    const storedUsers = localStorage.getItem("athastore_users");
+    if (storedUsers) users = JSON.parse(storedUsers);
+    else {
+      users = [
+        { id: 1, name: "Admin ATHA", email: "admin@athastore.com", phone: "08123456789", password: "admin123", role: "admin" },
+        { id: 2, name: "Member Demo", email: "member@demo.com", phone: "08123456788", password: "member123", role: "member" }
+      ];
+    }
+    const storedProducts = localStorage.getItem("athastore_products");
+    if (storedProducts) products = JSON.parse(storedProducts);
+    else products = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+    const storedOrders = localStorage.getItem("athastore_orders");
+    if (storedOrders) orders = JSON.parse(storedOrders);
+    else orders = [];
+  }
+
+  // Kirim order ke WA admin
+  function notifyAdminOrder(order) {
+    const msg = `*ORDER BARU ATHA STORE* 🛒\n\nNama: ${order.customerName}\nEmail: ${order.customerEmail}\nProduk: ${order.productName}\nJumlah: ${order.quantity}\nTotal: Rp ${order.totalPrice.toLocaleString()}\nStatus: ${order.status}\n\nSegera diproses ya!`;
+    window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`, "_blank");
+  }
+
+  // Place order (guest / member)
+  function placeOrder(productId, quantity, customerName, customerEmail) {
+    const product = products.find(p => p.id === productId);
+    if (!product || product.stock < quantity) {
+      alert("Stok tidak mencukupi!");
+      return false;
+    }
+    // kurangi stok
+    product.stock -= quantity;
+    const total = product.price * quantity;
+    const newOrder = {
+      id: Date.now(),
+      productId: product.id,
+      productName: product.name,
+      quantity: quantity,
+      totalPrice: total,
+      status: "proses",
+      customerName: customerName,
+      customerEmail: customerEmail || "guest@email.com",
+      createdAt: new Date().toISOString()
+    };
+    orders.unshift(newOrder);
+    saveToLocal();
+    notifyAdminOrder(newOrder);
+    alert(`✅ Pesanan berhasil! Admin akan segera menghubungi via WhatsApp.\nPesanan: ${product.name} x${quantity}`);
+    renderApp();
+    return true;
+  }
+
+  // Admin functions
+  function adminUpdateProduct(pid, newStock, newPrice) {
+    const prod = products.find(p => p.id === pid);
+    if (prod) {
+      prod.stock = parseInt(newStock);
+      prod.price = parseInt(newPrice);
+      saveToLocal();
+      renderApp();
+    }
+  }
+
+  function adminUpdateOrderStatus(orderId, newStatus) {
+    const order = orders.find(o => o.id === orderId);
+    if (order) {
+      order.status = newStatus;
+      saveToLocal();
+      renderApp();
+    }
+  }
+
+  function backupToWhatsApp() {
+    let prodText = "📦 *DATA PRODUK ATHA STORE*\n";
+    products.forEach(p => {
+      prodText += `• ${p.name} | Rp ${p.price.toLocaleString()} | Stok: ${p.stock}\n`;
+    });
+    let orderText = "\n📋 *DATA ORDER*\n";
+    orders.forEach(o => {
+      orderText += `ID:${o.id} | ${o.productName} | ${o.quantity} pcs | Status: ${o.status} | ${o.customerName}\n`;
+    });
+    const msg = `${prodText}\n${orderText}\nWaktu backup: ${new Date().toLocaleString()}`;
+    window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`, "_blank");
+  }
+
+  // Auth modals
+  function showLoginModal() {
+    const modal = document.getElementById("globalModal");
+    const inner = document.getElementById("modalInner");
+    inner.innerHTML = `
+      <h3><i class="fas fa-key"></i> Masuk</h3>
+      <input type="email" id="loginEmail" placeholder="Email" autocomplete="email">
+      <input type="password" id="loginPassword" placeholder="Password">
+      <div class="role-select">
+        <div class="role-opt active" data-role="member">Member</div>
+        <div class="role-opt" data-role="admin">Admin</div>
       </div>
+      <button id="loginBtnAction">Login</button>
+      <div class="switch-link" id="toRegister">Belum punya akun? Daftar</div>
+      <div class="switch-link" id="toForgot">Lupa password?</div>
     `;
+    modal.style.display = "flex";
+    attachRoleSelect();
+    document.getElementById("loginBtnAction").onclick = () => {
+      const email = document.getElementById("loginEmail").value;
+      const pwd = document.getElementById("loginPassword").value;
+      const selectedRole = document.querySelector(".role-opt.active").dataset.role;
+      const user = users.find(u => u.email === email && u.password === pwd && u.role === selectedRole);
+      if (user) {
+        currentUser = { id: user.id, name: user.name, email: user.email, role: user.role };
+        closeModal();
+        renderApp();
+      } else alert("Email/password salah atau role tidak sesuai");
+    };
+    document.getElementById("toRegister").onclick = () => showRegisterModal();
+    document.getElementById("toForgot").onclick = () => showForgotModal();
   }
 
-  let currentFilter = "";
+  function showRegisterModal() {
+    const modal = document.getElementById("globalModal");
+    const inner = document.getElementById("modalInner");
+    inner.innerHTML = `
+      <h3><i class="fas fa-user-plus"></i> Daftar Member</h3>
+      <input type="text" id="regName" placeholder="Nama Lengkap">
+      <input type="email" id="regEmail" placeholder="Email">
+      <input type="tel" id="regPhone" placeholder="Nomor Telepon">
+      <input type="password" id="regPassword" placeholder="Password">
+      <button id="registerAction">Daftar</button>
+      <div class="switch-link" id="toLogin">Sudah punya akun? Login</div>
+    `;
+    document.getElementById("registerAction").onclick = () => {
+      const name = document.getElementById("regName").value.trim();
+      const email = document.getElementById("regEmail").value.trim();
+      const phone = document.getElementById("regPhone").value.trim();
+      const pwd = document.getElementById("regPassword").value;
+      if (!name || !email || !phone || !pwd) return alert("Lengkapi semua field");
+      if (users.find(u => u.email === email)) return alert("Email sudah terdaftar");
+      if (users.find(u => u.phone === phone)) return alert("Nomor sudah terdaftar");
+      const newId = users.length + 1;
+      users.push({ id: newId, name, email, phone, password: pwd, role: "member" });
+      saveToLocal();
+      alert("Registrasi berhasil! Silakan login.");
+      showLoginModal();
+    };
+    document.getElementById("toLogin").onclick = () => showLoginModal();
+    modal.style.display = "flex";
+  }
 
-  function renderProducts(filterText = "") {
-    const container = document.getElementById("categoriesContainer");
+  function showForgotModal() {
+    const modal = document.getElementById("globalModal");
+    const inner = document.getElementById("modalInner");
+    inner.innerHTML = `
+      <h3><i class="fas fa-lock"></i> Reset Password</h3>
+      <input type="text" id="resetIdentifier" placeholder="Email atau Nomor Telepon">
+      <button id="resetBtn">Reset Password</button>
+      <div class="switch-link" id="backLogin">Kembali Login</div>
+    `;
+    document.getElementById("resetBtn").onclick = () => {
+      const identifier = document.getElementById("resetIdentifier").value;
+      const user = users.find(u => u.email === identifier || u.phone === identifier);
+      if (!user) return alert("Data tidak ditemukan");
+      const newPass = prompt("Masukkan password baru (min 4 karakter):");
+      if (newPass && newPass.length >= 4) {
+        user.password = newPass;
+        saveToLocal();
+        alert("Password berhasil diubah! Silakan login.");
+        closeModal();
+        showLoginModal();
+      } else alert("Password minimal 4 karakter");
+    };
+    document.getElementById("backLogin").onclick = () => showLoginModal();
+    modal.style.display = "flex";
+  }
+
+  function attachRoleSelect() {
+    document.querySelectorAll(".role-opt").forEach(opt => {
+      opt.onclick = () => {
+        document.querySelectorAll(".role-opt").forEach(o => o.classList.remove("active"));
+        opt.classList.add("active");
+      };
+    });
+  }
+
+  function closeModal() {
+    document.getElementById("globalModal").style.display = "none";
+  }
+
+  // Order modal (guest or member)
+  function showOrderModal(productId, productName, stockAvail) {
+    const isMember = currentUser && currentUser.role === "member";
+    const defaultName = isMember ? currentUser.name : "";
+    const defaultEmail = isMember ? currentUser.email : "";
+    const modal = document.getElementById("globalModal");
+    const inner = document.getElementById("modalInner");
+    inner.innerHTML = `
+      <h3>Pesan ${escapeHtml(productName)}</h3>
+      <input type="number" id="orderQty" placeholder="Jumlah" min="1" max="${stockAvail}" value="1">
+      <input type="text" id="orderName" placeholder="Nama lengkap" value="${escapeHtml(defaultName)}" ${isMember ? 'readonly' : ''}>
+      <input type="email" id="orderEmail" placeholder="Email" value="${escapeHtml(defaultEmail)}" ${isMember ? 'readonly' : ''}>
+      <button id="confirmOrderBtn">Konfirmasi & Kirim ke WA</button>
+      <div class="switch-link" id="cancelOrder">Batal</div>
+    `;
+    modal.style.display = "flex";
+    document.getElementById("confirmOrderBtn").onclick = () => {
+      let qty = parseInt(document.getElementById("orderQty").value);
+      let name = document.getElementById("orderName").value.trim();
+      let email = document.getElementById("orderEmail").value.trim();
+      if (isNaN(qty) || qty < 1) return alert("Jumlah tidak valid");
+      if (!name) return alert("Nama harus diisi");
+      if (!email) return alert("Email harus diisi");
+      if (qty > stockAvail) return alert(`Stok hanya ${stockAvail}`);
+      placeOrder(productId, qty, name, email);
+      closeModal();
+    };
+    document.getElementById("cancelOrder").onclick = () => closeModal();
+  }
+
+  // RENDER UI
+  function renderApp() {
+    const container = document.getElementById("appContent");
+    const navDiv = document.getElementById("navLinks");
     if (!container) return;
-    const lowerFilter = filterText.trim().toLowerCase();
-    
-    const filtered = productsData.filter(prod => {
-      if (lowerFilter === "") return true;
-      return prod.name.toLowerCase().includes(lowerFilter);
-    });
-    
-    if (filtered.length === 0) {
-      container.innerHTML = `
-        <div class="no-result">
-          <i class="fas fa-search" style="font-size: 3rem; opacity: 0.5;"></i>
-          <h3 style="margin-top: 16px;">Produk tidak ditemukan</h3>
-          <p style="margin-top: 8px;">Coba kata kunci lain atau langsung hubungi kami via WhatsApp untuk info lengkap.</p>
-        </div>`;
-      return;
+
+    // navbar
+    let navHtml = `<a href="#" id="navHome">🏠 Beranda</a>`;
+    if (currentUser) {
+      navHtml += `<span class="user-badge"><i class="fas fa-user-circle"></i> ${currentUser.name} (${currentUser.role === "admin" ? "Admin" : "Member"})</span>`;
+      if (currentUser.role === "admin") navHtml += `<a href="#" id="navAdmin">⚙️ Dashboard Admin</a>`;
+      else navHtml += `<a href="#" id="navMyOrders">📋 Pesanan Saya</a>`;
+      navHtml += `<button id="logoutBtn">Keluar</button>`;
+    } else {
+      navHtml += `<button id="loginBtn">Masuk / Daftar</button>`;
     }
-    
-    let html = "";
-    for (let cat of categoryOrder) {
-      const productsInCat = filtered.filter(p => p.category === cat);
-      if (productsInCat.length === 0) continue;
-      const icon = categoryIcon[cat] || "fa-tag";
-      html += `
-        <div class="category">
-          <div class="category-title">
-            <h2><i class="fas ${icon}" style="margin-right: 14px;"></i> ${cat}</h2>
-            <span>${productsInCat.length} produk</span>
+    navDiv.innerHTML = navHtml;
+
+    document.getElementById("navHome")?.addEventListener("click", (e) => { e.preventDefault(); showHome(); });
+    document.getElementById("navAdmin")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role==="admin") showAdminPanel(); });
+    document.getElementById("navMyOrders")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role==="member") showMemberOrders(); });
+    document.getElementById("logoutBtn")?.addEventListener("click", () => { currentUser = null; renderApp(); });
+    document.getElementById("loginBtn")?.addEventListener("click", () => showLoginModal());
+
+    showHome();
+
+    function showHome() {
+      let html = `<div class="product-grid">`;
+      products.forEach(prod => {
+        const stockClass = prod.stock < 3 ? "low" : "";
+        html += `
+          <div class="product-card">
+            <div class="product-icon"><i class="fas ${getIcon(prod.name)}"></i></div>
+            <div class="product-name">${escapeHtml(prod.name)}</div>
+            <div class="price-stock">
+              <span class="price">Rp ${prod.price.toLocaleString()}</span>
+              <span class="stock ${stockClass}"><i class="fas fa-boxes"></i> Stok: ${prod.stock}</span>
+            </div>
+            <button class="order-btn" data-id="${prod.id}" data-name="${escapeHtml(prod.name)}" data-stock="${prod.stock}" ${prod.stock <= 0 ? 'disabled' : ''}>
+              <i class="fab fa-whatsapp"></i> Pesan Sekarang
+            </button>
           </div>
-          <div class="product-grid">
-            ${productsInCat.map(prod => createProductCard(prod)).join('')}
-          </div>
+        `;
+      });
+      html += `</div>`;
+      container.innerHTML = html;
+      document.querySelectorAll(".order-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const pid = parseInt(btn.dataset.id);
+          const pname = btn.dataset.name;
+          const stock = parseInt(btn.dataset.stock);
+          showOrderModal(pid, pname, stock);
+        });
+      });
+    }
+
+    function showAdminPanel() {
+      let html = `<div class="admin-panel">
+        <h2><i class="fas fa-shield-alt"></i> Panel Admin</h2>
+        <div class="tab-bar">
+          <button class="tab active" id="tabProducts">📦 Produk</button>
+          <button class="tab" id="tabOrders">📑 Order</button>
+          <button class="tab" id="tabBackup">💾 Backup WA</button>
         </div>
-      `;
+        <div id="adminContent"></div>
+      </div>`;
+      container.innerHTML = html;
+
+      const contentDiv = document.getElementById("adminContent");
+      const renderProducts = () => {
+        let tbl = `<table><thead><tr><th>Produk</th><th>Harga</th><th>Stok</th><th>Aksi</th></tr></thead><tbody>`;
+        products.forEach(p => {
+          tbl += `<tr>
+            <td>${escapeHtml(p.name)}</td>
+            <td><input class="small-input" type="number" id="price-${p.id}" value="${p.price}"></td>
+            <td><input class="small-input" type="number" id="stock-${p.id}" value="${p.stock}" min="0"></td>
+            <td><button class="updateProd" data-id="${p.id}">Update</button></td>
+          </tr>`;
+        });
+        tbl += `</tbody></table>`;
+        contentDiv.innerHTML = tbl;
+        document.querySelectorAll(".updateProd").forEach(btn => {
+          btn.onclick = () => {
+            const id = parseInt(btn.dataset.id);
+            const newPrice = document.getElementById(`price-${id}`).value;
+            const newStock = document.getElementById(`stock-${id}`).value;
+            adminUpdateProduct(id, newStock, newPrice);
+          };
+        });
+      };
+      const renderOrders = () => {
+        if (orders.length === 0) { contentDiv.innerHTML = "<p>Belum ada order</p>"; return; }
+        let tbl = `<table><thead><tr><th>Produk</th><th>Pembeli</th><th>Jumlah</th><th>Total</th><th>Status</th><th>Aksi</th></tr></thead><tbody>`;
+        orders.forEach(o => {
+          tbl += `<tr>
+            <td>${escapeHtml(o.productName)}</td>
+            <td>${escapeHtml(o.customerName)}</td>
+            <td>${o.quantity}</td>
+            <td>Rp ${o.totalPrice.toLocaleString()}</td>
+            <td>
+              <select class="statusSelect" data-id="${o.id}">
+                <option value="proses" ${o.status === "proses" ? "selected" : ""}>Proses</option>
+                <option value="berhasil" ${o.status === "berhasil" ? "selected" : ""}>Berhasil</option>
+                <option value="gagal" ${o.status === "gagal" ? "selected" : ""}>Gagal</option>
+              </select>
+            </td>
+            <td><button class="updateOrder" data-id="${o.id}">Update</button></td>
+          </tr>`;
+        });
+        tbl += `</tbody></table>`;
+        contentDiv.innerHTML = tbl;
+        document.querySelectorAll(".updateOrder").forEach(btn => {
+          btn.onclick = () => {
+            const oid = parseInt(btn.dataset.id);
+            const select = document.querySelector(`.statusSelect[data-id="${oid}"]`);
+            adminUpdateOrderStatus(oid, select.value);
+          };
+        });
+      };
+      const renderBackup = () => {
+        contentDiv.innerHTML = `<button class="backup-wa" style="background:#25D366; padding:12px 24px; border-radius:50px;">📲 Backup ke WhatsApp Admin</button>`;
+        document.querySelector(".backup-wa").onclick = backupToWhatsApp;
+      };
+      document.getElementById("tabProducts").onclick = () => { setActiveTab("tabProducts"); renderProducts(); };
+      document.getElementById("tabOrders").onclick = () => { setActiveTab("tabOrders"); renderOrders(); };
+      document.getElementById("tabBackup").onclick = () => { setActiveTab("tabBackup"); renderBackup(); };
+      function setActiveTab(activeId) {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        document.getElementById(activeId).classList.add("active");
+      }
+      renderProducts();
     }
-    container.innerHTML = html;
-  }
-  
-  // Search & reset
-  function initSearch() {
-    const searchInput = document.getElementById("searchInput");
-    const resetBtn = document.getElementById("resetSearchBtn");
-    
-    function update() {
-      currentFilter = searchInput.value;
-      renderProducts(currentFilter);
+
+    function showMemberOrders() {
+      const myOrders = orders.filter(o => o.customerEmail === currentUser.email);
+      if (myOrders.length === 0) {
+        container.innerHTML = `<div class="orders-panel"><h2>Pesanan Saya</h2><p>Belum ada pesanan.</p></div>`;
+        return;
+      }
+      let html = `<div class="orders-panel"><h2>📋 Pesanan Saya</h2><table><thead><tr><th>Produk</th><th>Jumlah</th><th>Total</th><th>Status</th><th>Tanggal</th></tr></thead><tbody>`;
+      myOrders.forEach(o => {
+        html += `<tr><td>${escapeHtml(o.productName)}</td><td>${o.quantity}</td><td>Rp ${o.totalPrice.toLocaleString()}</td><td>${o.status === "berhasil" ? "✅ Berhasil" : (o.status === "gagal" ? "❌ Gagal" : "⏳ Proses")}</td><td>${new Date(o.createdAt).toLocaleDateString()}</td></tr>`;
+      });
+      html += `</tbody></table></div>`;
+      container.innerHTML = html;
     }
-    searchInput.addEventListener("input", update);
-    resetBtn.addEventListener("click", () => {
-      searchInput.value = "";
-      update();
-      searchInput.focus();
-    });
   }
-  
-  document.addEventListener("DOMContentLoaded", () => {
-    renderProducts("");
-    initSearch();
-  });
+
+  function getIcon(name) {
+    const n = name.toLowerCase();
+    if (n.includes("alight")) return "fa-film";
+    if (n.includes("canva")) return "fa-palette";
+    if (n.includes("capcut")) return "fa-video";
+    if (n.includes("netflix")) return "fa-tv";
+    if (n.includes("spotify")) return "fa-music";
+    if (n.includes("youtube")) return "fa-youtube";
+    return "fa-crown";
+  }
+
+  function escapeHtml(str) { return String(str).replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+  window.onclick = function(e) { if (e.target === document.getElementById("globalModal")) closeModal(); };
+  loadData();
+  renderApp();
 </script>
 </body>
 </html>
