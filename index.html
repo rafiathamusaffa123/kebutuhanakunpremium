@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>ATHA STORE | Complete System</title>
+  <title>ATHA STORE | Final System</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -184,7 +184,7 @@
       background: #1d6f8f;
       color: white;
     }
-    /* Responsive product management grid */
+    /* Product management grid */
     .product-mgmt-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -233,16 +233,65 @@
       margin-top: 8px;
       background: #1d6f8f;
     }
-    table {
+    .btn-update-all {
+      background: #25D366;
+      padding: 12px 24px;
+      font-size: 1rem;
+      margin-top: 20px;
+      display: inline-block;
+      border-radius: 60px;
+    }
+    /* Table styling untuk kelola user & ticket */
+    .table-responsive {
+      overflow-x: auto;
+      margin-top: 16px;
+      border-radius: 20px;
+      border: 1px solid #e2e8f0;
+      background: white;
+    }
+    .data-table {
       width: 100%;
       border-collapse: collapse;
-      overflow-x: auto;
-      display: block;
+      font-size: 0.85rem;
     }
-    th, td {
-      padding: 12px 8px;
+    .data-table th {
+      background: #f1f5f9;
+      padding: 14px 12px;
       text-align: left;
+      font-weight: 600;
+      color: #1e5f7a;
+    }
+    .data-table td {
+      padding: 12px;
       border-bottom: 1px solid #e2e8f0;
+      vertical-align: middle;
+    }
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+    .data-table code {
+      background: #eef2f5;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+    }
+    .search-box {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .search-box input {
+      flex: 1;
+      max-width: 300px;
+      padding: 10px 16px;
+      border-radius: 40px;
+      border: 1px solid #ccc;
+    }
+    .search-box button {
+      background: #1d6f8f;
+      padding: 8px 20px;
     }
     input, select {
       padding: 8px 12px;
@@ -256,16 +305,6 @@
       padding: 6px 14px;
       border-radius: 40px;
       cursor: pointer;
-    }
-    .search-box {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    .search-box input {
-      flex: 1;
-      max-width: 300px;
     }
     .modal {
       display: none;
@@ -295,7 +334,7 @@
     @media (max-width: 680px) {
       .navbar { flex-direction: column; gap: 12px; }
       .hero h1 { font-size: 2rem; }
-      table { display: block; overflow-x: auto; }
+      .data-table th, .data-table td { padding: 10px 8px; }
       .product-mgmt-field { flex-direction: column; align-items: stretch; }
       .product-mgmt-field input { width: 100%; }
     }
@@ -313,7 +352,7 @@
   </div>
 </div>
 <div class="container" id="appContent"></div>
-<footer>© ATHA STORE • Owner dapat mengelola semua akun & produk • Sistem aman & responsif</footer>
+<footer>© ATHA STORE • Stok berkurang hanya ketika order berhasil • Owner dapat update semua produk sekaligus</footer>
 
 <div id="globalModal" class="modal"><div class="modal-card" id="modalInner"></div></div>
 
@@ -347,7 +386,6 @@
     { id: 25, name: "YouTube Head Plan 1 Bulan", category: "Music & Social", price: 9000, stock: 10 }
   ];
 
-  // OWNER ACCOUNTS (akan selalu ada)
   const OWNER_ACCOUNTS = [
     { id: 1001, name: "rafi", email: "rapiatha5@gmail.com", phone: "081910545769", password: "rafiganteng", role: "owner" },
     { id: 1002, name: "Rafi Atha", email: "rafiathamusyaffa@gmail.com", phone: "087730365877", password: "rafiatha", role: "owner" }
@@ -376,7 +414,6 @@
         { id: 3, name: "Reseller Demo", email: "reseller@demo.com", phone: "08123456787", password: "reseller123", role: "reseller" }
       ];
     }
-    // Ensure owner accounts always exist
     for (let owner of OWNER_ACCOUNTS) {
       const exists = users.some(u => u.email === owner.email);
       if (!exists) {
@@ -391,33 +428,40 @@
     else products = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
 
     const storedOrders = localStorage.getItem("athastore_orders");
-    if (storedOrders) orders = JSON.parse(storedOrders);
-    else orders = [];
+    if (storedOrders) {
+      orders = JSON.parse(storedOrders);
+      orders.forEach(o => {
+        if (o.stockDeducted === undefined) o.stockDeducted = false;
+      });
+    } else {
+      orders = [];
+    }
 
     saveToLocal();
   }
 
   function getPriceForUser(productPrice, userRole) {
-    if (userRole === "reseller") {
-      return Math.max(0, productPrice - 1000);
-    }
+    if (userRole === "reseller") return Math.max(0, productPrice - 1000);
     return productPrice;
   }
 
   function notifyAdminOrder(order) {
-    const msg = `*ORDER BARU ATHA STORE* 🛒\n\nNama: ${order.customerName}\nEmail: ${order.customerEmail}\nRole: ${order.customerRole}\nProduk: ${order.productName}\nJumlah: ${order.quantity}\nHarga Satuan: Rp ${order.unitPrice.toLocaleString()}\nTotal: Rp ${order.totalPrice.toLocaleString()}\nStatus: ${order.status}\n\nSegera diproses!`;
+    const msg = `*ORDER BARU ATHA STORE* 🛒\n\nNama: ${order.customerName}\nEmail: ${order.customerEmail}\nRole: ${order.customerRole}\nProduk: ${order.productName}\nJumlah: ${order.quantity}\nHarga Satuan: Rp ${order.unitPrice.toLocaleString()}\nTotal: Rp ${order.totalPrice.toLocaleString()}\nStatus: ${order.status}\n\n*Terima Kasih.*`;
     window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`, "_blank");
   }
 
   function placeOrder(productId, quantity, customerName, customerEmail, customerRole = "guest") {
     const product = products.find(p => p.id === productId);
-    if (!product || product.stock < quantity) {
-      alert("Stok tidak mencukupi!");
+    if (!product) {
+      alert("Produk tidak ditemukan!");
+      return false;
+    }
+    if (product.stock < quantity) {
+      alert("Stok tidak mencukupi! Stok saat ini: " + product.stock);
       return false;
     }
     const unitPrice = getPriceForUser(product.price, customerRole);
     const total = unitPrice * quantity;
-    product.stock -= quantity;
     const newOrder = {
       id: Date.now(),
       productId: product.id,
@@ -429,14 +473,43 @@
       customerName: customerName,
       customerEmail: customerEmail,
       customerRole: customerRole,
+      stockDeducted: false,
       createdAt: new Date().toISOString()
     };
     orders.unshift(newOrder);
     saveToLocal();
     notifyAdminOrder(newOrder);
-    alert(`✅ Pesanan berhasil! Admin akan segera menghubungi via WhatsApp.\nProduk: ${product.name} x${quantity}\nTotal: Rp ${total.toLocaleString()}`);
+    alert(`✅ Pesanan berhasil dicatat! Admin akan memproses.\nProduk: ${product.name} x${quantity}\nTotal: Rp ${total.toLocaleString()}\n\n*Stok akan berkurang hanya setelah pesanan berhasil.*`);
     renderApp();
     return true;
+  }
+
+  function adminUpdateOrderStatus(orderId, newStatus) {
+    const order = orders.find(o => o.id === orderId);
+    if (!order) return;
+
+    const oldStatus = order.status;
+    if (oldStatus === newStatus) return;
+
+    if (newStatus === "berhasil" && !order.stockDeducted) {
+      const product = products.find(p => p.id === order.productId);
+      if (product) {
+        if (product.stock >= order.quantity) {
+          product.stock -= order.quantity;
+          order.stockDeducted = true;
+          alert(`✅ Stok berkurang untuk pesanan ${order.productName} (${order.quantity} pcs). Sisa stok: ${product.stock}`);
+        } else {
+          alert(`❌ Gagal mengubah status: Stok produk ${order.productName} tidak mencukupi (tersisa ${product.stock}, dibutuhkan ${order.quantity}).`);
+          return;
+        }
+      } else {
+        alert("Produk tidak ditemukan!");
+        return;
+      }
+    }
+    order.status = newStatus;
+    saveToLocal();
+    renderApp();
   }
 
   function adminUpdateProduct(pid, newStock, newPrice) {
@@ -449,12 +522,27 @@
     }
   }
 
-  function adminUpdateOrderStatus(orderId, newStatus) {
-    const order = orders.find(o => o.id === orderId);
-    if (order) {
-      order.status = newStatus;
+  function adminUpdateAllProducts() {
+    let updated = 0;
+    for (let prod of products) {
+      const priceInput = document.getElementById(`price-${prod.id}`);
+      const stockInput = document.getElementById(`stock-${prod.id}`);
+      if (priceInput && stockInput) {
+        const newPrice = parseInt(priceInput.value);
+        const newStock = parseInt(stockInput.value);
+        if (!isNaN(newPrice) && !isNaN(newStock) && newPrice >= 0 && newStock >= 0) {
+          prod.price = newPrice;
+          prod.stock = newStock;
+          updated++;
+        }
+      }
+    }
+    if (updated > 0) {
       saveToLocal();
+      alert(`✅ Berhasil memperbarui ${updated} produk!`);
       renderApp();
+    } else {
+      alert("Tidak ada perubahan yang valid.");
     }
   }
 
@@ -465,7 +553,7 @@
     });
     let orderText = "\n📋 *DATA ORDER*\n";
     orders.forEach(o => {
-      orderText += `ID:${o.id} | ${o.productName} | ${o.quantity} pcs | Rp ${o.totalPrice.toLocaleString()} | Status: ${o.status} | ${o.customerName} (${o.customerRole})\n`;
+      orderText += `ID:${o.id} | ${o.productName} | ${o.quantity} pcs | Status: ${o.status} | Stok sudah dipotong: ${o.stockDeducted ? "Ya" : "Belum"} | ${o.customerName}\n`;
     });
     const msg = `${prodText}\n${orderText}\nWaktu: ${new Date().toLocaleString()}`;
     window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`, "_blank");
@@ -519,7 +607,7 @@
     }
   }
 
-  // MODAL LOGIN & REGISTER
+  // MODAL LOGIN & REGISTER (sama seperti sebelumnya)
   function showLoginModal() {
     const modal = document.getElementById("globalModal");
     const inner = document.getElementById("modalInner");
@@ -646,7 +734,6 @@
     const navDiv = document.getElementById("navLinks");
     if (!container) return;
 
-    // Navbar
     let navHtml = `<a href="#" id="navHome">🏠 Beranda</a>`;
     if (currentUser) {
       let roleName = currentUser.role === "owner" ? "Owner" : (currentUser.role === "admin" ? "Admin" : (currentUser.role === "seller" ? "Seller" : (currentUser.role === "reseller" ? "Reseller" : "Member")));
@@ -661,7 +748,6 @@
     }
     navDiv.innerHTML = navHtml;
 
-    // Event listeners
     document.getElementById("navHome")?.addEventListener("click", (e) => { e.preventDefault(); showHome(); });
     document.getElementById("navOwnerPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "owner") showOwnerPanel(); });
     document.getElementById("navAdminPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "admin") showAdminPanel(true); });
@@ -672,7 +758,6 @@
 
     showHome();
 
-    // HOME (PRODUCTS)
     function showHome() {
       let html = `<div class="product-grid">`;
       products.forEach(prod => {
@@ -705,7 +790,6 @@
       });
     }
 
-    // OWNER PANEL (User Management, Product Management, Ticket) - produk rapi dengan grid
     function showOwnerPanel() {
       let html = `<div class="panel"><h2><i class="fas fa-crown"></i> Owner Panel</h2>
         <div class="tab-bar"><button class="tab active" id="tabUsers">👥 Kelola User</button><button class="tab" id="tabProducts">📦 Kelola Produk</button><button class="tab" id="tabTicket">🎫 Ticket Akun</button></div>
@@ -715,7 +799,7 @@
 
       const renderUserManagement = () => {
         let search = `<div class="search-box"><input type="text" id="searchUser" placeholder="Cari nama/email/nomor"><button id="searchUserBtn">Cari</button></div>`;
-        let table = `<div style="overflow-x:auto;"><table><thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Password</th><th>Aksi</th></tr></thead><tbody id="userTableBody"></tbody></table></div>`;
+        let table = `<div class="table-responsive"><table class="data-table"><thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Password</th><th>Aksi</th></tr></thead><tbody id="userTableBody"></tbody></table></div>`;
         contentDiv.innerHTML = search + table;
         const renderUserList = (filter = "") => {
           const filtered = users.filter(u => u.name.toLowerCase().includes(filter) || u.email.toLowerCase().includes(filter) || u.phone.includes(filter));
@@ -749,13 +833,15 @@
           const val = document.getElementById("searchUser").value.toLowerCase();
           renderUserList(val);
         };
-        const formHtml = `<hr><h3>Buat Akun Baru (Admin / Seller / Reseller)</h3>
-          <input type="text" id="newName" placeholder="Nama" style="width:200px;"> 
-          <input type="email" id="newEmail" placeholder="Email"> 
-          <input type="tel" id="newPhone" placeholder="Nomor"> 
-          <input type="password" id="newPass" placeholder="Password"> 
-          <select id="newRole"><option value="admin">Admin</option><option value="seller">Seller</option><option value="reseller">Reseller</option></select>
-          <button id="createUserBtn">Buat Akun</button>`;
+        const formHtml = `<hr style="margin:24px 0 16px;"><h3>Buat Akun Baru (Admin / Seller / Reseller)</h3>
+          <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+            <input type="text" id="newName" placeholder="Nama" style="flex:1; min-width:150px;">
+            <input type="email" id="newEmail" placeholder="Email" style="flex:1; min-width:180px;">
+            <input type="tel" id="newPhone" placeholder="Nomor" style="flex:1; min-width:150px;">
+            <input type="password" id="newPass" placeholder="Password" style="flex:1; min-width:130px;">
+            <select id="newRole" style="padding:8px 12px;"><option value="admin">Admin</option><option value="seller">Seller</option><option value="reseller">Reseller</option></select>
+            <button id="createUserBtn">Buat Akun</button>
+          </div>`;
         contentDiv.insertAdjacentHTML("beforeend", formHtml);
         document.getElementById("createUserBtn").onclick = () => {
           const name = document.getElementById("newName").value.trim();
@@ -769,7 +855,6 @@
       };
 
       const renderProductManagement = () => {
-        // Menggunakan grid card agar rapi di HP & PC
         let gridHtml = `<div class="product-mgmt-grid">`;
         products.forEach(p => {
           gridHtml += `
@@ -783,11 +868,12 @@
                 <label>Stok</label>
                 <input type="number" id="stock-${p.id}" value="${p.stock}" min="0">
               </div>
-              <button class="updateProd" data-id="${p.id}">Update</button>
+              <button class="updateProd" data-id="${p.id}">Update Produk Ini</button>
             </div>
           `;
         });
         gridHtml += `</div>`;
+        gridHtml += `<div style="text-align:center; margin-top:24px;"><button id="updateAllBtn" class="btn-update-all"><i class="fas fa-save"></i> Update Semua Produk Sekaligus</button></div>`;
         contentDiv.innerHTML = gridHtml;
         document.querySelectorAll(".updateProd").forEach(btn => {
           btn.onclick = () => {
@@ -797,6 +883,7 @@
             adminUpdateProduct(id, newStock, newPrice);
           };
         });
+        document.getElementById("updateAllBtn").onclick = adminUpdateAllProducts;
       };
 
       const renderTicket = () => {
@@ -805,7 +892,7 @@
         const targetRoles = users.filter(u => u.role === "member" || u.role === "reseller");
         const showMembers = (filter = "") => {
           const filtered = targetRoles.filter(m => m.name.toLowerCase().includes(filter) || m.email.toLowerCase().includes(filter) || m.phone.includes(filter));
-          let tbl = `<div style="overflow-x:auto;"><table><thead><tr><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th></tr></thead><tbody>`;
+          let tbl = `<div class="table-responsive"><table class="data-table"><thead><tr><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th></tr></thead><tbody>`;
           filtered.forEach(m => {
             const orderCount = orders.filter(o => o.customerEmail === m.email).length;
             tbl += `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td>${escapeHtml(m.phone)}</td><td>${m.role === "reseller" ? "Reseller" : "Member"}</td><td>${orderCount}</td></tr>`;
@@ -830,7 +917,6 @@
       renderUserManagement();
     }
 
-    // ADMIN PANEL (sama seperti sebelumnya)
     function showAdminPanel(includeTicket = true) {
       let html = `<div class="panel"><h2><i class="fas fa-shield-alt"></i> Dashboard Admin</h2>
         <div class="tab-bar"><button class="tab active" id="tabProducts">📦 Produk</button><button class="tab" id="tabOrders">📑 Order</button><button class="tab" id="tabBackup">💾 Backup WA</button>${includeTicket ? '<button class="tab" id="tabTicketMember">🎫 Ticket Member & Reseller</button>' : ''}</div>
@@ -839,7 +925,7 @@
       const contentDiv = document.getElementById("adminContent");
 
       const renderProducts = () => {
-        let tbl = `<div style="overflow-x:auto;"><table><thead><tr><th>Produk</th><th>Harga (Rp)</th><th>Stok</th><th>Aksi</th></tr></thead><tbody>`;
+        let tbl = `<div class="table-responsive"><table class="data-table"><thead><tr><th>Produk</th><th>Harga (Rp)</th><th>Stok</th><th>Aksi</th></tr></thead><tbody>`;
         products.forEach(p => {
           tbl += `<tr>
             <td>${escapeHtml(p.name)}</td>
@@ -862,7 +948,7 @@
 
       const renderOrders = () => {
         if (orders.length === 0) { contentDiv.innerHTML = "<p>Belum ada order</p>"; return; }
-        let tbl = `<div style="overflow-x:auto;"><table><thead><tr><th>Produk</th><th>Pembeli</th><th>Role</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Aksi</th></tr></thead><tbody>`;
+        let tbl = `<div class="table-responsive"><table class="data-table"><thead><tr><th>Produk</th><th>Pembeli</th><th>Role</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Stok Dipotong</th><th>Aksi</th></tr></thead><tbody>`;
         orders.forEach(o => {
           tbl += `<tr>
             <td>${escapeHtml(o.productName)}</td>
@@ -871,7 +957,14 @@
             <td>${o.quantity}</td>
             <td>Rp ${o.unitPrice.toLocaleString()}</td>
             <td>Rp ${o.totalPrice.toLocaleString()}</td>
-            <td><select class="statusSelect" data-id="${o.id}"><option value="proses" ${o.status === "proses" ? "selected" : ""}>Proses</option><option value="berhasil" ${o.status === "berhasil" ? "selected" : ""}>Berhasil</option><option value="gagal" ${o.status === "gagal" ? "selected" : ""}>Gagal</option></select></td>
+            <td>
+              <select class="statusSelect" data-id="${o.id}">
+                <option value="proses" ${o.status === "proses" ? "selected" : ""}>Proses</option>
+                <option value="berhasil" ${o.status === "berhasil" ? "selected" : ""}>Berhasil</option>
+                <option value="gagal" ${o.status === "gagal" ? "selected" : ""}>Gagal</option>
+              </select>
+            </td>
+            <td>${o.stockDeducted ? "✅ Sudah" : "❌ Belum"}</td>
             <td><button class="updateOrder" data-id="${o.id}">Update</button></td>
           </tr>`;
         });
@@ -896,7 +989,7 @@
         const targetRoles = users.filter(u => u.role === "member" || u.role === "reseller");
         const show = (filter = "") => {
           const filtered = targetRoles.filter(m => m.name.toLowerCase().includes(filter) || m.email.toLowerCase().includes(filter) || m.phone.includes(filter));
-          let tbl = `<div style="overflow-x:auto;"><table><thead><tr><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th></tr></thead><tbody>`;
+          let tbl = `<div class="table-responsive"><table class="data-table"><thead><tr><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th></tr></thead><tbody>`;
           filtered.forEach(m => {
             const orderCount = orders.filter(o => o.customerEmail === m.email).length;
             tbl += `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td>${escapeHtml(m.phone)}</td><td>${m.role === "reseller" ? "Reseller" : "Member"}</td><td>${orderCount}</td></tr>`;
@@ -934,7 +1027,7 @@
         container.innerHTML = `<div class="panel"><h2>Pesanan Saya</h2><p>Belum ada pesanan.</p></div>`;
         return;
       }
-      let html = `<div class="panel"><h2>📋 Pesanan Saya</h2><div style="overflow-x:auto;"><table><thead><tr><th>Produk</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Tanggal</th></tr></thead><tbody>`;
+      let html = `<div class="panel"><h2>📋 Pesanan Saya</h2><div class="table-responsive"><table class="data-table"><thead><tr><th>Produk</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Stok Dipotong</th><th>Tanggal</th></tr></thead><tbody>`;
       myOrders.forEach(o => {
         html += `<tr>
           <td>${escapeHtml(o.productName)}</td>
@@ -942,6 +1035,7 @@
           <td>Rp ${o.unitPrice.toLocaleString()}</td>
           <td>Rp ${o.totalPrice.toLocaleString()}</td>
           <td>${o.status === "berhasil" ? "✅ Berhasil" : (o.status === "gagal" ? "❌ Gagal" : "⏳ Proses")}</td>
+          <td>${o.stockDeducted ? "✅ Sudah" : "❌ Belum"}</td>
           <td>${new Date(o.createdAt).toLocaleDateString()}</td>
         </tr>`;
       });
