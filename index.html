@@ -184,7 +184,6 @@
       background: #1d6f8f;
       color: white;
     }
-    /* Product management grid */
     .product-mgmt-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -238,11 +237,12 @@
       display: inline-block;
       border-radius: 60px;
       font-weight: 600;
+      cursor: pointer;
+      border: none;
     }
     .btn-update-all i {
       margin-right: 8px;
     }
-    /* Table styling */
     .table-responsive {
       overflow-x: auto;
       margin-top: 16px;
@@ -298,12 +298,6 @@
     .search-box button {
       background: #1d6f8f;
       padding: 8px 20px;
-    }
-    .filter-group {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
     }
     input, select {
       padding: 8px 12px;
@@ -426,6 +420,9 @@
   let products = [];
   let orders = [];
   let currentUser = null;
+  let currentView = "home"; // untuk tracking view saat update
+  let currentTab = "tabUsers"; // untuk tracking tab aktif di owner panel
+  let adminCurrentTab = "tabProducts"; // untuk tracking tab aktif di admin panel
   const ADMIN_WA = "6281910545769";
 
   function saveToLocal() {
@@ -555,6 +552,7 @@
     renderApp();
   }
 
+  // Update semua produk sekaligus - tanpa refresh ke home
   function updateAllProductsFromGrid() {
     let updated = 0;
     for (let prod of products) {
@@ -573,9 +571,22 @@
     if (updated > 0) {
       saveToLocal();
       alert(`✅ Berhasil memperbarui ${updated} produk!`);
-      renderApp();
+      // Render ulang tanpa mengubah view
+      renderApp(true); // true = stay on current view
     } else {
       alert("Tidak ada perubahan yang valid.");
+    }
+  }
+
+  // Update single produk - tanpa refresh ke home
+  function adminUpdateProduct(pid, newStock, newPrice) {
+    const prod = products.find(p => p.id === pid);
+    if (prod) {
+      prod.stock = parseInt(newStock);
+      prod.price = parseInt(newPrice);
+      saveToLocal();
+      alert(`✅ Produk "${prod.name}" berhasil diperbarui!`);
+      renderApp(true); // stay on current view
     }
   }
 
@@ -609,7 +620,7 @@
     users.push({ id: newId, name, email, phone, password, role });
     saveToLocal();
     alert(`Berhasil membuat akun ${role}: ${name}`);
-    renderApp();
+    renderApp(true);
     return true;
   }
 
@@ -625,7 +636,7 @@
     }
     users = users.filter(u => u.id !== userId);
     saveToLocal();
-    renderApp();
+    renderApp(true);
   }
 
   function ownerChangePassword(userId, newPassword) {
@@ -634,7 +645,7 @@
       user.password = newPassword;
       saveToLocal();
       alert(`Password untuk ${user.name} berhasil diubah!`);
-      renderApp();
+      renderApp(true);
     } else {
       alert("User tidak ditemukan");
     }
@@ -763,7 +774,7 @@
   }
 
   // ======================== RENDER UTAMA ========================
-  function renderApp() {
+  function renderApp(stayOnCurrentView = false) {
     const container = document.getElementById("appContent");
     const navDiv = document.getElementById("navLinks");
     if (!container) return;
@@ -782,17 +793,36 @@
     }
     navDiv.innerHTML = navHtml;
 
-    document.getElementById("navHome")?.addEventListener("click", (e) => { e.preventDefault(); showHome(); });
-    document.getElementById("navOwnerPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "owner") showOwnerPanel(); });
-    document.getElementById("navAdminPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "admin") showAdminPanel(true); });
-    document.getElementById("navSellerPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "seller") showSellerPanel(); });
-    document.getElementById("navMyOrders")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "member" || currentUser?.role === "reseller") showMemberOrders(); });
-    document.getElementById("logoutBtn")?.addEventListener("click", () => { currentUser = null; saveToLocal(); renderApp(); });
+    // Event listeners untuk navbar
+    document.getElementById("navHome")?.addEventListener("click", (e) => { e.preventDefault(); currentView = "home"; renderApp(); });
+    document.getElementById("navOwnerPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "owner") { currentView = "owner"; renderApp(); } });
+    document.getElementById("navAdminPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "admin") { currentView = "admin"; renderApp(); } });
+    document.getElementById("navSellerPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "seller") { currentView = "seller"; renderApp(); } });
+    document.getElementById("navMyOrders")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "member" || currentUser?.role === "reseller") { currentView = "myorders"; renderApp(); } });
+    document.getElementById("logoutBtn")?.addEventListener("click", () => { currentUser = null; currentView = "home"; saveToLocal(); renderApp(); });
     document.getElementById("loginBtn")?.addEventListener("click", () => showLoginModal());
 
-    showHome();
+    // Jika stayOnCurrentView true, gunakan currentView yang sudah ada
+    if (!stayOnCurrentView) {
+      // Set default view jika belum ada
+      if (!currentView || currentView === "home") showHome();
+      else if (currentView === "owner" && currentUser?.role === "owner") showOwnerPanel();
+      else if (currentView === "admin" && currentUser?.role === "admin") showAdminPanel(true);
+      else if (currentView === "seller" && currentUser?.role === "seller") showSellerPanel();
+      else if (currentView === "myorders" && (currentUser?.role === "member" || currentUser?.role === "reseller")) showMemberOrders();
+      else showHome();
+    } else {
+      // Stay on current view
+      if (currentView === "home") showHome();
+      else if (currentView === "owner" && currentUser?.role === "owner") showOwnerPanel();
+      else if (currentView === "admin" && currentUser?.role === "admin") showAdminPanel(true);
+      else if (currentView === "seller" && currentUser?.role === "seller") showSellerPanel();
+      else if (currentView === "myorders" && (currentUser?.role === "member" || currentUser?.role === "reseller")) showMemberOrders();
+      else showHome();
+    }
 
     function showHome() {
+      currentView = "home";
       let html = `<div class="product-grid">`;
       products.forEach(prod => {
         const stockClass = prod.stock < 3 ? "low" : "";
@@ -825,15 +855,16 @@
     }
 
     function showOwnerPanel() {
+      currentView = "owner";
       let html = `<div class="panel"><h2><i class="fas fa-crown"></i> Owner Panel</h2>
-        <div class="tab-bar"><button class="tab active" id="tabUsers">👥 Kelola User</button><button class="tab" id="tabProducts">📦 Kelola Produk</button><button class="tab" id="tabOrders">🎫 Ticket Pembelian</button><button class="tab" id="tabTicket">👥 Ticket Akun</button></div>
+        <div class="tab-bar"><button class="tab ${currentTab === 'tabUsers' ? 'active' : ''}" id="tabUsers">👥 Kelola User</button><button class="tab ${currentTab === 'tabProducts' ? 'active' : ''}" id="tabProducts">📦 Kelola Produk</button><button class="tab ${currentTab === 'tabOrders' ? 'active' : ''}" id="tabOrders">🎫 Ticket Pembelian</button><button class="tab ${currentTab === 'tabTicket' ? 'active' : ''}" id="tabTicket">👥 Ticket Akun</button></div>
         <div id="ownerContent"></div></div>`;
       container.innerHTML = html;
       const contentDiv = document.getElementById("ownerContent");
 
       const renderUserManagement = () => {
         let search = `<div class="search-box"><input type="text" id="searchUser" placeholder="Cari nama/email/nomor"><button id="searchUserBtn">Cari</button></div>`;
-        let table = `<div class="table-responsive"><table class="data-table"><thead> <tr><th>ID</th><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Password</th><th>Aksi</th> </tr></thead><tbody id="userTableBody"></tbody></table></div>`;
+        let table = `<div class="table-responsive"><table class="data-table"><thead>  ods<th>ID</th><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Password</th><th>Aksi</th> </thead><tbody id="userTableBody"></tbody> </div>`;
         contentDiv.innerHTML = search + table;
         const renderUserList = (filter = "") => {
           const filtered = users.filter(u => u.name.toLowerCase().includes(filter) || u.email.toLowerCase().includes(filter) || u.phone.includes(filter));
@@ -846,8 +877,8 @@
               <td>${escapeHtml(u.phone)}</td>
               <td>${u.role}</td>
               <td><code>${escapeHtml(u.password)}</code> <button class="changePass" data-id="${u.id}">Ganti</button></td>
-              <td>${u.id !== currentUser.id ? `<button class="delUser" data-id="${u.id}">Hapus</button>` : '-'}</td>
-            </tr>
+               <td>${u.id !== currentUser.id ? `<button class="delUser" data-id="${u.id}">Hapus</button>` : '-'}</td>
+             </tr>
           `).join("");
           document.querySelectorAll(".delUser").forEach(btn => {
             btn.onclick = () => { if(confirm("Hapus user ini?")) ownerDeleteUser(parseInt(btn.dataset.id)); };
@@ -902,16 +933,24 @@
                 <label>Stok</label>
                 <input type="number" id="stock-${p.id}" value="${p.stock}" min="0">
               </div>
+              <button class="updateProd" data-id="${p.id}">Update Produk Ini</button>
             </div>
           `;
         });
         gridHtml += `</div>`;
         gridHtml += `<div style="text-align:center; margin-top:24px;"><button id="updateAllBtn" class="btn-update-all"><i class="fas fa-save"></i> Update Semua Produk Sekaligus</button></div>`;
         contentDiv.innerHTML = gridHtml;
+        document.querySelectorAll(".updateProd").forEach(btn => {
+          btn.onclick = () => {
+            const id = parseInt(btn.dataset.id);
+            const newPrice = document.getElementById(`price-${id}`).value;
+            const newStock = document.getElementById(`stock-${id}`).value;
+            adminUpdateProduct(id, newStock, newPrice);
+          };
+        });
         document.getElementById("updateAllBtn").onclick = updateAllProductsFromGrid;
       };
 
-      // Ticket Pembelian - semua transaksi dengan filter
       const renderOrderTicket = () => {
         let filterHtml = `
           <div class="search-box">
@@ -948,19 +987,7 @@
           }
           
           let tbl = `<div class="table-responsive"><table class="data-table"><thead>
-            <tr>
-              <th>ID</th>
-              <th>Tanggal</th>
-              <th>Pembeli</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Produk</th>
-              <th>Jumlah</th>
-              <th>Harga Satuan</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th>Stok Dipotong</th>
-            </tr>
+            <tr><th>ID</th><th>Tanggal</th><th>Pembeli</th><th>Email</th><th>Role</th><th>Produk</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Stok Dipotong</th></tr>
           </thead><tbody>`;
           
           filtered.forEach(o => {
@@ -1025,21 +1052,27 @@
         };
       };
 
-      document.getElementById("tabUsers").onclick = () => { setActiveTab("tabUsers"); renderUserManagement(); };
-      document.getElementById("tabProducts").onclick = () => { setActiveTab("tabProducts"); renderProductManagement(); };
-      document.getElementById("tabOrders").onclick = () => { setActiveTab("tabOrders"); renderOrderTicket(); };
-      document.getElementById("tabTicket").onclick = () => { setActiveTab("tabTicket"); renderTicket(); };
+      document.getElementById("tabUsers").onclick = () => { setActiveTab("tabUsers"); currentTab = "tabUsers"; renderUserManagement(); };
+      document.getElementById("tabProducts").onclick = () => { setActiveTab("tabProducts"); currentTab = "tabProducts"; renderProductManagement(); };
+      document.getElementById("tabOrders").onclick = () => { setActiveTab("tabOrders"); currentTab = "tabOrders"; renderOrderTicket(); };
+      document.getElementById("tabTicket").onclick = () => { setActiveTab("tabTicket"); currentTab = "tabTicket"; renderTicket(); };
       function setActiveTab(activeId) {
         document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
         document.getElementById(activeId).classList.add("active");
       }
-      renderUserManagement();
+      // Load sesuai tab terakhir yang aktif
+      if (currentTab === "tabUsers") renderUserManagement();
+      else if (currentTab === "tabProducts") renderProductManagement();
+      else if (currentTab === "tabOrders") renderOrderTicket();
+      else if (currentTab === "tabTicket") renderTicket();
+      else renderUserManagement();
     }
 
-    // ADMIN PANEL (produk dalam grid yang sama)
+    // ADMIN PANEL dengan tetap di tab yang sama
     function showAdminPanel(includeTicket = true) {
+      currentView = "admin";
       let html = `<div class="panel"><h2><i class="fas fa-shield-alt"></i> Dashboard Admin</h2>
-        <div class="tab-bar"><button class="tab active" id="tabProducts">📦 Kelola Produk</button><button class="tab" id="tabOrders">📑 Order</button><button class="tab" id="tabBackup">💾 Backup WA</button>${includeTicket ? '<button class="tab" id="tabTicketMember">🎫 Ticket Member & Reseller</button>' : ''}</div>
+        <div class="tab-bar"><button class="tab ${adminCurrentTab === 'tabProducts' ? 'active' : ''}" id="tabProducts">📦 Kelola Produk</button><button class="tab ${adminCurrentTab === 'tabOrders' ? 'active' : ''}" id="tabOrders">📑 Order</button><button class="tab ${adminCurrentTab === 'tabBackup' ? 'active' : ''}" id="tabBackup">💾 Backup WA</button>${includeTicket ? '<button class="tab ${adminCurrentTab === \'tabTicketMember\' ? \'active\' : \'\'}" id="tabTicketMember">🎫 Ticket Member & Reseller</button>' : ''}</div>
         <div id="adminContent"></div></div>`;
       container.innerHTML = html;
       const contentDiv = document.getElementById("adminContent");
@@ -1058,12 +1091,21 @@
                 <label>Stok</label>
                 <input type="number" id="stock-${p.id}" value="${p.stock}" min="0">
               </div>
+              <button class="updateProd" data-id="${p.id}">Update Produk Ini</button>
             </div>
           `;
         });
         gridHtml += `</div>`;
         gridHtml += `<div style="text-align:center; margin-top:24px;"><button id="updateAllBtn" class="btn-update-all"><i class="fas fa-save"></i> Update Semua Produk Sekaligus</button></div>`;
         contentDiv.innerHTML = gridHtml;
+        document.querySelectorAll(".updateProd").forEach(btn => {
+          btn.onclick = () => {
+            const id = parseInt(btn.dataset.id);
+            const newPrice = document.getElementById(`price-${id}`).value;
+            const newStock = document.getElementById(`stock-${id}`).value;
+            adminUpdateProduct(id, newStock, newPrice);
+          };
+        });
         document.getElementById("updateAllBtn").onclick = updateAllProductsFromGrid;
       };
 
@@ -1125,17 +1167,22 @@
         };
       };
 
-      document.getElementById("tabProducts").onclick = () => { setActive("tabProducts"); renderProducts(); };
-      document.getElementById("tabOrders").onclick = () => { setActive("tabOrders"); renderOrders(); };
-      document.getElementById("tabBackup").onclick = () => { setActive("tabBackup"); renderBackup(); };
+      document.getElementById("tabProducts").onclick = () => { setActive("tabProducts"); adminCurrentTab = "tabProducts"; renderProducts(); };
+      document.getElementById("tabOrders").onclick = () => { setActive("tabOrders"); adminCurrentTab = "tabOrders"; renderOrders(); };
+      document.getElementById("tabBackup").onclick = () => { setActive("tabBackup"); adminCurrentTab = "tabBackup"; renderBackup(); };
       if (includeTicket && document.getElementById("tabTicketMember")) {
-        document.getElementById("tabTicketMember").onclick = () => { setActive("tabTicketMember"); renderTicketMember(); };
+        document.getElementById("tabTicketMember").onclick = () => { setActive("tabTicketMember"); adminCurrentTab = "tabTicketMember"; renderTicketMember(); };
       }
       function setActive(activeId) {
         document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
         document.getElementById(activeId).classList.add("active");
       }
-      renderProducts();
+      // Load sesuai tab terakhir
+      if (adminCurrentTab === "tabProducts") renderProducts();
+      else if (adminCurrentTab === "tabOrders") renderOrders();
+      else if (adminCurrentTab === "tabBackup") renderBackup();
+      else if (adminCurrentTab === "tabTicketMember" && includeTicket) renderTicketMember();
+      else renderProducts();
     }
 
     function showSellerPanel() {
@@ -1143,6 +1190,7 @@
     }
 
     function showMemberOrders() {
+      currentView = "myorders";
       const myOrders = orders.filter(o => o.customerEmail === currentUser.email);
       if (myOrders.length === 0) {
         container.innerHTML = `<div class="panel"><h2>Pesanan Saya</h2><p>Belum ada pesanan.</p></div>`;
