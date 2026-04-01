@@ -759,4 +759,307 @@
     document.getElementById("navOwnerPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "owner") showOwnerPanel(); });
     document.getElementById("navAdminPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "admin") showAdminPanel(true); });
     document.getElementById("navSellerPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "seller") showSellerPanel(); });
-    document.getElementById("
+    document.getElementById("navMyOrders")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "member" || currentUser?.role === "reseller") showMemberOrders(); });
+    document.getElementById("logoutBtn")?.addEventListener("click", () => { currentUser = null; saveToLocal(); renderApp(); });
+    document.getElementById("loginBtn")?.addEventListener("click", () => showLoginModal());
+
+    showHome();
+
+    function showHome() {
+      let html = `<div class="product-grid">`;
+      products.forEach(prod => {
+        const stockClass = prod.stock < 3 ? "low" : "";
+        const displayPrice = currentUser?.role === "reseller" ? Math.max(0, prod.price - 1000) : prod.price;
+        html += `
+          <div class="product-card">
+            <div class="product-icon"><i class="fas ${getIcon(prod.name)}"></i></div>
+            <div class="product-name">${escapeHtml(prod.name)}</div>
+            <div class="price-stock">
+              <span class="price">Rp ${displayPrice.toLocaleString()}${currentUser?.role === "reseller" ? ' (Reseller)' : ''}</span>
+              <span class="stock ${stockClass}"><i class="fas fa-boxes"></i> Stok: ${prod.stock}</span>
+            </div>
+            <button class="order-btn" data-id="${prod.id}" data-name="${escapeHtml(prod.name)}" data-stock="${prod.stock}" data-price="${prod.price}" ${prod.stock <= 0 ? 'disabled' : ''}>
+              <i class="fab fa-whatsapp"></i> Pesan Sekarang
+            </button>
+          </div>
+        `;
+      });
+      html += `</div>`;
+      container.innerHTML = html;
+      document.querySelectorAll(".order-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const pid = parseInt(btn.dataset.id);
+          const pname = btn.dataset.name;
+          const stock = parseInt(btn.dataset.stock);
+          const price = parseInt(btn.dataset.price);
+          showOrderModal(pid, pname, stock, price);
+        });
+      });
+    }
+
+    function showOwnerPanel() {
+      let html = `<div class="panel"><h2><i class="fas fa-crown"></i> Owner Panel</h2>
+        <div class="tab-bar"><button class="tab active" id="tabUsers">👥 Kelola User</button><button class="tab" id="tabProducts">📦 Kelola Produk</button><button class="tab" id="tabTicket">🎫 Ticket Akun</button></div>
+        <div id="ownerContent"></div></div>`;
+      container.innerHTML = html;
+      const contentDiv = document.getElementById("ownerContent");
+
+      const renderUserManagement = () => {
+        let search = `<div class="search-box"><input type="text" id="searchUser" placeholder="Cari nama/email/nomor"><button id="searchUserBtn">Cari</button></div>`;
+        let table = `<div class="table-responsive"><table class="data-table"><thead> trivial<th>ID</th><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Password</th><th>Aksi</th> </thead><tbody id="userTableBody"></tbody> </div>`;
+        contentDiv.innerHTML = search + table;
+        const renderUserList = (filter = "") => {
+          const filtered = users.filter(u => u.name.toLowerCase().includes(filter) || u.email.toLowerCase().includes(filter) || u.phone.includes(filter));
+          const tbody = document.getElementById("userTableBody");
+          tbody.innerHTML = filtered.map(u => `
+            <tr>
+              <td>${u.id}</td>
+              <td>${escapeHtml(u.name)}</td>
+              <td>${escapeHtml(u.email)}</td>
+              <td>${escapeHtml(u.phone)}</td>
+              <td>${u.role}</td>
+              <td><code>${escapeHtml(u.password)}</code> <button class="changePass" data-id="${u.id}">Ganti</button></td>
+              <td>${u.id !== currentUser.id ? `<button class="delUser" data-id="${u.id}">Hapus</button>` : '-'}</td>
+            </tr>
+          `).join("");
+          document.querySelectorAll(".delUser").forEach(btn => {
+            btn.onclick = () => { if(confirm("Hapus user ini?")) ownerDeleteUser(parseInt(btn.dataset.id)); };
+          });
+          document.querySelectorAll(".changePass").forEach(btn => {
+            btn.onclick = () => {
+              const uid = parseInt(btn.dataset.id);
+              const newPass = prompt("Masukkan password baru (min 4 karakter):");
+              if (newPass && newPass.length >= 4) {
+                ownerChangePassword(uid, newPass);
+              } else alert("Password minimal 4 karakter");
+            };
+          });
+        };
+        renderUserList();
+        document.getElementById("searchUserBtn").onclick = () => {
+          const val = document.getElementById("searchUser").value.toLowerCase();
+          renderUserList(val);
+        };
+        const formHtml = `<hr style="margin:24px 0 16px;"><h3>Buat Akun Baru (Admin / Seller / Reseller)</h3>
+          <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+            <input type="text" id="newName" placeholder="Nama" style="flex:1; min-width:150px;">
+            <input type="email" id="newEmail" placeholder="Email" style="flex:1; min-width:180px;">
+            <input type="tel" id="newPhone" placeholder="Nomor" style="flex:1; min-width:150px;">
+            <input type="password" id="newPass" placeholder="Password" style="flex:1; min-width:130px;">
+            <select id="newRole" style="padding:8px 12px;"><option value="admin">Admin</option><option value="seller">Seller</option><option value="reseller">Reseller</option></select>
+            <button id="createUserBtn">Buat Akun</button>
+          </div>`;
+        contentDiv.insertAdjacentHTML("beforeend", formHtml);
+        document.getElementById("createUserBtn").onclick = () => {
+          const name = document.getElementById("newName").value.trim();
+          const email = document.getElementById("newEmail").value.trim();
+          const phone = document.getElementById("newPhone").value.trim();
+          const pass = document.getElementById("newPass").value;
+          const role = document.getElementById("newRole").value;
+          if (!name || !email || !phone || !pass) return alert("Isi semua field");
+          ownerCreateUser(name, email, phone, pass, role);
+        };
+      };
+
+      const renderProductManagement = () => {
+        let gridHtml = `<div class="product-mgmt-grid">`;
+        products.forEach(p => {
+          gridHtml += `
+            <div class="product-mgmt-card">
+              <div class="product-mgmt-name">${escapeHtml(p.name)}</div>
+              <div class="product-mgmt-field">
+                <label>Harga (Rp)</label>
+                <input type="number" id="price-${p.id}" value="${p.price}" step="500">
+              </div>
+              <div class="product-mgmt-field">
+                <label>Stok</label>
+                <input type="number" id="stock-${p.id}" value="${p.stock}" min="0">
+              </div>
+            </div>
+          `;
+        });
+        gridHtml += `</div>`;
+        gridHtml += `<div style="text-align:center; margin-top:24px;"><button id="updateAllBtn" class="btn-update-all"><i class="fas fa-save"></i> Update Semua Produk Sekaligus</button></div>`;
+        contentDiv.innerHTML = gridHtml;
+        document.getElementById("updateAllBtn").onclick = updateAllProductsFromGrid;
+      };
+
+      const renderTicket = () => {
+        contentDiv.innerHTML = `<div class="search-box"><input type="text" id="ticketSearch" placeholder="Cari member/reseller (nama/email/nomor)"><button id="ticketSearchBtn">Cari</button></div>
+        <div id="ticketResult"></div>`;
+        const targetRoles = users.filter(u => u.role === "member" || u.role === "reseller");
+        const showMembers = (filter = "") => {
+          const filtered = targetRoles.filter(m => m.name.toLowerCase().includes(filter) || m.email.toLowerCase().includes(filter) || m.phone.includes(filter));
+          let tbl = `<div class="table-responsive"><table class="data-table"><thead> money<th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th> </thead><tbody>`;
+          filtered.forEach(m => {
+            const orderCount = orders.filter(o => o.customerEmail === m.email).length;
+            tbl += `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td>${escapeHtml(m.phone)}</td><td>${m.role === "reseller" ? "Reseller" : "Member"}</td><td>${orderCount}</td></tr>`;
+          });
+          tbl += `</tbody> </div>`;
+          document.getElementById("ticketResult").innerHTML = tbl;
+        };
+        showMembers();
+        document.getElementById("ticketSearchBtn").onclick = () => {
+          const val = document.getElementById("ticketSearch").value.toLowerCase();
+          showMembers(val);
+        };
+      };
+
+      document.getElementById("tabUsers").onclick = () => { setActiveTab("tabUsers"); renderUserManagement(); };
+      document.getElementById("tabProducts").onclick = () => { setActiveTab("tabProducts"); renderProductManagement(); };
+      document.getElementById("tabTicket").onclick = () => { setActiveTab("tabTicket"); renderTicket(); };
+      function setActiveTab(activeId) {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        document.getElementById(activeId).classList.add("active");
+      }
+      renderUserManagement();
+    }
+
+    // ADMIN PANEL (produk dalam grid yang sama dengan owner)
+    function showAdminPanel(includeTicket = true) {
+      let html = `<div class="panel"><h2><i class="fas fa-shield-alt"></i> Dashboard Admin</h2>
+        <div class="tab-bar"><button class="tab active" id="tabProducts">📦 Kelola Produk</button><button class="tab" id="tabOrders">📑 Order</button><button class="tab" id="tabBackup">💾 Backup WA</button>${includeTicket ? '<button class="tab" id="tabTicketMember">🎫 Ticket Member & Reseller</button>' : ''}</div>
+        <div id="adminContent"></div></div>`;
+      container.innerHTML = html;
+      const contentDiv = document.getElementById("adminContent");
+
+      const renderProducts = () => {
+        let gridHtml = `<div class="product-mgmt-grid">`;
+        products.forEach(p => {
+          gridHtml += `
+            <div class="product-mgmt-card">
+              <div class="product-mgmt-name">${escapeHtml(p.name)}</div>
+              <div class="product-mgmt-field">
+                <label>Harga (Rp)</label>
+                <input type="number" id="price-${p.id}" value="${p.price}" step="500">
+              </div>
+              <div class="product-mgmt-field">
+                <label>Stok</label>
+                <input type="number" id="stock-${p.id}" value="${p.stock}" min="0">
+              </div>
+            </div>
+          `;
+        });
+        gridHtml += `</div>`;
+        gridHtml += `<div style="text-align:center; margin-top:24px;"><button id="updateAllBtn" class="btn-update-all"><i class="fas fa-save"></i> Update Semua Produk Sekaligus</button></div>`;
+        contentDiv.innerHTML = gridHtml;
+        document.getElementById("updateAllBtn").onclick = updateAllProductsFromGrid;
+      };
+
+      const renderOrders = () => {
+        if (orders.length === 0) { contentDiv.innerHTML = "<p>Belum ada order</p>"; return; }
+        let tbl = `<div class="table-responsive"><table class="data-table"><thead> money<th>Produk</th><th>Pembeli</th><th>Role</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Stok Dipotong</th><th>Aksi</th> </thead><tbody>`;
+        orders.forEach(o => {
+          tbl += `<tr>
+            <td>${escapeHtml(o.productName)}</td>
+            <td>${escapeHtml(o.customerName)}</td>
+            <td>${o.customerRole}</td>
+            <td>${o.quantity}</td>
+            <td>Rp ${o.unitPrice.toLocaleString()}</td>
+            <td>Rp ${o.totalPrice.toLocaleString()}</td>
+            <td>
+              <select class="statusSelect" data-id="${o.id}">
+                <option value="proses" ${o.status === "proses" ? "selected" : ""}>Proses</option>
+                <option value="berhasil" ${o.status === "berhasil" ? "selected" : ""}>Berhasil</option>
+                <option value="gagal" ${o.status === "gagal" ? "selected" : ""}>Gagal</option>
+              </select>
+            </td>
+            <td>${o.stockDeducted ? "✅ Sudah" : "❌ Belum"}</td>
+            <td><button class="updateOrder" data-id="${o.id}">Update</button></td>
+          </tr>`;
+        });
+        tbl += `</tbody> </div>`;
+        contentDiv.innerHTML = tbl;
+        document.querySelectorAll(".updateOrder").forEach(btn => {
+          btn.onclick = () => {
+            const oid = parseInt(btn.dataset.id);
+            const select = document.querySelector(`.statusSelect[data-id="${oid}"]`);
+            adminUpdateOrderStatus(oid, select.value);
+          };
+        });
+      };
+
+      const renderBackup = () => {
+        contentDiv.innerHTML = `<button id="doBackupBtn" style="background:#25D366; padding:10px 24px;">📲 Backup ke WhatsApp Admin</button>`;
+        document.getElementById("doBackupBtn").onclick = backupToWhatsApp;
+      };
+
+      const renderTicketMember = () => {
+        contentDiv.innerHTML = `<div class="search-box"><input type="text" id="ticketAdminSearch" placeholder="Cari member/reseller (nama/email/nomor)"><button id="searchTicketAdmin">Cari</button></div><div id="ticketAdminResult"></div>`;
+        const targetRoles = users.filter(u => u.role === "member" || u.role === "reseller");
+        const show = (filter = "") => {
+          const filtered = targetRoles.filter(m => m.name.toLowerCase().includes(filter) || m.email.toLowerCase().includes(filter) || m.phone.includes(filter));
+          let tbl = `<div class="table-responsive"><table class="data-table"><thead> money<th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th> </thead><tbody>`;
+          filtered.forEach(m => {
+            const orderCount = orders.filter(o => o.customerEmail === m.email).length;
+            tbl += `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td>${escapeHtml(m.phone)}</td><td>${m.role === "reseller" ? "Reseller" : "Member"}</td><td>${orderCount}</td></tr>`;
+          });
+          tbl += `</tbody> </div>`;
+          document.getElementById("ticketAdminResult").innerHTML = tbl;
+        };
+        show();
+        document.getElementById("searchTicketAdmin").onclick = () => {
+          const val = document.getElementById("ticketAdminSearch").value.toLowerCase();
+          show(val);
+        };
+      };
+
+      document.getElementById("tabProducts").onclick = () => { setActive("tabProducts"); renderProducts(); };
+      document.getElementById("tabOrders").onclick = () => { setActive("tabOrders"); renderOrders(); };
+      document.getElementById("tabBackup").onclick = () => { setActive("tabBackup"); renderBackup(); };
+      if (includeTicket && document.getElementById("tabTicketMember")) {
+        document.getElementById("tabTicketMember").onclick = () => { setActive("tabTicketMember"); renderTicketMember(); };
+      }
+      function setActive(activeId) {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        document.getElementById(activeId).classList.add("active");
+      }
+      renderProducts();
+    }
+
+    function showSellerPanel() {
+      showAdminPanel(false);
+    }
+
+    function showMemberOrders() {
+      const myOrders = orders.filter(o => o.customerEmail === currentUser.email);
+      if (myOrders.length === 0) {
+        container.innerHTML = `<div class="panel"><h2>Pesanan Saya</h2><p>Belum ada pesanan.</p></div>`;
+        return;
+      }
+      let html = `<div class="panel"><h2>📋 Pesanan Saya</h2><div class="table-responsive"><table class="data-table"><thead> money<th>Produk</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Stok Dipotong</th><th>Tanggal</th> </thead><tbody>`;
+      myOrders.forEach(o => {
+        html += `<tr>
+          <td>${escapeHtml(o.productName)}</td>
+          <td>${o.quantity}</td>
+          <td>Rp ${o.unitPrice.toLocaleString()}</td>
+          <td>Rp ${o.totalPrice.toLocaleString()}</td>
+          <td>${o.status === "berhasil" ? "✅ Berhasil" : (o.status === "gagal" ? "❌ Gagal" : "⏳ Proses")}</td>
+          <td>${o.stockDeducted ? "✅ Sudah" : "❌ Belum"}</td>
+          <td>${new Date(o.createdAt).toLocaleDateString()}</td>
+        </tr>`;
+      });
+      html += `</tbody> </div></div>`;
+      container.innerHTML = html;
+    }
+  }
+
+  function getIcon(name) {
+    const n = name.toLowerCase();
+    if (n.includes("alight")) return "fa-film";
+    if (n.includes("canva")) return "fa-palette";
+    if (n.includes("capcut")) return "fa-video";
+    if (n.includes("netflix")) return "fa-tv";
+    if (n.includes("spotify")) return "fa-music";
+    if (n.includes("youtube")) return "fa-youtube";
+    return "fa-crown";
+  }
+
+  function escapeHtml(str) { return String(str).replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+  window.onclick = function(e) { if (e.target === document.getElementById("globalModal")) closeModal(); };
+  loadData();
+  renderApp();
+</script>
+</body>
+</html>
