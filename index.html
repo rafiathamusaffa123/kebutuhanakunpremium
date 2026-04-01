@@ -94,10 +94,30 @@
       transition: all 0.3s;
       box-shadow: 0 12px 28px rgba(0,0,0,0.05);
       border: 1px solid rgba(0,0,0,0.03);
+      position: relative;
+      overflow: hidden;
     }
     .product-card:hover {
       transform: translateY(-6px);
       box-shadow: 0 28px 38px -18px rgba(0, 50, 70, 0.2);
+    }
+    .product-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      padding: 4px 12px;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      z-index: 2;
+    }
+    .badge-populer {
+      background: #ff9800;
+      color: white;
+    }
+    .badge-bestseller {
+      background: #e74c3c;
+      color: white;
     }
     .product-icon {
       font-size: 2.2rem;
@@ -114,6 +134,7 @@
       font-size: 1.2rem;
       font-weight: 700;
       margin: 12px 0 8px;
+      padding-right: 60px;
     }
     .price-stock {
       display: flex;
@@ -222,12 +243,21 @@
       font-size: 0.85rem;
       color: #4a6f7e;
     }
-    .product-mgmt-field input {
+    .product-mgmt-field input, .product-mgmt-field select {
       width: 120px;
       padding: 8px 12px;
       border-radius: 40px;
       border: 1px solid #ccc;
       text-align: center;
+    }
+    .product-mgmt-field select {
+      width: auto;
+      min-width: 100px;
+    }
+    .product-mgmt-card button {
+      width: 100%;
+      margin-top: 8px;
+      background: #1d6f8f;
     }
     .btn-update-all {
       background: #25D366;
@@ -242,6 +272,15 @@
     }
     .btn-update-all i {
       margin-right: 8px;
+    }
+    .btn-add-product {
+      background: #1d6f8f;
+      padding: 10px 24px;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      display: inline-block;
+      border-radius: 60px;
+      font-weight: 600;
     }
     .table-responsive {
       overflow-x: auto;
@@ -292,13 +331,6 @@
       flex: 1;
       max-width: 300px;
     }
-    .search-box select {
-      background: white;
-    }
-    .search-box button {
-      background: #1d6f8f;
-      padding: 8px 20px;
-    }
     input, select {
       padding: 8px 12px;
       border-radius: 40px;
@@ -327,10 +359,14 @@
     }
     .modal-card {
       background: white;
-      max-width: 450px;
+      max-width: 500px;
       width: 90%;
       border-radius: 40px;
       padding: 28px;
+    }
+    .modal-card input, .modal-card select {
+      width: 100%;
+      margin-bottom: 16px;
     }
     .status-badge {
       display: inline-block;
@@ -361,7 +397,7 @@
       .hero h1 { font-size: 2rem; }
       .data-table th, .data-table td { padding: 10px 8px; }
       .product-mgmt-field { flex-direction: column; align-items: stretch; }
-      .product-mgmt-field input { width: 100%; }
+      .product-mgmt-field input, .product-mgmt-field select { width: 100%; }
     }
   </style>
 </head>
@@ -377,38 +413,38 @@
   </div>
 </div>
 <div class="container" id="appContent"></div>
-<footer>© ATHA STORE • Login tersimpan otomatis • Owner dapat melihat semua transaksi pembelian</footer>
+<footer>© ATHA STORE • Owner dapat menambah produk & menandai Populer/Best Seller</footer>
 
 <div id="globalModal" class="modal"><div class="modal-card" id="modalInner"></div></div>
 
 <script>
   // ======================== DATA INISIAL ========================
   const DEFAULT_PRODUCTS = [
-    { id: 1, name: "Alight Motion Private (1 Tahun)", category: "Editing Tools", price: 4000, stock: 10 },
-    { id: 2, name: "Canva 1 Bulan", category: "Editing Tools", price: 2000, stock: 10 },
-    { id: 3, name: "Canva 1 Tahun (Renew 1 Bulan)", category: "Editing Tools", price: 5000, stock: 10 },
-    { id: 4, name: "Canva Lifetime", category: "Editing Tools", price: 6000, stock: 10 },
-    { id: 5, name: "Canva Head 1 Bulan", category: "Editing Tools", price: 7000, stock: 10 },
-    { id: 6, name: "CapCut Sharing 1 Bulan", category: "Editing Tools", price: 5000, stock: 10 },
-    { id: 7, name: "CapCut Private 1 Bulan", category: "Editing Tools", price: 7000, stock: 10 },
-    { id: 8, name: "VIU Lifetime", category: "Streaming & Movies", price: 4000, stock: 10 },
-    { id: 9, name: "VIU Private Unlimited", category: "Streaming & Movies", price: 2000, stock: 10 },
-    { id: 10, name: "Netflix 1 Profile 1 User 1 Bulan", category: "Streaming & Movies", price: 25000, stock: 10 },
-    { id: 11, name: "Netflix 1 Profile 2 User 1 Bulan", category: "Streaming & Movies", price: 15000, stock: 10 },
-    { id: 12, name: "Netflix Semi Private 1 Bulan", category: "Streaming & Movies", price: 27000, stock: 10 },
-    { id: 13, name: "Netflix 1 Profile 1 User 1 Hari", category: "Streaming & Movies", price: 5000, stock: 10 },
-    { id: 14, name: "Netflix 1 Profile 1 User 7 Hari", category: "Streaming & Movies", price: 10500, stock: 10 },
-    { id: 15, name: "HBO MAX Sharing 8 User", category: "Streaming & Movies", price: 60000, stock: 10 },
-    { id: 16, name: "HBO MAX Sharing 5 User", category: "Streaming & Movies", price: 10000, stock: 10 },
-    { id: 17, name: "IQIYI Sharing 1 Bulan", category: "Streaming & Movies", price: 5000, stock: 10 },
-    { id: 18, name: "Vidio Only TV 1 Tahun (Garansi 1 Bulan)", category: "Streaming & Movies", price: 5000, stock: 10 },
-    { id: 19, name: "Vidio Sharing 2 User Mobile 1 Bulan", category: "Streaming & Movies", price: 17000, stock: 10 },
-    { id: 20, name: "WeTV Sharing 6 User", category: "Streaming & Movies", price: 7000, stock: 10 },
-    { id: 21, name: "WeTV Sharing 3 User", category: "Streaming & Movies", price: 8000, stock: 10 },
-    { id: 22, name: "Spotify Individual Plan 1 Bulan", category: "Music & Social", price: 17500, stock: 10 },
-    { id: 23, name: "YouTube Family Plan 1 Bulan", category: "Music & Social", price: 2000, stock: 10 },
-    { id: 24, name: "YouTube Individual Plan 1 Bulan", category: "Music & Social", price: 8000, stock: 10 },
-    { id: 25, name: "YouTube Head Plan 1 Bulan", category: "Music & Social", price: 9000, stock: 10 }
+    { id: 1, name: "Alight Motion Private (1 Tahun)", category: "Editing Tools", price: 4000, stock: 10, badge: "" },
+    { id: 2, name: "Canva 1 Bulan", category: "Editing Tools", price: 2000, stock: 10, badge: "populer" },
+    { id: 3, name: "Canva 1 Tahun (Renew 1 Bulan)", category: "Editing Tools", price: 5000, stock: 10, badge: "" },
+    { id: 4, name: "Canva Lifetime", category: "Editing Tools", price: 6000, stock: 10, badge: "bestseller" },
+    { id: 5, name: "Canva Head 1 Bulan", category: "Editing Tools", price: 7000, stock: 10, badge: "" },
+    { id: 6, name: "CapCut Sharing 1 Bulan", category: "Editing Tools", price: 5000, stock: 10, badge: "" },
+    { id: 7, name: "CapCut Private 1 Bulan", category: "Editing Tools", price: 7000, stock: 10, badge: "" },
+    { id: 8, name: "VIU Lifetime", category: "Streaming & Movies", price: 4000, stock: 10, badge: "" },
+    { id: 9, name: "VIU Private Unlimited", category: "Streaming & Movies", price: 2000, stock: 10, badge: "" },
+    { id: 10, name: "Netflix 1 Profile 1 User 1 Bulan", category: "Streaming & Movies", price: 25000, stock: 10, badge: "bestseller" },
+    { id: 11, name: "Netflix 1 Profile 2 User 1 Bulan", category: "Streaming & Movies", price: 15000, stock: 10, badge: "" },
+    { id: 12, name: "Netflix Semi Private 1 Bulan", category: "Streaming & Movies", price: 27000, stock: 10, badge: "" },
+    { id: 13, name: "Netflix 1 Profile 1 User 1 Hari", category: "Streaming & Movies", price: 5000, stock: 10, badge: "" },
+    { id: 14, name: "Netflix 1 Profile 1 User 7 Hari", category: "Streaming & Movies", price: 10500, stock: 10, badge: "" },
+    { id: 15, name: "HBO MAX Sharing 8 User", category: "Streaming & Movies", price: 60000, stock: 10, badge: "" },
+    { id: 16, name: "HBO MAX Sharing 5 User", category: "Streaming & Movies", price: 10000, stock: 10, badge: "" },
+    { id: 17, name: "IQIYI Sharing 1 Bulan", category: "Streaming & Movies", price: 5000, stock: 10, badge: "" },
+    { id: 18, name: "Vidio Only TV 1 Tahun (Garansi 1 Bulan)", category: "Streaming & Movies", price: 5000, stock: 10, badge: "" },
+    { id: 19, name: "Vidio Sharing 2 User Mobile 1 Bulan", category: "Streaming & Movies", price: 17000, stock: 10, badge: "" },
+    { id: 20, name: "WeTV Sharing 6 User", category: "Streaming & Movies", price: 7000, stock: 10, badge: "" },
+    { id: 21, name: "WeTV Sharing 3 User", category: "Streaming & Movies", price: 8000, stock: 10, badge: "" },
+    { id: 22, name: "Spotify Individual Plan 1 Bulan", category: "Music & Social", price: 17500, stock: 10, badge: "populer" },
+    { id: 23, name: "YouTube Family Plan 1 Bulan", category: "Music & Social", price: 2000, stock: 10, badge: "" },
+    { id: 24, name: "YouTube Individual Plan 1 Bulan", category: "Music & Social", price: 8000, stock: 10, badge: "" },
+    { id: 25, name: "YouTube Head Plan 1 Bulan", category: "Music & Social", price: 9000, stock: 10, badge: "" }
   ];
 
   const OWNER_ACCOUNTS = [
@@ -420,9 +456,9 @@
   let products = [];
   let orders = [];
   let currentUser = null;
-  let currentView = "home"; // untuk tracking view saat update
-  let currentTab = "tabUsers"; // untuk tracking tab aktif di owner panel
-  let adminCurrentTab = "tabProducts"; // untuk tracking tab aktif di admin panel
+  let currentView = "home";
+  let currentTab = "tabUsers";
+  let adminCurrentTab = "tabProducts";
   const ADMIN_WA = "6281910545769";
 
   function saveToLocal() {
@@ -457,8 +493,11 @@
     }
 
     const storedProducts = localStorage.getItem("athastore_products");
-    if (storedProducts) products = JSON.parse(storedProducts);
-    else products = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+    if (storedProducts) {
+      products = JSON.parse(storedProducts);
+    } else {
+      products = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+    }
 
     const storedOrders = localStorage.getItem("athastore_orders");
     if (storedOrders) {
@@ -480,6 +519,42 @@
     }
 
     saveToLocal();
+  }
+
+  function getNextProductId() {
+    const maxId = products.length > 0 ? Math.max(...products.map(p => p.id)) : 0;
+    return maxId + 1;
+  }
+
+  // Tambah produk baru
+  function addProduct(name, category, price, stock, badge) {
+    if (!name || !category) {
+      alert("Nama dan kategori harus diisi!");
+      return false;
+    }
+    const newId = getNextProductId();
+    const newProduct = {
+      id: newId,
+      name: name,
+      category: category,
+      price: parseInt(price) || 0,
+      stock: parseInt(stock) || 0,
+      badge: badge || ""
+    };
+    products.push(newProduct);
+    saveToLocal();
+    alert(`✅ Produk "${name}" berhasil ditambahkan!`);
+    renderApp(true);
+    return true;
+  }
+
+  function updateProductBadge(productId, badge) {
+    const product = products.find(p => p.id === productId);
+    if (product) {
+      product.badge = badge;
+      saveToLocal();
+      renderApp(true);
+    }
   }
 
   function getPriceForUser(productPrice, userRole) {
@@ -552,18 +627,19 @@
     renderApp();
   }
 
-  // Update semua produk sekaligus - tanpa refresh ke home
   function updateAllProductsFromGrid() {
     let updated = 0;
     for (let prod of products) {
       const priceInput = document.getElementById(`price-${prod.id}`);
       const stockInput = document.getElementById(`stock-${prod.id}`);
+      const badgeSelect = document.getElementById(`badge-${prod.id}`);
       if (priceInput && stockInput) {
         const newPrice = parseInt(priceInput.value);
         const newStock = parseInt(stockInput.value);
         if (!isNaN(newPrice) && !isNaN(newStock) && newPrice >= 0 && newStock >= 0) {
           prod.price = newPrice;
           prod.stock = newStock;
+          if (badgeSelect) prod.badge = badgeSelect.value;
           updated++;
         }
       }
@@ -571,29 +647,31 @@
     if (updated > 0) {
       saveToLocal();
       alert(`✅ Berhasil memperbarui ${updated} produk!`);
-      // Render ulang tanpa mengubah view
-      renderApp(true); // true = stay on current view
+      renderApp(true);
     } else {
       alert("Tidak ada perubahan yang valid.");
     }
   }
 
-  // Update single produk - tanpa refresh ke home
-  function adminUpdateProduct(pid, newStock, newPrice) {
+  function adminUpdateProduct(pid, newStock, newPrice, newBadge) {
     const prod = products.find(p => p.id === pid);
     if (prod) {
       prod.stock = parseInt(newStock);
       prod.price = parseInt(newPrice);
+      if (newBadge !== undefined) prod.badge = newBadge;
       saveToLocal();
       alert(`✅ Produk "${prod.name}" berhasil diperbarui!`);
-      renderApp(true); // stay on current view
+      renderApp(true);
     }
   }
 
   function backupToWhatsApp() {
     let prodText = "📦 *DATA PRODUK ATHA STORE*\n";
     products.forEach(p => {
-      prodText += `• ${p.name} | Rp ${p.price.toLocaleString()} | Stok: ${p.stock}\n`;
+      let badgeText = "";
+      if (p.badge === "populer") badgeText = "🔥 Populer";
+      else if (p.badge === "bestseller") badgeText = "⭐ Best Seller";
+      prodText += `• ${p.name} | Rp ${p.price.toLocaleString()} | Stok: ${p.stock} ${badgeText}\n`;
     });
     let orderText = "\n📋 *DATA ORDER*\n";
     orders.forEach(o => {
@@ -773,6 +851,47 @@
     document.getElementById("cancelOrder").onclick = () => closeModal();
   }
 
+  // Modal tambah produk
+  function showAddProductModal() {
+    const modal = document.getElementById("globalModal");
+    const inner = document.getElementById("modalInner");
+    inner.innerHTML = `
+      <h3><i class="fas fa-plus-circle"></i> Tambah Produk Baru</h3>
+      <input type="text" id="newProductName" placeholder="Nama Produk" required>
+      <input type="text" id="newProductCategory" placeholder="Kategori (Contoh: Editing Tools, Streaming & Movies, Music & Social)">
+      <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+        <input type="number" id="newProductPrice" placeholder="Harga (Rp)" style="flex:1">
+        <input type="number" id="newProductStock" placeholder="Stok" style="flex:1" value="0">
+      </div>
+      <select id="newProductBadge">
+        <option value="">Tanpa Badge</option>
+        <option value="populer">🔥 Populer</option>
+        <option value="bestseller">⭐ Best Seller</option>
+      </select>
+      <button id="confirmAddProductBtn" style="margin-top: 16px;">Tambah Produk</button>
+      <div class="switch-link" id="cancelAddProduct" style="margin-top:12px; text-align:center;">Batal</div>
+    `;
+    modal.style.display = "flex";
+    document.getElementById("confirmAddProductBtn").onclick = () => {
+      const name = document.getElementById("newProductName").value.trim();
+      const category = document.getElementById("newProductCategory").value.trim();
+      const price = document.getElementById("newProductPrice").value;
+      const stock = document.getElementById("newProductStock").value;
+      const badge = document.getElementById("newProductBadge").value;
+      if (!name) {
+        alert("Nama produk harus diisi!");
+        return;
+      }
+      if (!category) {
+        alert("Kategori harus diisi!");
+        return;
+      }
+      addProduct(name, category, price, stock, badge);
+      closeModal();
+    };
+    document.getElementById("cancelAddProduct").onclick = () => closeModal();
+  }
+
   // ======================== RENDER UTAMA ========================
   function renderApp(stayOnCurrentView = false) {
     const container = document.getElementById("appContent");
@@ -793,7 +912,6 @@
     }
     navDiv.innerHTML = navHtml;
 
-    // Event listeners untuk navbar
     document.getElementById("navHome")?.addEventListener("click", (e) => { e.preventDefault(); currentView = "home"; renderApp(); });
     document.getElementById("navOwnerPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "owner") { currentView = "owner"; renderApp(); } });
     document.getElementById("navAdminPanel")?.addEventListener("click", (e) => { e.preventDefault(); if(currentUser?.role === "admin") { currentView = "admin"; renderApp(); } });
@@ -802,9 +920,7 @@
     document.getElementById("logoutBtn")?.addEventListener("click", () => { currentUser = null; currentView = "home"; saveToLocal(); renderApp(); });
     document.getElementById("loginBtn")?.addEventListener("click", () => showLoginModal());
 
-    // Jika stayOnCurrentView true, gunakan currentView yang sudah ada
     if (!stayOnCurrentView) {
-      // Set default view jika belum ada
       if (!currentView || currentView === "home") showHome();
       else if (currentView === "owner" && currentUser?.role === "owner") showOwnerPanel();
       else if (currentView === "admin" && currentUser?.role === "admin") showAdminPanel(true);
@@ -812,7 +928,6 @@
       else if (currentView === "myorders" && (currentUser?.role === "member" || currentUser?.role === "reseller")) showMemberOrders();
       else showHome();
     } else {
-      // Stay on current view
       if (currentView === "home") showHome();
       else if (currentView === "owner" && currentUser?.role === "owner") showOwnerPanel();
       else if (currentView === "admin" && currentUser?.role === "admin") showAdminPanel(true);
@@ -827,8 +942,13 @@
       products.forEach(prod => {
         const stockClass = prod.stock < 3 ? "low" : "";
         const displayPrice = currentUser?.role === "reseller" ? Math.max(0, prod.price - 1000) : prod.price;
+        let badgeHtml = "";
+        if (prod.badge === "populer") badgeHtml = `<span class="product-badge badge-populer">🔥 Populer</span>`;
+        else if (prod.badge === "bestseller") badgeHtml = `<span class="product-badge badge-bestseller">⭐ Best Seller</span>`;
+        
         html += `
           <div class="product-card">
+            ${badgeHtml}
             <div class="product-icon"><i class="fas ${getIcon(prod.name)}"></i></div>
             <div class="product-name">${escapeHtml(prod.name)}</div>
             <div class="price-stock">
@@ -864,7 +984,7 @@
 
       const renderUserManagement = () => {
         let search = `<div class="search-box"><input type="text" id="searchUser" placeholder="Cari nama/email/nomor"><button id="searchUserBtn">Cari</button></div>`;
-        let table = `<div class="table-responsive"><table class="data-table"><thead>  ods<th>ID</th><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Password</th><th>Aksi</th> </thead><tbody id="userTableBody"></tbody> </div>`;
+        let table = `<div class="table-responsive"><table class="data-table"><thead>  <th>ID</th><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Password</th><th>Aksi</th> </thead><tbody id="userTableBody"></tbody> </div>`;
         contentDiv.innerHTML = search + table;
         const renderUserList = (filter = "") => {
           const filtered = users.filter(u => u.name.toLowerCase().includes(filter) || u.email.toLowerCase().includes(filter) || u.phone.includes(filter));
@@ -877,8 +997,8 @@
               <td>${escapeHtml(u.phone)}</td>
               <td>${u.role}</td>
               <td><code>${escapeHtml(u.password)}</code> <button class="changePass" data-id="${u.id}">Ganti</button></td>
-               <td>${u.id !== currentUser.id ? `<button class="delUser" data-id="${u.id}">Hapus</button>` : '-'}</td>
-             </tr>
+              <td>${u.id !== currentUser.id ? `<button class="delUser" data-id="${u.id}">Hapus</button>` : '-'}</td>
+            </tr>
           `).join("");
           document.querySelectorAll(".delUser").forEach(btn => {
             btn.onclick = () => { if(confirm("Hapus user ini?")) ownerDeleteUser(parseInt(btn.dataset.id)); };
@@ -920,7 +1040,8 @@
       };
 
       const renderProductManagement = () => {
-        let gridHtml = `<div class="product-mgmt-grid">`;
+        let gridHtml = `<div style="margin-bottom:20px; text-align:right;"><button id="addProductBtn" class="btn-add-product"><i class="fas fa-plus"></i> Tambah Produk Baru</button></div>`;
+        gridHtml += `<div class="product-mgmt-grid">`;
         products.forEach(p => {
           gridHtml += `
             <div class="product-mgmt-card">
@@ -933,6 +1054,14 @@
                 <label>Stok</label>
                 <input type="number" id="stock-${p.id}" value="${p.stock}" min="0">
               </div>
+              <div class="product-mgmt-field">
+                <label>Badge</label>
+                <select id="badge-${p.id}">
+                  <option value="" ${p.badge === "" ? "selected" : ""}>Tanpa Badge</option>
+                  <option value="populer" ${p.badge === "populer" ? "selected" : ""}>🔥 Populer</option>
+                  <option value="bestseller" ${p.badge === "bestseller" ? "selected" : ""}>⭐ Best Seller</option>
+                </select>
+              </div>
               <button class="updateProd" data-id="${p.id}">Update Produk Ini</button>
             </div>
           `;
@@ -940,15 +1069,18 @@
         gridHtml += `</div>`;
         gridHtml += `<div style="text-align:center; margin-top:24px;"><button id="updateAllBtn" class="btn-update-all"><i class="fas fa-save"></i> Update Semua Produk Sekaligus</button></div>`;
         contentDiv.innerHTML = gridHtml;
+        
         document.querySelectorAll(".updateProd").forEach(btn => {
           btn.onclick = () => {
             const id = parseInt(btn.dataset.id);
             const newPrice = document.getElementById(`price-${id}`).value;
             const newStock = document.getElementById(`stock-${id}`).value;
-            adminUpdateProduct(id, newStock, newPrice);
+            const newBadge = document.getElementById(`badge-${id}`).value;
+            adminUpdateProduct(id, newStock, newPrice, newBadge);
           };
         });
         document.getElementById("updateAllBtn").onclick = updateAllProductsFromGrid;
+        document.getElementById("addProductBtn").onclick = showAddProductModal;
       };
 
       const renderOrderTicket = () => {
@@ -1013,7 +1145,7 @@
               </tr>
             `;
           });
-          tbl += `</tbody></table></div>`;
+          tbl += `</tbody> </div>`;
           document.getElementById("orderTicketResult").innerHTML = tbl;
         };
         
@@ -1042,7 +1174,7 @@
             const orderCount = orders.filter(o => o.customerEmail === m.email).length;
             tbl += `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td>${escapeHtml(m.phone)}</td><td>${m.role === "reseller" ? "Reseller" : "Member"}</td><td>${orderCount}</td></tr>`;
           });
-          tbl += `</tbody></table></div>`;
+          tbl += `</tbody> </div>`;
           document.getElementById("ticketResult").innerHTML = tbl;
         };
         showMembers();
@@ -1060,7 +1192,6 @@
         document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
         document.getElementById(activeId).classList.add("active");
       }
-      // Load sesuai tab terakhir yang aktif
       if (currentTab === "tabUsers") renderUserManagement();
       else if (currentTab === "tabProducts") renderProductManagement();
       else if (currentTab === "tabOrders") renderOrderTicket();
@@ -1068,11 +1199,10 @@
       else renderUserManagement();
     }
 
-    // ADMIN PANEL dengan tetap di tab yang sama
     function showAdminPanel(includeTicket = true) {
       currentView = "admin";
       let html = `<div class="panel"><h2><i class="fas fa-shield-alt"></i> Dashboard Admin</h2>
-        <div class="tab-bar"><button class="tab ${adminCurrentTab === 'tabProducts' ? 'active' : ''}" id="tabProducts">📦 Kelola Produk</button><button class="tab ${adminCurrentTab === 'tabOrders' ? 'active' : ''}" id="tabOrders">📑 Order</button><button class="tab ${adminCurrentTab === 'tabBackup' ? 'active' : ''}" id="tabBackup">💾 Backup WA</button>${includeTicket ? '<button class="tab ${adminCurrentTab === \'tabTicketMember\' ? \'active\' : \'\'}" id="tabTicketMember">🎫 Ticket Member & Reseller</button>' : ''}</div>
+        <div class="tab-bar"><button class="tab ${adminCurrentTab === 'tabProducts' ? 'active' : ''}" id="tabProducts">📦 Kelola Produk</button><button class="tab ${adminCurrentTab === 'tabOrders' ? 'active' : ''}" id="tabOrders">📑 Order</button><button class="tab ${adminCurrentTab === 'tabBackup' ? 'active' : ''}" id="tabBackup">💾 Backup WA</button>${includeTicket ? '<button class="tab" id="tabTicketMember">🎫 Ticket Member & Reseller</button>' : ''}</div>
         <div id="adminContent"></div></div>`;
       container.innerHTML = html;
       const contentDiv = document.getElementById("adminContent");
@@ -1131,7 +1261,7 @@
             <td><button class="updateOrder" data-id="${o.id}">Update</button></td>
           </tr>`;
         });
-        tbl += `</tbody></table></div>`;
+        tbl += `</tbody> </div>`;
         contentDiv.innerHTML = tbl;
         document.querySelectorAll(".updateOrder").forEach(btn => {
           btn.onclick = () => {
@@ -1157,7 +1287,7 @@
             const orderCount = orders.filter(o => o.customerEmail === m.email).length;
             tbl += `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td>${escapeHtml(m.phone)}</td><td>${m.role === "reseller" ? "Reseller" : "Member"}</td><td>${orderCount}</td></tr>`;
           });
-          tbl += `</tbody></table></div>`;
+          tbl += `</tbody> </div>`;
           document.getElementById("ticketAdminResult").innerHTML = tbl;
         };
         show();
@@ -1177,7 +1307,6 @@
         document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
         document.getElementById(activeId).classList.add("active");
       }
-      // Load sesuai tab terakhir
       if (adminCurrentTab === "tabProducts") renderProducts();
       else if (adminCurrentTab === "tabOrders") renderOrders();
       else if (adminCurrentTab === "tabBackup") renderBackup();
@@ -1208,7 +1337,7 @@
           <td>${new Date(o.createdAt).toLocaleDateString()}</td>
         </tr>`;
       });
-      html += `</tbody></table></div></div>`;
+      html += `</tbody> </div></div>`;
       container.innerHTML = html;
     }
   }
