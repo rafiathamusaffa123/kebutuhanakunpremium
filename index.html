@@ -184,7 +184,7 @@
       background: #1d6f8f;
       color: white;
     }
-    /* Product management unified grid */
+    /* Product management grid */
     .product-mgmt-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -283,16 +283,27 @@
       flex-wrap: wrap;
       align-items: center;
     }
-    .search-box input {
-      flex: 1;
-      max-width: 300px;
+    .search-box input, .search-box select {
       padding: 10px 16px;
       border-radius: 40px;
       border: 1px solid #ccc;
     }
+    .search-box input {
+      flex: 1;
+      max-width: 300px;
+    }
+    .search-box select {
+      background: white;
+    }
     .search-box button {
       background: #1d6f8f;
       padding: 8px 20px;
+    }
+    .filter-group {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
     }
     input, select {
       padding: 8px 12px;
@@ -327,6 +338,25 @@
       border-radius: 40px;
       padding: 28px;
     }
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .status-proses {
+      background: #fff3e0;
+      color: #e67e22;
+    }
+    .status-berhasil {
+      background: #e0f7e8;
+      color: #27ae60;
+    }
+    .status-gagal {
+      background: #fee2e2;
+      color: #e74c3c;
+    }
     footer {
       text-align: center;
       padding: 40px 20px;
@@ -353,7 +383,7 @@
   </div>
 </div>
 <div class="container" id="appContent"></div>
-<footer>© ATHA STORE • Login tersimpan otomatis • Update harga & stok semua produk sekaligus</footer>
+<footer>© ATHA STORE • Login tersimpan otomatis • Owner dapat melihat semua transaksi pembelian</footer>
 
 <div id="globalModal" class="modal"><div class="modal-card" id="modalInner"></div></div>
 
@@ -443,7 +473,6 @@
       orders = [];
     }
 
-    // Load saved session
     const savedUser = localStorage.getItem("athastore_current_user");
     if (savedUser) {
       const parsed = JSON.parse(savedUser);
@@ -526,7 +555,6 @@
     renderApp();
   }
 
-  // Update semua produk sekaligus (dari grid)
   function updateAllProductsFromGrid() {
     let updated = 0;
     for (let prod of products) {
@@ -564,7 +592,6 @@
     window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`, "_blank");
   }
 
-  // Owner functions
   function ownerCreateUser(name, email, phone, password, role) {
     if (!["admin", "seller", "reseller"].includes(role)) {
       alert("Role hanya bisa admin, seller, atau reseller");
@@ -799,14 +826,14 @@
 
     function showOwnerPanel() {
       let html = `<div class="panel"><h2><i class="fas fa-crown"></i> Owner Panel</h2>
-        <div class="tab-bar"><button class="tab active" id="tabUsers">👥 Kelola User</button><button class="tab" id="tabProducts">📦 Kelola Produk</button><button class="tab" id="tabTicket">🎫 Ticket Akun</button></div>
+        <div class="tab-bar"><button class="tab active" id="tabUsers">👥 Kelola User</button><button class="tab" id="tabProducts">📦 Kelola Produk</button><button class="tab" id="tabOrders">🎫 Ticket Pembelian</button><button class="tab" id="tabTicket">👥 Ticket Akun</button></div>
         <div id="ownerContent"></div></div>`;
       container.innerHTML = html;
       const contentDiv = document.getElementById("ownerContent");
 
       const renderUserManagement = () => {
         let search = `<div class="search-box"><input type="text" id="searchUser" placeholder="Cari nama/email/nomor"><button id="searchUserBtn">Cari</button></div>`;
-        let table = `<div class="table-responsive"><table class="data-table"><thead> trivial<th>ID</th><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Password</th><th>Aksi</th> </thead><tbody id="userTableBody"></tbody> </div>`;
+        let table = `<div class="table-responsive"><table class="data-table"><thead> <tr><th>ID</th><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Password</th><th>Aksi</th> </tr></thead><tbody id="userTableBody"></tbody></table></div>`;
         contentDiv.innerHTML = search + table;
         const renderUserList = (filter = "") => {
           const filtered = users.filter(u => u.name.toLowerCase().includes(filter) || u.email.toLowerCase().includes(filter) || u.phone.includes(filter));
@@ -884,18 +911,111 @@
         document.getElementById("updateAllBtn").onclick = updateAllProductsFromGrid;
       };
 
+      // Ticket Pembelian - semua transaksi dengan filter
+      const renderOrderTicket = () => {
+        let filterHtml = `
+          <div class="search-box">
+            <input type="text" id="orderSearch" placeholder="Cari pembeli atau produk...">
+            <select id="statusFilter">
+              <option value="all">Semua Status</option>
+              <option value="proses">Proses</option>
+              <option value="berhasil">Berhasil</option>
+              <option value="gagal">Gagal</option>
+            </select>
+            <button id="filterOrderBtn">Filter</button>
+            <button id="resetOrderBtn">Reset</button>
+          </div>
+          <div id="orderTicketResult"></div>
+        `;
+        contentDiv.innerHTML = filterHtml;
+        
+        const renderOrders = (search = "", status = "all") => {
+          let filtered = [...orders];
+          if (search) {
+            const lowerSearch = search.toLowerCase();
+            filtered = filtered.filter(o => 
+              o.customerName.toLowerCase().includes(lowerSearch) || 
+              o.productName.toLowerCase().includes(lowerSearch)
+            );
+          }
+          if (status !== "all") {
+            filtered = filtered.filter(o => o.status === status);
+          }
+          
+          if (filtered.length === 0) {
+            document.getElementById("orderTicketResult").innerHTML = "<p style='text-align:center; padding:40px;'>Belum ada transaksi</p>";
+            return;
+          }
+          
+          let tbl = `<div class="table-responsive"><table class="data-table"><thead>
+            <tr>
+              <th>ID</th>
+              <th>Tanggal</th>
+              <th>Pembeli</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Produk</th>
+              <th>Jumlah</th>
+              <th>Harga Satuan</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Stok Dipotong</th>
+            </tr>
+          </thead><tbody>`;
+          
+          filtered.forEach(o => {
+            let statusClass = "";
+            let statusText = "";
+            if (o.status === "proses") { statusClass = "status-proses"; statusText = "⏳ Proses"; }
+            else if (o.status === "berhasil") { statusClass = "status-berhasil"; statusText = "✅ Berhasil"; }
+            else { statusClass = "status-gagal"; statusText = "❌ Gagal"; }
+            
+            tbl += `
+              <tr>
+                <td>${o.id}</td>
+                <td>${new Date(o.createdAt).toLocaleDateString()} ${new Date(o.createdAt).toLocaleTimeString()}</td>
+                <td>${escapeHtml(o.customerName)}</td>
+                <td>${escapeHtml(o.customerEmail)}</td>
+                <td>${o.customerRole === "reseller" ? "Reseller" : (o.customerRole === "member" ? "Member" : "Guest")}</td>
+                <td>${escapeHtml(o.productName)}</td>
+                <td>${o.quantity}</td>
+                <td>Rp ${o.unitPrice.toLocaleString()}</td>
+                <td>Rp ${o.totalPrice.toLocaleString()}</td>
+                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                <td>${o.stockDeducted ? "✅ Sudah" : "❌ Belum"}</td>
+              </tr>
+            `;
+          });
+          tbl += `</tbody></table></div>`;
+          document.getElementById("orderTicketResult").innerHTML = tbl;
+        };
+        
+        renderOrders();
+        
+        document.getElementById("filterOrderBtn").onclick = () => {
+          const search = document.getElementById("orderSearch").value;
+          const status = document.getElementById("statusFilter").value;
+          renderOrders(search, status);
+        };
+        document.getElementById("resetOrderBtn").onclick = () => {
+          document.getElementById("orderSearch").value = "";
+          document.getElementById("statusFilter").value = "all";
+          renderOrders("", "all");
+        };
+      };
+
       const renderTicket = () => {
         contentDiv.innerHTML = `<div class="search-box"><input type="text" id="ticketSearch" placeholder="Cari member/reseller (nama/email/nomor)"><button id="ticketSearchBtn">Cari</button></div>
         <div id="ticketResult"></div>`;
         const targetRoles = users.filter(u => u.role === "member" || u.role === "reseller");
         const showMembers = (filter = "") => {
           const filtered = targetRoles.filter(m => m.name.toLowerCase().includes(filter) || m.email.toLowerCase().includes(filter) || m.phone.includes(filter));
-          let tbl = `<div class="table-responsive"><table class="data-table"><thead> money<th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th> </thead><tbody>`;
+          let tbl = `<div class="table-responsive"><table class="data-table"><thead><tr><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th></tr></thead><tbody>`;
           filtered.forEach(m => {
             const orderCount = orders.filter(o => o.customerEmail === m.email).length;
             tbl += `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td>${escapeHtml(m.phone)}</td><td>${m.role === "reseller" ? "Reseller" : "Member"}</td><td>${orderCount}</td></tr>`;
           });
-          tbl += `</tbody> </div>`;
+          tbl += `</tbody></table></div>`;
           document.getElementById("ticketResult").innerHTML = tbl;
         };
         showMembers();
@@ -907,6 +1027,7 @@
 
       document.getElementById("tabUsers").onclick = () => { setActiveTab("tabUsers"); renderUserManagement(); };
       document.getElementById("tabProducts").onclick = () => { setActiveTab("tabProducts"); renderProductManagement(); };
+      document.getElementById("tabOrders").onclick = () => { setActiveTab("tabOrders"); renderOrderTicket(); };
       document.getElementById("tabTicket").onclick = () => { setActiveTab("tabTicket"); renderTicket(); };
       function setActiveTab(activeId) {
         document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
@@ -915,7 +1036,7 @@
       renderUserManagement();
     }
 
-    // ADMIN PANEL (produk dalam grid yang sama dengan owner)
+    // ADMIN PANEL (produk dalam grid yang sama)
     function showAdminPanel(includeTicket = true) {
       let html = `<div class="panel"><h2><i class="fas fa-shield-alt"></i> Dashboard Admin</h2>
         <div class="tab-bar"><button class="tab active" id="tabProducts">📦 Kelola Produk</button><button class="tab" id="tabOrders">📑 Order</button><button class="tab" id="tabBackup">💾 Backup WA</button>${includeTicket ? '<button class="tab" id="tabTicketMember">🎫 Ticket Member & Reseller</button>' : ''}</div>
@@ -948,7 +1069,7 @@
 
       const renderOrders = () => {
         if (orders.length === 0) { contentDiv.innerHTML = "<p>Belum ada order</p>"; return; }
-        let tbl = `<div class="table-responsive"><table class="data-table"><thead> money<th>Produk</th><th>Pembeli</th><th>Role</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Stok Dipotong</th><th>Aksi</th> </thead><tbody>`;
+        let tbl = `<div class="table-responsive"><table class="data-table"><thead><tr><th>Produk</th><th>Pembeli</th><th>Role</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Stok Dipotong</th><th>Aksi</th></tr></thead><tbody>`;
         orders.forEach(o => {
           tbl += `<tr>
             <td>${escapeHtml(o.productName)}</td>
@@ -968,7 +1089,7 @@
             <td><button class="updateOrder" data-id="${o.id}">Update</button></td>
           </tr>`;
         });
-        tbl += `</tbody> </div>`;
+        tbl += `</tbody></table></div>`;
         contentDiv.innerHTML = tbl;
         document.querySelectorAll(".updateOrder").forEach(btn => {
           btn.onclick = () => {
@@ -989,12 +1110,12 @@
         const targetRoles = users.filter(u => u.role === "member" || u.role === "reseller");
         const show = (filter = "") => {
           const filtered = targetRoles.filter(m => m.name.toLowerCase().includes(filter) || m.email.toLowerCase().includes(filter) || m.phone.includes(filter));
-          let tbl = `<div class="table-responsive"><table class="data-table"><thead> money<th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th> </thead><tbody>`;
+          let tbl = `<div class="table-responsive"><table class="data-table"><thead><tr><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th></tr></thead><tbody>`;
           filtered.forEach(m => {
             const orderCount = orders.filter(o => o.customerEmail === m.email).length;
             tbl += `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td>${escapeHtml(m.phone)}</td><td>${m.role === "reseller" ? "Reseller" : "Member"}</td><td>${orderCount}</td></tr>`;
           });
-          tbl += `</tbody> </div>`;
+          tbl += `</tbody></table></div>`;
           document.getElementById("ticketAdminResult").innerHTML = tbl;
         };
         show();
@@ -1027,7 +1148,7 @@
         container.innerHTML = `<div class="panel"><h2>Pesanan Saya</h2><p>Belum ada pesanan.</p></div>`;
         return;
       }
-      let html = `<div class="panel"><h2>📋 Pesanan Saya</h2><div class="table-responsive"><table class="data-table"><thead> money<th>Produk</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Stok Dipotong</th><th>Tanggal</th> </thead><tbody>`;
+      let html = `<div class="panel"><h2>📋 Pesanan Saya</h2><div class="table-responsive"><table class="data-table"><thead><tr><th>Produk</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Stok Dipotong</th><th>Tanggal</th></tr></thead><tbody>`;
       myOrders.forEach(o => {
         html += `<tr>
           <td>${escapeHtml(o.productName)}</td>
@@ -1039,7 +1160,7 @@
           <td>${new Date(o.createdAt).toLocaleDateString()}</td>
         </tr>`;
       });
-      html += `</tbody> </div></div>`;
+      html += `</tbody></table></div></div>`;
       container.innerHTML = html;
     }
   }
