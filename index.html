@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>ATHA STORE | Multi-Role + Reseller</title>
+  <title>ATHA STORE | Complete Multi-Role System</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -261,7 +261,7 @@
   </div>
 </div>
 <div class="container" id="appContent"></div>
-<footer>© ATHA STORE • Multi-role system • Reseller mendapat diskon Rp1.000 per produk</footer>
+<footer>© ATHA STORE • Owner dapat mengelola semua akun & produk</footer>
 
 <div id="globalModal" class="modal"><div class="modal-card" id="modalInner"></div></div>
 
@@ -459,6 +459,18 @@
     renderApp();
   }
 
+  function ownerChangePassword(userId, newPassword) {
+    const user = users.find(u => u.id === userId);
+    if (user) {
+      user.password = newPassword;
+      saveToLocal();
+      alert(`Password untuk ${user.name} berhasil diubah!`);
+      renderApp();
+    } else {
+      alert("User tidak ditemukan");
+    }
+  }
+
   // MODAL LOGIN & REGISTER
   function showLoginModal() {
     const modal = document.getElementById("globalModal");
@@ -554,7 +566,6 @@
     const defaultEmail = isLoggedIn ? currentUser.email : "";
     const userRole = isLoggedIn ? currentUser.role : "guest";
     const finalPrice = getPriceForUser(originalPrice, userRole);
-    const priceInfo = userRole === "reseller" ? ` (diskon Rp1.000, harga khusus: Rp ${finalPrice.toLocaleString()})` : ` (Rp ${originalPrice.toLocaleString()})`;
     
     const modal = document.getElementById("globalModal");
     const inner = document.getElementById("modalInner");
@@ -647,17 +658,17 @@
       });
     }
 
-    // OWNER PANEL
+    // OWNER PANEL (User Management, Product Management, Ticket)
     function showOwnerPanel() {
       let html = `<div class="panel"><h2><i class="fas fa-crown"></i> Owner Panel</h2>
-        <div class="tab-bar"><button class="tab active" id="tabUsers">👥 Kelola User</button><button class="tab" id="tabTicket">🎫 Ticket Akun Member & Reseller</button></div>
+        <div class="tab-bar"><button class="tab active" id="tabUsers">👥 Kelola User</button><button class="tab" id="tabProducts">📦 Kelola Produk</button><button class="tab" id="tabTicket">🎫 Ticket Akun Member & Reseller</button></div>
         <div id="ownerContent"></div></div>`;
       container.innerHTML = html;
       const contentDiv = document.getElementById("ownerContent");
 
       const renderUserManagement = () => {
         let search = `<div class="search-box"><input type="text" id="searchUser" placeholder="Cari nama/email/nomor"><button id="searchUserBtn">Cari</button></div>`;
-        let table = `<table><thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Password</th><th>Aksi</th></tr></thead><tbody id="userTableBody"></tbody></table>`;
+        let table = `表格<thead> <tr><th>ID</th><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Password</th><th>Aksi</th></tr> </thead><tbody id="userTableBody"></tbody>`;
         contentDiv.innerHTML = search + table;
         const renderUserList = (filter = "") => {
           const filtered = users.filter(u => u.name.toLowerCase().includes(filter) || u.email.toLowerCase().includes(filter) || u.phone.includes(filter));
@@ -665,12 +676,21 @@
           tbody.innerHTML = filtered.map(u => `
             <tr>
               <td>${u.id}</td><td>${escapeHtml(u.name)}</td><td>${escapeHtml(u.email)}</td><td>${escapeHtml(u.phone)}</td><td>${u.role}</td>
-              <td><code>${escapeHtml(u.password)}</code></td>
+              <td><code>${escapeHtml(u.password)}</code> <button class="changePass" data-id="${u.id}">Ganti</button></td>
               <td>${u.id !== currentUser.id ? `<button class="delUser" data-id="${u.id}">Hapus</button>` : '-'}</td>
             </tr>
           `).join("");
           document.querySelectorAll(".delUser").forEach(btn => {
             btn.onclick = () => { if(confirm("Hapus user ini?")) ownerDeleteUser(parseInt(btn.dataset.id)); };
+          });
+          document.querySelectorAll(".changePass").forEach(btn => {
+            btn.onclick = () => {
+              const uid = parseInt(btn.dataset.id);
+              const newPass = prompt("Masukkan password baru (min 4 karakter):");
+              if (newPass && newPass.length >= 4) {
+                ownerChangePassword(uid, newPass);
+              } else alert("Password minimal 4 karakter");
+            };
           });
         };
         renderUserList();
@@ -697,18 +717,40 @@
         };
       };
 
+      const renderProductManagement = () => {
+        let tbl = `表格<thead> <tr><th>Produk</th><th>Harga (Rp)</th><th>Stok</th><th>Aksi</th></tr> </thead><tbody>`;
+        products.forEach(p => {
+          tbl += `<tr>
+            <td>${escapeHtml(p.name)}</td>
+            <td><input type="number" id="price-${p.id}" value="${p.price}" style="width:100px"></td>
+            <td><input type="number" id="stock-${p.id}" value="${p.stock}" min="0" style="width:80px"></td>
+            <td><button class="updateProd" data-id="${p.id}">Update</button></td>
+          </tr>`;
+        });
+        tbl += `</tbody>`;
+        contentDiv.innerHTML = tbl;
+        document.querySelectorAll(".updateProd").forEach(btn => {
+          btn.onclick = () => {
+            const id = parseInt(btn.dataset.id);
+            const newPrice = document.getElementById(`price-${id}`).value;
+            const newStock = document.getElementById(`stock-${id}`).value;
+            adminUpdateProduct(id, newStock, newPrice);
+          };
+        });
+      };
+
       const renderTicket = () => {
         contentDiv.innerHTML = `<div class="search-box"><input type="text" id="ticketSearch" placeholder="Cari member/reseller (nama/email/nomor)"><button id="ticketSearchBtn">Cari</button></div>
         <div id="ticketResult"></div>`;
         const targetRoles = users.filter(u => u.role === "member" || u.role === "reseller");
         const showMembers = (filter = "") => {
           const filtered = targetRoles.filter(m => m.name.toLowerCase().includes(filter) || m.email.toLowerCase().includes(filter) || m.phone.includes(filter));
-          let tbl = `<table><thead><tr><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th></tr></thead><tbody>`;
+          let tbl = `表格<thead> <tr><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th></tr> </thead><tbody>`;
           filtered.forEach(m => {
             const orderCount = orders.filter(o => o.customerEmail === m.email).length;
             tbl += `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td>${escapeHtml(m.phone)}</td><td>${m.role === "reseller" ? "Reseller" : "Member"}</td><td>${orderCount}</td></tr>`;
           });
-          tbl += `</tbody></table>`;
+          tbl += `</tbody>`;
           document.getElementById("ticketResult").innerHTML = tbl;
         };
         showMembers();
@@ -719,6 +761,7 @@
       };
 
       document.getElementById("tabUsers").onclick = () => { setActiveTab("tabUsers"); renderUserManagement(); };
+      document.getElementById("tabProducts").onclick = () => { setActiveTab("tabProducts"); renderProductManagement(); };
       document.getElementById("tabTicket").onclick = () => { setActiveTab("tabTicket"); renderTicket(); };
       function setActiveTab(activeId) {
         document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
@@ -736,13 +779,16 @@
       const contentDiv = document.getElementById("adminContent");
 
       const renderProducts = () => {
-        let tbl = `<table><thead><tr><th>Produk</th><th>Harga</th><th>Stok</th><th>Aksi</th></tr></thead><tbody>`;
+        let tbl = `表格<thead> <tr><th>Produk</th><th>Harga (Rp)</th><th>Stok</th><th>Aksi</th></tr> </thead><tbody>`;
         products.forEach(p => {
-          tbl += `<tr><td>${escapeHtml(p.name)}</td><td><input class="small-input" type="number" id="price-${p.id}" value="${p.price}" style="width:90px"></td>
-          <td><input class="small-input" type="number" id="stock-${p.id}" value="${p.stock}" min="0" style="width:80px"></td>
-          <td><button class="updateProd" data-id="${p.id}">Update</button></td></tr>`;
+          tbl += `<tr>
+            <td>${escapeHtml(p.name)}</td>
+            <td><input type="number" id="price-${p.id}" value="${p.price}" style="width:100px"></td>
+            <td><input type="number" id="stock-${p.id}" value="${p.stock}" min="0" style="width:80px"></td>
+            <td><button class="updateProd" data-id="${p.id}">Update</button></td>
+          </tr>`;
         });
-        tbl += `</tbody></table>`;
+        tbl += `</tbody>`;
         contentDiv.innerHTML = tbl;
         document.querySelectorAll(".updateProd").forEach(btn => {
           btn.onclick = () => {
@@ -756,16 +802,18 @@
 
       const renderOrders = () => {
         if (orders.length === 0) { contentDiv.innerHTML = "<p>Belum ada order</p>"; return; }
-        let tbl = `<table><thead><tr><th>Produk</th><th>Pembeli</th><th>Role</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Aksi</th></tr></thead><tbody>`;
+        let tbl = `表格<thead> <tr><th>Produk</th><th>Pembeli</th><th>Role</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Aksi</th></tr> </thead><tbody>`;
         orders.forEach(o => {
-          tbl += `<tr><td>${escapeHtml(o.productName)}</td><td>${escapeHtml(o.customerName)}</td><td>${o.customerRole}</td><td>${o.quantity}</td>
-          <td>Rp ${o.unitPrice.toLocaleString()}</td><td>Rp ${o.totalPrice.toLocaleString()}</td>
-          <td><select class="statusSelect" data-id="${o.id}"><option value="proses" ${o.status === "proses" ? "selected" : ""}>Proses</option>
-          <option value="berhasil" ${o.status === "berhasil" ? "selected" : ""}>Berhasil</option>
-          <option value="gagal" ${o.status === "gagal" ? "selected" : ""}>Gagal</option></select></td>
-          <td><button class="updateOrder" data-id="${o.id}">Update</button></td></tr>`;
+          tbl += `<tr>
+            <td>${escapeHtml(o.productName)}</td><td>${escapeHtml(o.customerName)}</td><td>${o.customerRole}</td><td>${o.quantity}</td>
+            <td>Rp ${o.unitPrice.toLocaleString()}</td><td>Rp ${o.totalPrice.toLocaleString()}</td>
+            <td><select class="statusSelect" data-id="${o.id}"><option value="proses" ${o.status === "proses" ? "selected" : ""}>Proses</option>
+            <option value="berhasil" ${o.status === "berhasil" ? "selected" : ""}>Berhasil</option>
+            <option value="gagal" ${o.status === "gagal" ? "selected" : ""}>Gagal</option></select></td>
+            <td><button class="updateOrder" data-id="${o.id}">Update</button></td>
+          </tr>`;
         });
-        tbl += `</tbody></table>`;
+        tbl += `</tbody>`;
         contentDiv.innerHTML = tbl;
         document.querySelectorAll(".updateOrder").forEach(btn => {
           btn.onclick = () => {
@@ -786,12 +834,12 @@
         const targetRoles = users.filter(u => u.role === "member" || u.role === "reseller");
         const show = (filter = "") => {
           const filtered = targetRoles.filter(m => m.name.toLowerCase().includes(filter) || m.email.toLowerCase().includes(filter) || m.phone.includes(filter));
-          let tbl = `<table><thead><tr><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th></tr></thead><tbody>`;
+          let tbl = `表格<thead> <tr><th>Nama</th><th>Email</th><th>Nomor</th><th>Role</th><th>Total Order</th></tr> </thead><tbody>`;
           filtered.forEach(m => {
             const orderCount = orders.filter(o => o.customerEmail === m.email).length;
             tbl += `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.email)}</td><td>${escapeHtml(m.phone)}</td><td>${m.role === "reseller" ? "Reseller" : "Member"}</td><td>${orderCount}</td></tr>`;
           });
-          tbl += `</tbody></table>`;
+          tbl += `</tbody>`;
           document.getElementById("ticketAdminResult").innerHTML = tbl;
         };
         show();
@@ -824,13 +872,13 @@
         container.innerHTML = `<div class="panel"><h2>Pesanan Saya</h2><p>Belum ada pesanan.</p></div>`;
         return;
       }
-      let html = `<div class="panel"><h2>📋 Pesanan Saya</h2><table><thead><tr><th>Produk</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Tanggal</th></tr></thead><tbody>`;
+      let html = `<div class="panel"><h2>📋 Pesanan Saya</h2>表格<thead> <tr><th>Produk</th><th>Jumlah</th><th>Harga Satuan</th><th>Total</th><th>Status</th><th>Tanggal</th></tr> </thead><tbody>`;
       myOrders.forEach(o => {
         html += `<tr><td>${escapeHtml(o.productName)}</td><td>${o.quantity}</td><td>Rp ${o.unitPrice.toLocaleString()}</td><td>Rp ${o.totalPrice.toLocaleString()}</td>
         <td>${o.status === "berhasil" ? "✅ Berhasil" : (o.status === "gagal" ? "❌ Gagal" : "⏳ Proses")}</td>
         <td>${new Date(o.createdAt).toLocaleDateString()}</td></tr>`;
       });
-      html += `</tbody></table></div>`;
+      html += `</tbody> </div>`;
       container.innerHTML = html;
     }
   }
@@ -853,4 +901,4 @@
   renderApp();
 </script>
 </body>
-</html>
+  </html>
