@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Poster Skin Akun MLBB</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0e16;--panel:#121722;--line:#232b3b;--text:#eef1f7;--mute:#8c96ab;--acc:#f2c33d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 "Trebuchet MS","Segoe UI",system-ui,sans-serif}
+main{max-width:520px;margin:0 auto;padding:20px 16px 48px}
+h1{font:800 26px/1.15 "Arial Black","Segoe UI",sans-serif;margin:0 0 6px}
+p.sub{color:var(--mute);margin:0 0 18px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+label{display:block;font-size:13px;color:var(--mute);margin:10px 0 4px}
+label:first-child{margin-top:0}
+input[type=text]{width:100%;background:#0c111b;border:1px solid var(--line);border-radius:10px;color:var(--text);padding:10px 12px;font-size:15px}
+input:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.row{display:flex;gap:8px}
+.row>div{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:10px;padding:11px 14px;font-weight:700;font-size:15px;cursor:pointer;background:var(--acc);color:#1a1405;width:100%}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.swatches{display:flex;gap:10px;align-items:center}
+.sw{width:34px;height:34px;border-radius:50%;border:2px solid transparent;cursor:pointer}
+.sw[aria-pressed=true]{border-color:#fff;box-shadow:0 0 0 2px var(--bg) inset}
+.hint{font-size:12.5px;color:var(--mute);margin:8px 0 0}
+#poster{--a:#f2c33d;background:#0e1320;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+#poster header{padding:18px 18px 14px;border-bottom:1px solid var(--line)}
+#pTitle{font:800 22px/1.1 "Arial Black",sans-serif;color:var(--a);text-transform:uppercase;margin:0 0 6px;word-break:break-word}
+#pMeta{color:var(--mute);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;padding:16px 14px;min-height:80px}
+.empty{grid-column:1/-1;text-align:center;color:var(--mute);padding:26px 8px;font-size:14px}
+.tile{position:relative;aspect-ratio:3/4.4;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#161c2b}
+.tile img{width:100%;height:100%;object-fit:cover;display:block}
+.tag{position:absolute;left:0;right:0;top:0;font-size:8px;font-weight:800;letter-spacing:.04em;text-align:center;background:color-mix(in srgb,var(--a) 85%,#000);color:#120d02;padding:1px 0;cursor:pointer;border:0;width:100%;text-transform:uppercase}
+.tag.none{display:none}
+.x{position:absolute;right:2px;bottom:2px;width:20px;height:20px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;font-size:13px;line-height:1;cursor:pointer;padding:0}
+#poster.clean .x,#poster.clean .tag.none{display:none}
+footer{padding:12px 18px 16px;border-top:1px solid var(--line);color:var(--mute);font-size:12.5px;display:flex;flex-wrap:wrap;gap:4px 12px}
+footer b{color:var(--text)}
+</style>
+</head>
+<body>
+<main>
+<h1>Poster skin akun MLBB</h1>
+<p class="sub">Isi data akun, unggah gambar skin, lalu screenshot posternya untuk dibagikan.</p>
+
+<section class="panel" aria-label="Data akun">
+  <label for="iTitle">Judul poster</label>
+  <input id="iTitle" type="text" value="Akun MLBB dijual" maxlength="40">
+  <div class="row">
+    <div><label for="iId">Game ID</label><input id="iId" type="text" inputmode="numeric" placeholder="123456789"></div>
+    <div><label for="iSrv">Server</label><input id="iSrv" type="text" inputmode="numeric" placeholder="1234"></div>
+  </div>
+  <label for="iNick">Nickname</label>
+  <input id="iNick" type="text" maxlength="24">
+  <label>Warna tema</label>
+  <div class="swatches" id="sws">
+    <button class="sw" style="background:#f2c33d" data-c="#f2c33d" aria-pressed="true" aria-label="Emas"></button>
+    <button class="sw" style="background:#c4a2ff" data-c="#c4a2ff" aria-pressed="false" aria-label="Ungu"></button>
+    <button class="sw" style="background:#7fdcf0" data-c="#7fdcf0" aria-pressed="false" aria-label="Biru muda"></button>
+  </div>
+</section>
+
+<section class="panel" aria-label="Skin">
+  <input id="file" type="file" accept="image/*" multiple hidden>
+  <button class="btn" id="add">Tambah gambar skin</button>
+  <p class="hint">Pilih beberapa gambar sekaligus. Ketuk label di atas gambar untuk ganti rarity (Epic, Legend, dan seterusnya). Ketuk × untuk menghapus.</p>
+  <button class="btn ghost" id="clr" style="margin-top:10px">Hapus semua skin</button>
+</section>
+
+<article id="poster" aria-label="Pratinjau poster">
+  <header><h2 id="pTitle">Akun MLBB dijual</h2><div id="pMeta">Isi Game ID dan server di atas</div></header>
+  <div class="grid" id="grid"></div>
+  <footer id="stats"></footer>
+</article>
+<p class="hint">Poster ini hanya merapikan data yang Anda isi sendiri. Pembeli tetap sebaiknya memverifikasi akun langsung.</p>
+</main>
+<script>
+const RAR=["","Epic","Legend","Collector","Starlight","Supreme","Grand","Exquisite","Deluxe","Special","Collab"];
+let skins=[];
+const $=id=>document.getElementById(id);
+function meta(){
+  const p=[];
+  if($("iId").value)p.push("ID: "+$("iId").value);
+  if($("iSrv").value)p.push("Server "+$("iSrv").value);
+  if($("iNick").value)p.push($("iNick").value);
+  $("pMeta").textContent=p.join(" · ")||"Isi Game ID dan server di atas";
+  $("pTitle").textContent=$("iTitle").value||"Akun MLBB";
+}
+function render(){
+  const g=$("grid");g.innerHTML="";
+  if(!skins.length){g.innerHTML='<div class="empty">Belum ada skin. Tambahkan gambar skin untuk mengisi poster.</div>'}
+  skins.forEach((s,i)=>{
+    const t=document.createElement("div");t.className="tile";
+    const im=document.createElement("img");im.src=s.src;im.alt="Skin "+(i+1);
+    const tg=document.createElement("button");tg.className="tag"+(s.r?"":" none");tg.textContent=RAR[s.r]||"–";tg.setAttribute("aria-label","Ganti rarity");
+    tg.onclick=()=>{s.r=(s.r+1)%RAR.length;render()};
+    const x=document.createElement("button");x.className="x";x.textContent="×";x.setAttribute("aria-label","Hapus skin");
+    x.onclick=()=>{skins.splice(i,1);render()};
+    if(!s.r){tg.classList.remove("none");tg.textContent="+ rarity";tg.style.opacity=".75"}
+    t.append(im,tg,x);g.append(t);
+  });
+  const c={};skins.forEach(s=>{if(s.r){c[RAR[s.r]]=(c[RAR[s.r]]||0)+1}});
+  const f=$("stats");f.innerHTML="";
+  const tot=document.createElement("span");tot.innerHTML="<b>"+skins.length+"</b> skin";f.append(tot);
+  Object.keys(c).forEach(k=>{const e=document.createElement("span");e.innerHTML="<b>"+c[k]+"</b> "+k;f.append(e)});
+}
+$("add").onclick=()=>$("file").click();
+$("file").onchange=e=>{
+  [...e.target.files].forEach(f=>{
+    const r=new FileReader();
+    r.onload=()=>{skins.push({src:r.result,r:0});render()};
+    r.readAsDataURL(f);
+  });
+  e.target.value="";
+};
+$("clr").onclick=()=>{skins=[];render()};
+["iTitle","iId","iSrv","iNick"].forEach(id=>$(id).addEventListener("input",meta));
+document.querySelectorAll(".sw").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".sw").forEach(o=>o.setAttribute("aria-pressed","false"));
+  b.setAttribute("aria-pressed","true");
+  $("poster").style.setProperty("--a",b.dataset.c);
+});
+meta();render();
+</script>
+</body>
+</html>
