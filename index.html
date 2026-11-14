@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kotak Alat</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f1efe8;--card:#fff;--ink:#111;--acc:#2f4bff;--ok:#0a8f4f;--sh:#111;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17171a;--card:#232328;--ink:#f3f3f3;--acc:#7b8cff;--ok:#3ddc97;--sh:#000}}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Space Grotesk",system-ui,sans-serif;background-image:linear-gradient(rgba(128,128,128,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(128,128,128,.12) 1px,transparent 1px);background-size:28px 28px}
+main{max-width:520px;margin:0 auto;padding:16px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+h1{margin:0;font-size:28px;letter-spacing:-.5px}
+h1 span{color:var(--acc)}
+.badge{border:2px solid var(--ink);padding:6px 10px;font:700 12px "JetBrains Mono",monospace;color:var(--ok);background:var(--card);box-shadow:3px 3px 0 var(--sh)}
+.tabs{display:grid;grid-template-columns:repeat(2,1fr);border:2px solid var(--ink);background:var(--card);box-shadow:5px 5px 0 var(--sh);margin-bottom:20px}
+.tabs button{padding:14px 8px;border:0;border-right:2px solid var(--ink);border-bottom:2px solid var(--ink);background:var(--card);color:var(--ink);font:700 14px "JetBrains Mono",monospace;cursor:pointer}
+.tabs button:nth-child(2n){border-right:0}.tabs button:nth-last-child(-n+2){border-bottom:0}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.panel{display:none;border:2px solid var(--ink);background:var(--card);box-shadow:6px 6px 0 var(--sh);padding:20px}
+.panel.on{display:block}
+h2{margin:0 0 6px;font-size:24px}
+p.d{margin:0 0 16px;opacity:.75}
+label{display:block;font:700 13px "JetBrains Mono",monospace;margin:12px 0 6px}
+input[type=text],input[type=tel],textarea,input[type=number]{width:100%;padding:12px;border:2px solid var(--ink);background:var(--bg);color:var(--ink);font:400 16px "JetBrains Mono",monospace;border-radius:0}
+textarea{min-height:80px;resize:vertical}
+.go{width:100%;margin-top:16px;padding:14px;border:2px solid var(--ink);background:var(--ink);color:var(--bg);font:700 15px "JetBrains Mono",monospace;box-shadow:5px 5px 0 var(--acc);cursor:pointer}
+.go:active{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--acc)}
+.out{margin-top:16px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+canvas,.out img{max-width:100%;height:auto;border:2px solid var(--ink)}
+.chk{background-image:linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%),linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%);background-size:16px 16px;background-position:0 0,8px 8px;background-color:#fff}
+.note{font:400 12px "JetBrains Mono",monospace;opacity:.7}
+.row{display:flex;gap:10px}.row>*{flex:1}
+a.lnk{display:inline-block;padding:10px 14px;border:2px solid var(--ink);background:var(--acc);color:#fff;font:700 14px "JetBrains Mono",monospace;text-decoration:none;box-shadow:3px 3px 0 var(--sh);word-break:break-all}
+</style>
+</head>
+<body>
+<main>
+<header><h1>Kotak<span>Alat</span></h1><div class="badge">JALAN DI BROWSER</div></header>
+
+<div class="tabs" role="tablist">
+<button role="tab" aria-selected="true" data-t="qr">BIKIN QR</button>
+<button role="tab" aria-selected="false" data-t="wa">DIRECT WA</button>
+<button role="tab" aria-selected="false" data-t="hd">HD FOTO</button>
+<button role="tab" aria-selected="false" data-t="bg">HAPUS BG</button>
+</div>
+
+<section class="panel on" id="qr">
+<h2>Bikin QR</h2><p class="d">Ubah teks atau link jadi kode QR.</p>
+<label for="qrText">TEKS / LINK</label>
+<input type="text" id="qrText" placeholder="https://contoh.com">
+<button class="go" id="qrGo">Buat QR</button>
+<div class="out"><canvas id="qrCanvas" width="0" height="0" hidden></canvas><span class="note" id="qrNote"></span></div>
+</section>
+
+<section class="panel" id="wa">
+<h2>Direct WA</h2><p class="d">Chat ke nomor tanpa menyimpan kontak.</p>
+<label for="waNum">NOMOR (BOLEH DIAWALI 08)</label>
+<input type="tel" id="waNum" placeholder="08123456789">
+<label for="waMsg">PESAN (OPSIONAL)</label>
+<textarea id="waMsg" placeholder="Halo..."></textarea>
+<button class="go" id="waGo">Buat link WA</button>
+<div class="out" id="waOut"></div>
+</section>
+
+<section class="panel" id="hd">
+<h2>HD Foto</h2><p class="d">Perbesar foto dan pertajam di perangkatmu. Foto tidak diunggah ke mana pun.</p>
+<label for="hdFile">PILIH FOTO</label>
+<input type="file" id="hdFile" accept="image/*">
+<label for="hdScale">PERBESAR</label>
+<div class="row"><input type="number" id="hdScale" value="2" min="1" max="4" step="1"><span class="note" style="align-self:center">kali (1–4)</span></div>
+<button class="go" id="hdGo">Tingkatkan kualitas</button>
+<div class="out"><span class="note" id="hdNote"></span><img id="hdImg" alt="Hasil HD" hidden></div>
+</section>
+
+<section class="panel" id="bg">
+<h2>Hapus BG</h2><p class="d">Menghapus latar polos (satu warna) dari foto. Paling cocok untuk latar putih, hijau, atau abu-abu merata.</p>
+<label for="bgFile">PILIH FOTO</label>
+<input type="file" id="bgFile" accept="image/*">
+<label for="bgTol">TOLERANSI WARNA</label>
+<input type="number" id="bgTol" value="40" min="5" max="120">
+<button class="go" id="bgGo">Hapus latar</button>
+<div class="out"><span class="note" id="bgNote"></span><img id="bgImg" class="chk" alt="Hasil tanpa latar" hidden></div>
+</section>
+<p class="note" style="margin-top:20px">Tekan lama gambar hasil untuk menyimpannya.</p>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+var $=function(i){return document.getElementById(i)};
+document.querySelectorAll(".tabs button").forEach(function(b){b.onclick=function(){
+document.querySelectorAll(".tabs button").forEach(function(x){x.setAttribute("aria-selected",x===b)});
+document.querySelectorAll(".panel").forEach(function(p){p.classList.toggle("on",p.id===b.dataset.t)})}});
+
+$("qrGo").onclick=function(){
+var t=$("qrText").value.trim(),c=$("qrCanvas"),n=$("qrNote");
+if(!t){n.textContent="Isi teks atau link dulu.";return}
+try{var q=qrcode(0,"M");q.addData(t);q.make();
+var m=q.getModuleCount(),s=Math.floor(320/(m+8)),size=s*(m+8);
+c.width=c.height=size;var x=c.getContext("2d");
+x.fillStyle="#fff";x.fillRect(0,0,size,size);x.fillStyle="#000";
+for(var r=0;r<m;r++)for(var k=0;k<m;k++)if(q.isDark(r,k))x.fillRect((k+4)*s,(r+4)*s,s,s);
+c.hidden=false;n.textContent="QR siap. Tekan lama untuk menyimpan."}
+catch(e){n.textContent="Teks terlalu panjang untuk QR."}};
+
+$("waGo").onclick=function(){
+var n=$("waNum").value.replace(/\D/g,"");
+if(!n){$("waOut").textContent="Isi nomor dulu.";return}
+if(n.indexOf("0")===0)n="62"+n.slice(1);
+var u="https://wa.me/"+n,m=$("waMsg").value.trim();
+if(m)u+="?text="+encodeURIComponent(m);
+var o=$("waOut");o.innerHTML="";
+var a=document.createElement("a");a.className="lnk";a.href=u;a.target="_blank";a.rel="noopener";a.textContent="Buka chat: "+u;
+o.appendChild(a)};
+
+function load(f,cb){var r=new FileReader();r.onload=function(){var i=new Image();i.onload=function(){cb(i)};i.src=r.result};r.readAsDataURL(f)}
+
+$("hdGo").onclick=function(){
+var f=$("hdFile").files[0],n=$("hdNote");
+if(!f){n.textContent="Pilih foto dulu.";return}
+var sc=Math.min(4,Math.max(1,+$("hdScale").value||2));
+n.textContent="Memproses...";
+load(f,function(i){
+var w=i.width*sc,h=i.height*sc;
+if(w*h>36e6){n.textContent="Hasil terlalu besar. Kecilkan angka perbesar.";return}
+var c=document.createElement("canvas");c.width=w;c.height=h;
+var x=c.getContext("2d");x.imageSmoothingEnabled=true;x.imageSmoothingQuality="high";
+x.drawImage(i,0,0,w,h);
+var d=x.getImageData(0,0,w,h),s=d.data,o=new Uint8ClampedArray(s),amt=.6;
+for(var y=1;y<h-1;y++)for(var z=1;z<w-1;z++)for(var ch=0;ch<3;ch++){
+var p=(y*w+z)*4+ch,
+b=(s[p]*4+s[p-4]+s[p+4]+s[p-w*4]+s[p+w*4])/8;
+o[p]=s[p]+(s[p]-b)*amt*2}
+d.data.set(o);x.putImageData(d,0,0);
+var im=$("hdImg");im.src=c.toDataURL("image/jpeg",.92);im.hidden=false;
+n.textContent="Selesai: "+w+" × "+h+" px"})};
+
+$("bgGo").onclick=function(){
+var f=$("bgFile").files[0],n=$("bgNote");
+if(!f){n.textContent="Pilih foto dulu.";return}
+var tol=+$("bgTol").value||40;n.textContent="Memproses...";
+load(f,function(i){
+var sc=Math.min(1,1600/Math.max(i.width,i.height)),w=Math.round(i.width*sc),h=Math.round(i.height*sc);
+var c=document.createElement("canvas");c.width=w;c.height=h;
+var x=c.getContext("2d");x.drawImage(i,0,0,w,h);
+var d=x.getImageData(0,0,w,h),s=d.data,r=0,g=0,b=0,cnt=0;
+[[0,0],[w-1,0],[0,h-1],[w-1,h-1]].forEach(function(q){var p=(q[1]*w+q[0])*4;r+=s[p];g+=s[p+1];b+=s[p+2];cnt++});
+r/=cnt;g/=cnt;b/=cnt;
+var seen=new Uint8Array(w*h),st=[];
+function near(p){var dr=s[p]-r,dg=s[p+1]-g,db=s[p+2]-b;return Math.sqrt(dr*dr+dg*dg+db*db)<=tol}
+for(var a=0;a<w;a++){st.push(a,(h-1)*w+a)}
+for(var e=0;e<h;e++){st.push(e*w,e*w+w-1)}
+while(st.length){var k=st.pop();if(seen[k])continue;seen[k]=1;
+if(!near(k*4))continue;s[k*4+3]=0;
+var px=k%w,py=(k-px)/w;
+if(px>0)st.push(k-1);if(px<w-1)st.push(k+1);if(py>0)st.push(k-w);if(py<h-1)st.push(k+w)}
+x.putImageData(d,0,0);
+var im=$("bgImg");im.src=c.toDataURL("image/png");im.hidden=false;
+n.textContent="Selesai. Belum pas? Ubah toleransi lalu coba lagi."})};
+</script>
+</body>
+</html>
