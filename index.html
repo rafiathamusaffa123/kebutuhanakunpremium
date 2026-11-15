@@ -1,185 +1,183 @@
 <!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Kotak Alat</title>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Atha Store - Akun Mobile Legends</title>
 <style>
-:root{--bg:#d8ecff;--card:#fff;--ink:#1b1340;--field:#f2f6ff;--c1:#ff6a3d;--c2:#c8f169;--c3:#8c75ff;--c4:#ffd23f;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#140f2e;--card:#221a4a;--ink:#f4f1ff;--field:#2d2460}}
-:root[data-theme="dark"]{--bg:#140f2e;--card:#221a4a;--ink:#f4f1ff;--field:#2d2460}
-*{box-sizing:border-box}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.4}
-main{max-width:520px;margin:0 auto;padding:20px 16px 40px}
-h1{margin:6px 0 4px;font-size:40px;font-weight:800;letter-spacing:-1.5px;line-height:1}
-.sub{margin:0 0 22px;opacity:.75}
-.tabs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px}
-.tab{border:3px solid var(--ink);border-radius:22px;padding:14px;text-align:left;font:800 18px "Bricolage Grotesque",sans-serif;color:#1b1340;cursor:pointer;display:flex;flex-direction:column;gap:6px;box-shadow:0 5px 0 var(--ink);transition:transform .12s,box-shadow .12s}
-.tab small{font:400 12px "Bricolage Grotesque",sans-serif;opacity:.8}
-.tab .ic{font-size:26px;line-height:1}
-.tab[data-t=qr]{background:var(--c4)}.tab[data-t=wa]{background:var(--c2)}.tab[data-t=hd]{background:var(--c1)}.tab[data-t=bg]{background:var(--c3)}
-.tab[aria-selected=true]{transform:translateY(5px);box-shadow:0 0 0 var(--ink)}
-.tab[aria-selected=false]{opacity:.9}
-button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--c1);outline-offset:3px}
-.panel{display:none;background:var(--card);border:3px solid var(--ink);border-radius:26px;padding:22px}
-.panel.on{display:block}
-h2{margin:0 0 4px;font-size:26px;font-weight:800;letter-spacing:-.5px}
-p.d{margin:0 0 14px;opacity:.75}
-label{display:block;font-weight:600;font-size:14px;margin:14px 0 6px}
-input[type=text],input[type=tel],input[type=number],textarea,input[type=file]{width:100%;padding:12px 14px;border:2px solid var(--ink);border-radius:14px;background:var(--field);color:var(--ink);font:400 16px "Bricolage Grotesque",sans-serif}
-textarea{min-height:80px;resize:vertical}
-.go{width:100%;margin-top:18px;padding:15px;border:3px solid var(--ink);border-radius:16px;background:var(--ink);color:var(--bg);font:800 17px "Bricolage Grotesque",sans-serif;cursor:pointer}
-.go:active{transform:scale(.98)}
-.out{margin-top:16px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
-canvas,.out img{max-width:100%;height:auto;border:3px solid var(--ink);border-radius:14px}
-.chk{background-image:linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%),linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%);background-size:16px 16px;background-position:0 0,8px 8px;background-color:#fff}
-.note{font-size:13px;opacity:.75}
-.row{display:flex;gap:10px;align-items:center}
-a.lnk{display:inline-block;padding:12px 16px;border:3px solid var(--ink);border-radius:14px;background:var(--c2);color:#1b1340;font-weight:800;text-decoration:none;word-break:break-all}
-</style>
-</head>
-<body>
+:root{--bg:#0b1230;--bx:#142050;--bd:#2f4690;--ac:#2d5bff;--gd:#ffd678}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:#e8eeff}
+header{padding:14px 16px;text-align:center;border-bottom:1px solid var(--bd)}header b{color:var(--gd);font-size:22px}
+nav{display:flex;gap:8px;padding:10px 16px}nav button{flex:1}
+button,input,select,textarea{font:inherit;font-size:14px;padding:9px;border-radius:8px;border:1px solid #3a56b0;background:#0d1840;color:#fff}
+button{background:var(--ac);border:0;font-weight:700;cursor:pointer}button.g{background:#1f9d55}button.r{background:#b3261e}button.o{background:#27346e}
+main{padding:0 16px 24px;max-width:1100px;margin:auto}.box{background:var(--bx);border:1px solid var(--bd);border-radius:12px;padding:12px;margin-bottom:12px}
+label{display:block;font-size:13px;margin:8px 0 4px;color:#a9bbff}input[type=text],textarea{width:100%}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.c{background:#0d1840;border:1px solid var(--bd);border-radius:8px;padding:6px;font-size:12px}.c.off{opacity:.4}
+.c canvas{width:100%;height:auto;border-radius:6px;display:block;margin-bottom:4px}.c select{width:100%;padding:4px;font-size:12px}
+.sh{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.it{background:var(--bx);border:1px solid var(--bd);border-radius:12px;overflow:hidden}.it img{width:100%;height:260px;object-fit:cover;object-position:top;display:block;cursor:pointer}
+.it div{padding:10px}.pr{color:var(--gd);font-weight:800;font-size:18px}small{color:#8fa3e8}.hide{display:none}
+#out{max-width:100%;border-radius:8px;margin-top:10px}
+#view{position:fixed;inset:0;background:#000d;overflow:auto;padding:10px}#view img{width:100%;max-width:900px;display:block;margin:auto}
+</style></head><body>
+<header><b>ATHA STORE</b><br><small>Akun Mobile Legends</small></header>
+<nav><button id="t1">Etalase</button><button id="t2" class="o">Admin: Buat Gambar</button></nav>
 <main>
-<h1>Kotak Alat</h1>
-<p class="sub">Alat harian yang jalan langsung di browser. Fotomu tidak diunggah.</p>
+<section id="p1"><div id="sh" class="sh"></div><p id="empty"><small>Belum ada akun dijual.</small></p></section>
 
-<div class="tabs" role="tablist">
-<button class="tab" role="tab" aria-selected="true" data-t="qr"><span class="ic">▦</span>Bikin QR<small>Teks atau link jadi kode</small></button>
-<button class="tab" role="tab" aria-selected="false" data-t="wa"><span class="ic">✆</span>Direct WA<small>Chat tanpa simpan kontak</small></button>
-<button class="tab" role="tab" aria-selected="false" data-t="hd"><span class="ic">✦</span>HD Foto<small>Perbesar dan pertajam</small></button>
-<button class="tab" role="tab" aria-selected="false" data-t="bg"><span class="ic">◐</span>Hapus BG<small>Buang latar polos</small></button>
-</div>
+<section id="p2" class="hide">
+ <div class="box"><label>1. Upload screenshot Koleksi &gt; Skin (landscape, 1 baris kartu utuh per foto)</label>
+  <input type="file" id="files" accept="image/*" multiple> <div id="shots"></div><small id="prog"></small></div>
+ <div class="box"><label>2. Info header</label>
+  <input type="text" id="brand" value="ATHA STORE"><label>Nomor WA</label><input type="text" id="wa" value="0881-7055-190">
+  <label>Baris 1</label><input type="text" id="l1" placeholder="Koleksi Skin 310/1164"><label>Baris 2</label><input type="text" id="l2" placeholder="Win Rate 57% | 6130 Match | 1038 MVP">
+  <label>Watermark</label><input type="text" id="wm" value="ATHA STORE 0881-7055-190"></div>
+ <div class="box"><label>3. Cek hasil tebakan OCR (ubah kategori bila salah)</label><div id="cards" class="grid"></div></div>
+ <div class="box"><button id="gen">Buat Gambar</button> <button id="sv" class="g hide">Simpan ke Etalase</button> <button id="dl" class="o hide">Download PNG</button>
+  <div><canvas id="out" class="hide"></canvas></div></div>
+</section></main>
+<div id="view" class="hide"><img id="vi"></div>
 
-<section class="panel on" id="qr">
-<h2>Bikin QR</h2><p class="d">Tempel teks atau link, lalu buat kodenya.</p>
-<label for="qrText">Teks atau link</label>
-<input type="text" id="qrText" placeholder="https://contoh.com">
-<button class="go" id="qrGo">Buat QR</button>
-<div class="out"><canvas id="qrCanvas" width="0" height="0" hidden></canvas><span class="note" id="qrNote"></span></div>
-</section>
-
-<section class="panel" id="wa">
-<h2>Direct WA</h2><p class="d">Nomor berawalan 08 otomatis diubah ke format 62.</p>
-<label for="waNum">Nomor WhatsApp</label>
-<input type="tel" id="waNum" placeholder="08123456789">
-<label for="waMsg">Pesan (opsional)</label>
-<textarea id="waMsg" placeholder="Halo..."></textarea>
-<button class="go" id="waGo">Buat link WA</button>
-<div class="out" id="waOut"></div>
-</section>
-
-<section class="panel" id="hd">
-<h2>HD Foto</h2><p class="d">Foto besar dari kamera HP otomatis dibatasi ukurannya agar tidak macet.</p>
-<label for="hdFile">Pilih foto</label>
-<input type="file" id="hdFile" accept="image/*">
-<label for="hdScale">Perbesar berapa kali (1–4)</label>
-<input type="number" id="hdScale" value="2" min="1" max="4" step="1">
-<button class="go" id="hdGo">Tingkatkan kualitas</button>
-<div class="out"><span class="note" id="hdNote"></span><img id="hdImg" alt="Hasil HD" hidden></div>
-</section>
-
-<section class="panel" id="bg">
-<h2>Hapus BG</h2><p class="d">Cocok untuk latar polos satu warna: putih, hijau, atau abu-abu merata.</p>
-<label for="bgFile">Pilih foto</label>
-<input type="file" id="bgFile" accept="image/*">
-<label for="bgTol">Toleransi warna</label>
-<input type="number" id="bgTol" value="40" min="5" max="120">
-<button class="go" id="bgGo">Hapus latar</button>
-<div class="out"><span class="note" id="bgNote"></span><img id="bgImg" class="chk" alt="Hasil tanpa latar" hidden></div>
-</section>
-<p class="note" style="margin-top:18px">Untuk menyimpan hasil, tekan lama gambarnya.</p>
-</main>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
 <script>
-var $=function(i){return document.getElementById(i)};
-document.querySelectorAll(".tab").forEach(function(b){b.onclick=function(){
-document.querySelectorAll(".tab").forEach(function(x){x.setAttribute("aria-selected",x===b)});
-document.querySelectorAll(".panel").forEach(function(p){p.classList.toggle("on",p.id===b.dataset.t)})}});
+const ADMIN_PIN='ganti-pin-ini';           // ganti! (masih client-side; pakai Supabase Auth untuk yang aman)
+const WA_JUAL='628817055190';
+const $=id=>document.getElementById(id);
+const XS=[567,914,1261,1608,1955],CW=290,CH=476;
+const TAGS=['Prime','KOF / Leona','Collector','Star','Luckybox','V.E.N.O.M.','Lightborn','Dragon Tamer','S.A.B.E.R.','Blazing Bounties','M-Series','Zodiac','S.T.U.N.','Epic / Lainnya','Star 200','Buang'];
+const TABDEF={Grand:'Prime','2000':'Collector','400':'Epic / Lainnya','200':'Buang'};
+let cards=[],unlocked=false;
 
-$("qrGo").onclick=function(){
-var t=$("qrText").value.trim(),c=$("qrCanvas"),n=$("qrNote");
-if(!t){n.textContent="Isi teks atau link dulu.";return}
-try{var q=qrcode(0,"M");q.addData(t);q.make();
-var m=q.getModuleCount(),s=Math.floor(320/(m+8)),size=s*(m+8);
-c.width=c.height=size;var x=c.getContext("2d");
-x.fillStyle="#fff";x.fillRect(0,0,size,size);x.fillStyle="#000";
-for(var r=0;r<m;r++)for(var k=0;k<m;k++)if(q.isDark(r,k))x.fillRect((k+4)*s,(r+4)*s,s,s);
-c.hidden=false;n.textContent="QR siap."}
-catch(e){n.textContent="Teks terlalu panjang untuk QR."}};
+// ---------- Navigasi ----------
+$('t1').onclick=()=>{$('p1').classList.remove('hide');$('p2').classList.add('hide');showAll()};
+$('t2').onclick=()=>{ if(!unlocked){ if(prompt('PIN admin:')!==ADMIN_PIN)return; unlocked=true; }
+  $('p2').classList.remove('hide');$('p1').classList.add('hide');showAll()};
+function showAll(){renderShop()}
 
-$("waGo").onclick=function(){
-var n=$("waNum").value.replace(/\D/g,"");
-if(!n){$("waOut").textContent="Isi nomor dulu.";return}
-if(n.indexOf("0")===0)n="62"+n.slice(1);
-var u="https://wa.me/"+n,m=$("waMsg").value.trim();
-if(m)u+="?text="+encodeURIComponent(m);
-var o=$("waOut");o.innerHTML="";
-var a=document.createElement("a");a.className="lnk";a.href=u;a.target="_blank";a.rel="noopener";a.textContent="Buka chat: "+u;
-o.appendChild(a)};
+// ---------- Etalase (localStorage; ganti ke Supabase nanti) ----------
+const load=()=>{try{return JSON.parse(localStorage.getItem('atha_akun')||'[]')}catch(e){return[]}};
+const save=a=>{try{localStorage.setItem('atha_akun',JSON.stringify(a));return true}catch(e){alert('Penyimpanan penuh. Hapus akun lama atau pakai Supabase.');return false}};
+function renderShop(){
+  const a=load(); $('sh').innerHTML=''; $('empty').classList.toggle('hide',a.length>0);
+  a.forEach((it,i)=>{
+    const d=document.createElement('div');d.className='it';
+    const msg=encodeURIComponent('Halo Atha Store, saya mau beli akun ML: '+it.title+' ('+it.price+')');
+    d.innerHTML='<img alt=""><div><b></b><div class="pr"></div><small></small><p><a href="https://wa.me/'+WA_JUAL+'?text='+msg+'" target="_blank"><button class="g" style="width:100%">Beli via WhatsApp</button></a></p></div>';
+    d.querySelector('img').src=it.img; d.querySelector('img').onclick=()=>{$('vi').src=it.img;$('view').classList.remove('hide')};
+    d.querySelector('b').textContent=it.title; d.querySelector('.pr').textContent=it.price; d.querySelector('small').textContent=it.desc||'';
+    if(unlocked){const b=document.createElement('button');b.className='r';b.textContent='Hapus';b.onclick=()=>{if(confirm('Hapus?')){a.splice(i,1);save(a);renderShop()}};d.lastChild.append(b)}
+    $('sh').append(d);
+  });
+}
+$('view').onclick=()=>$('view').classList.add('hide');
+renderShop();
 
-function load(f,cb,fail){
-var u=URL.createObjectURL(f),i=new Image();
-i.onload=function(){cb(i);URL.revokeObjectURL(u)};
-i.onerror=function(){fail("Foto tidak bisa dibaca. Coba format JPG atau PNG.")};
-i.src=u}
-function show(c,img,type,q,done){
-c.toBlob(function(b){
-if(!b){done(false);return}
-img.src=URL.createObjectURL(b);img.hidden=false;done(true)},type,q)}
+// ---------- Upload + deteksi kartu ----------
+const loadImg=f=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.src=URL.createObjectURL(f)});
+$('files').onchange=async e=>{
+  cards=[];$('shots').innerHTML='';$('cards').innerHTML='';
+  for(const f of e.target.files){
+    const img=await loadImg(f), sel=document.createElement('select');
+    ['Grand','2000','400','200'].forEach(t=>sel.add(new Option('Tab '+t,t)));sel.value='400';
+    const row=document.createElement('div');row.append(f.name+' → ',sel);$('shots').append(row);
+    const res=analyze(img); if(!res){row.append(' ⚠ baris tidak terdeteksi');continue}
+    res.forEach(r=>{r.sel=sel;cards.push(r)});
+  }
+  await runOCR(); renderCards();
+};
+function analyze(img){
+  const s=img.width/2532,cv=document.createElement('canvas');cv.width=img.width;cv.height=img.height;
+  const x=cv.getContext('2d',{willReadFrequently:true});x.drawImage(img,0,0);
+  const d=x.getImageData(0,0,cv.width,cv.height).data,W=cv.width,cnt=[];
+  const x0=Math.round(570*s),x1=Math.round(2240*s);
+  for(let y=0;y<img.height;y++){let c=0;for(let X=x0;X<x1;X++){const i=(y*W+X)*4;
+    if(Math.abs(d[i]-81)<30&&Math.abs(d[i+1]-184)<22&&Math.abs(d[i+2]-158)<28)c++}cnt.push(c)}
+  const lo=621*s,hi=1040*s,gs=[];let st=null,pv=null,sum=0;
+  for(let y=Math.round(600*s);y<Math.round(1060*s);y++){
+    if(cnt[y]>8*s){if(st===null){st=y;sum=0}sum+=cnt[y];pv=y}else if(st!==null&&y-pv>3){gs.push([st,pv,sum]);st=null}}
+  if(st!==null)gs.push([st,pv,sum]);
+  const g=gs.filter(a=>{const m=(a[0]+a[1])/2;return m>=lo&&m<=hi}).sort((a,b)=>b[2]-a[2])[0]; if(!g)return null;
+  const nameY=(g[0]+g[1])/2/s,top=nameY-398,out=[];
+  for(let c=0;c<5;c++){
+    const cc=document.createElement('canvas');cc.width=CW;cc.height=CH;
+    cc.getContext('2d').drawImage(img,XS[c]*s,top*s,CW*s,CH*s,0,0,CW,CH);
+    let n=0;for(let Y=Math.round((nameY+26)*s);Y<Math.round((nameY+64)*s);Y++)for(let X=Math.round((XS[c]+10)*s);X<Math.round((XS[c]+280)*s);X++){
+      const i=(Y*W+X)*4;if(d[i+2]>200&&d[i+1]>170)n++}
+    out.push({canvas:cc,owned:n>=60*s*s,tag:'Buang',name:''});
+  }
+  return out;
+}
 
-$("hdGo").onclick=function(){
-var f=$("hdFile").files[0],n=$("hdNote");
-if(!f){n.textContent="Pilih foto dulu.";return}
-n.textContent="Memproses...";
-setTimeout(function(){
-load(f,function(i){
-try{
-var sc=Math.min(4,Math.max(1,+$("hdScale").value||2));
-var k=Math.max(1,Math.min(sc,Math.sqrt(16e6/(i.width*i.height))));
-var w=Math.round(i.width*k),h=Math.round(i.height*k);
-var c=document.createElement("canvas");c.width=w;c.height=h;
-var x=c.getContext("2d");x.imageSmoothingEnabled=true;x.imageSmoothingQuality="high";
-x.drawImage(i,0,0,w,h);
-var d=x.getImageData(0,0,w,h),s=d.data,o=new Uint8ClampedArray(s),st=w*4;
-for(var y=1;y<h-1;y++){var row=y*st;
-for(var p=row+4;p<row+st-4;p+=4){
-for(var ch=0;ch<3;ch++){var q=p+ch,bl=(s[q]*4+s[q-4]+s[q+4]+s[q-st]+s[q+st])/8;
-o[q]=s[q]+(s[q]-bl)*1.2}}}
-d.data.set(o);x.putImageData(d,0,0);
-show(c,$("hdImg"),"image/jpeg",.92,function(ok){
-n.textContent=ok?"Selesai: "+w+" × "+h+" px"+(k<sc?" (dibatasi agar tidak macet)":""):"Gagal membuat hasil."})
-}catch(e){n.textContent="Gagal memproses. Coba foto yang lebih kecil."}
-},function(m){n.textContent=m})},30)};
+// ---------- OCR (Tesseract.js) + tebakan kategori ----------
+function strip(cc,x,y,w,h){const t=document.createElement('canvas');t.width=w*2;t.height=h*2;const q=t.getContext('2d');
+  q.drawImage(cc,x,y,w,h,0,0,w*2,h*2);return t}
+function guess(txt,tab){
+  const t=txt.toLowerCase();
+  if(tab==='Grand'&&/fight|kof|king/.test(t))return 'KOF / Leona';
+  if(/v\.?e\.?n\.?[od]\.?m|venom|vend/.test(t))return 'V.E.N.O.M.';
+  if(/lightb|ightborn/.test(t))return 'Lightborn';
+  if(/dragon|tamer/.test(t))return 'Dragon Tamer';
+  if(/s\.?a\.?b\.?e\.?r|saber/.test(t))return 'S.A.B.E.R.';
+  if(/blazing|bount/.test(t))return 'Blazing Bounties';
+  if(/\bm[5-9]\b|m6|m7/.test(t))return 'M-Series';
+  if(/zodiac/.test(t))return 'Zodiac';
+  if(/s\.?t\.?u\.?n/.test(t))return 'S.T.U.N.';
+  if(/collector/.test(t))return 'Collector';
+  if(/luckybox|lucky/.test(t))return 'Luckybox';
+  if(/prime/.test(t))return 'Prime';
+  if(/star/.test(t))return tab==='200'?'Star 200':'Star';
+  return null;
+}
+async function runOCR(){
+  if(!cards.length)return; if(!window.Tesseract){$('prog').textContent='OCR gagal dimuat (cek internet). Pilih kategori manual.';setDefaults();return}
+  const w=await Tesseract.createWorker('eng');
+  for(let i=0;i<cards.length;i++){
+    const c=cards[i];$('prog').textContent='OCR '+(i+1)+'/'+cards.length+'...';
+    try{
+      const a=(await w.recognize(strip(c.canvas,10,372,270,40))).data.text;       // nama skin
+      const b=(await w.recognize(strip(c.canvas,120,18,170,60))).data.text;       // label tema di pojok atas
+      c.name=a.trim();c.hint=guess(a+' '+b,c.sel.value);
+    }catch(e){c.hint=null}
+  }
+  await w.terminate();$('prog').textContent='OCR selesai. Cek ulang kategori di bawah.';setDefaults();
+}
+function setDefaults(){cards.forEach(c=>{
+  const tab=c.sel.value;
+  c.tag=!c.owned?'Buang':(c.hint||TABDEF[tab]);
+  if(tab==='200'&&c.tag!=='Star 200')c.tag='Buang';   // tab 200: hanya Star
+})}
 
-$("bgGo").onclick=function(){
-var f=$("bgFile").files[0],n=$("bgNote");
-if(!f){n.textContent="Pilih foto dulu.";return}
-var tol=+$("bgTol").value||40;n.textContent="Memproses...";
-setTimeout(function(){
-load(f,function(i){
-try{
-var sc=Math.min(1,1600/Math.max(i.width,i.height)),w=Math.round(i.width*sc),h=Math.round(i.height*sc);
-var c=document.createElement("canvas");c.width=w;c.height=h;
-var x=c.getContext("2d");x.drawImage(i,0,0,w,h);
-var d=x.getImageData(0,0,w,h),s=d.data,r=0,g=0,b=0;
-[[0,0],[w-1,0],[0,h-1],[w-1,h-1]].forEach(function(q){var p=(q[1]*w+q[0])*4;r+=s[p]/4;g+=s[p+1]/4;b+=s[p+2]/4});
-var seen=new Uint8Array(w*h),st=[];
-function near(p){var dr=s[p]-r,dg=s[p+1]-g,db=s[p+2]-b;return Math.sqrt(dr*dr+dg*dg+db*db)<=tol}
-for(var a=0;a<w;a++)st.push(a,(h-1)*w+a);
-for(var e=0;e<h;e++)st.push(e*w,e*w+w-1);
-while(st.length){var k=st.pop();if(seen[k])continue;seen[k]=1;
-if(!near(k*4))continue;s[k*4+3]=0;
-var px=k%w,py=(k-px)/w;
-if(px>0)st.push(k-1);if(px<w-1)st.push(k+1);if(py>0)st.push(k-w);if(py<h-1)st.push(k+w)}
-x.putImageData(d,0,0);
-show(c,$("bgImg"),"image/png",1,function(ok){
-n.textContent=ok?"Selesai. Belum pas? Ubah toleransi lalu coba lagi.":"Gagal membuat hasil."})
-}catch(e){n.textContent="Gagal memproses. Coba foto yang lebih kecil."}
-},function(m){n.textContent=m})},30)};
-</script>
-</body>
-</html>
+function renderCards(){
+  $('cards').innerHTML='';
+  cards.forEach(c=>{
+    const el=document.createElement('div');el.className='c'+(c.tag==='Buang'?' off':'');
+    const cv=document.createElement('canvas');cv.width=CW;cv.height=CH;cv.getContext('2d').drawImage(c.canvas,0,0);
+    const s=document.createElement('select');TAGS.forEach(t=>s.add(new Option(t,t)));s.value=c.tag;
+    s.onchange=()=>{c.tag=s.value;el.className='c'+(c.tag==='Buang'?' off':'')};
+    el.append(cv,s);const n=document.createElement('small');n.textContent=(c.owned?'':'[belum dimiliki] ')+(c.name||'');el.append(n);$('cards').append(el)});
+}
+
+// ---------- Buat gambar ----------
+$('gen').onclick=()=>{
+  const use=TAGS.slice(0,-1).flatMap(t=>cards.filter(c=>c.tag===t)); if(!use.length)return alert('Belum ada kartu terpilih');
+  const W=1800,M=12,G=8,cw=190,ch=Math.round(476*190/290),cols=9,HH=210,H=HH+Math.ceil(use.length/cols)*(ch+G)+M+52;
+  const cv=$('out');cv.width=W;cv.height=H;cv.classList.remove('hide');const x=cv.getContext('2d');
+  const gr=x.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#0a1440');gr.addColorStop(1,'#080e26');x.fillStyle=gr;x.fillRect(0,0,W,H);
+  x.textAlign='center';x.textBaseline='middle';const br=$('brand').value,wa=$('wa').value;
+  x.font='bold 64px sans-serif';x.fillStyle='#ffd678';x.strokeStyle='#3c1e00';x.lineWidth=4;x.strokeText(br,W/2,50);x.fillText(br,W/2,50);
+  x.font='bold 30px sans-serif';x.fillStyle='#fff';x.fillText('WA: '+wa,W/2,102);x.font='bold 34px sans-serif';x.fillText($('l1').value,W/2,150);
+  x.font='bold 26px sans-serif';x.fillStyle='#ffe28c';x.fillText($('l2').value,W/2,186);
+  use.forEach((c,i)=>x.drawImage(c.canvas,M+(i%cols)*(cw+G),HH+Math.floor(i/cols)*(ch+G),cw,ch));
+  x.fillStyle='#080e26';x.fillRect(0,H-52,W,52);x.font='bold 28px sans-serif';x.fillStyle='#ffd678';x.fillText(br+'  |  WA '+wa,W/2,H-26);
+  x.save();x.translate(W/2,H/2);x.rotate(-28*Math.PI/180);x.font='bold 34px sans-serif';x.fillStyle='rgba(255,255,255,.18)';
+  const t=$('wm').value,R=Math.hypot(W,H);for(let y=-R,k=0;y<R;y+=520,k++)for(let X=-R+(k%2)*450;X<R;X+=900)x.fillText(t,X,y);x.restore();
+  $('sv').classList.remove('hide');$('dl').classList.remove('hide');
+};
+$('dl').onclick=()=>$('out').toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='akun-mlbb.png';a.click()});
+$('sv').onclick=()=>{
+  const title=prompt('Judul akun (mis. Akun ML Sultan 310 Skin):');if(!title)return;const price=prompt('Harga (mis. Rp1.500.000):');if(!price)return;
+  const desc=prompt('Keterangan singkat (boleh kosong):')||'';
+  const o=$('out'),t=document.createElement('canvas');t.width=1200;t.height=Math.round(o.height*1200/o.width);
+  t.getContext('2d').drawImage(o,0,0,t.width,t.height);
+  const a=load();a.unshift({title,price,desc,img:t.toDataURL('image/jpeg',.8)});if(save(a)){alert('Tersimpan di etalase');renderShop()}
+};
+</script></body></html>
